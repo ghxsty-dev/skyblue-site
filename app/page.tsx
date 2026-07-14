@@ -55,17 +55,25 @@ export default function HomePage() {
   }, []);
 
   const rows = bgImages.length >= 5
-    ? Array.from({ length: 6 }, (_, ri) => {
-        const groupSize = 6;
-        const start = (ri * groupSize) % bgImages.length;
-        const images = [...bgImages.slice(start), ...bgImages.slice(0, start)].slice(0, groupSize);
-        return {
-          images,
-          speed: 20 + (ri * 3) % 40,
-          dir: (ri % 2 === 0 ? "left" : "right") as "left" | "right",
-          h: 60 + (ri % 5) * 15,
-        };
-      })
+    ? (() => {
+        const result: { images: DesignImage[]; speed: number; dir: "left" | "right"; h: number; topPx: number }[] = [];
+        let cumTop = 5;
+        for (let ri = 0; ri < 6; ri++) {
+          const groupSize = 6;
+          const start = (ri * groupSize) % bgImages.length;
+          const images = [...bgImages.slice(start), ...bgImages.slice(0, start)].slice(0, groupSize);
+          const h = 60 + (ri % 5) * 15;
+          result.push({
+            images,
+            speed: 20 + (ri * 3) % 40,
+            dir: (ri % 2 === 0 ? "left" : "right") as "left" | "right",
+            h,
+            topPx: cumTop,
+          });
+          cumTop += h + 3 * 15 + 5;
+        }
+        return result;
+      })()
     : [];
 
   const [isMobile, setIsMobile] = useState(false);
@@ -98,7 +106,7 @@ export default function HomePage() {
                 key={ri}
                 className="absolute"
                 style={{
-                  top: `${2 + ri * 16}%`,
+                  top: `${row.topPx}px`,
                   transform: "rotate(-6deg)",
                   transformOrigin: "center center",
                 }}
