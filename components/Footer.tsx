@@ -37,11 +37,14 @@ export default function Footer() {
             </button>
           </div>
         </div>
-        <div className="mt-8 pt-5 border-t border-[var(--footer-border)] flex flex-col items-center gap-2 text-xs">
+        <div className="mt-8 pt-5 border-t border-[var(--footer-border)] flex flex-col items-start gap-1.5 text-xs">
           <Link href="/privacy" className="text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
             {t.privacy}
           </Link>
-          {t.footerCopyright}
+          <Link href="/status" className="text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
+            {t.status}
+          </Link>
+          <p className="mt-2 text-[var(--footer-text)] opacity-50">{t.footerCopyright}</p>
         </div>
       </div>
     </footer>
