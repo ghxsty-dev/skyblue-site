@@ -55,13 +55,17 @@ export default function HomePage() {
   }, []);
 
   const rows = bgImages.length >= 5
-    ? [
-        { images: bgImages.slice(0, 6), speed: 25, dir: "left" as const, h: 45 },
-        { images: bgImages.slice(6, 12), speed: 40, dir: "right" as const, h: 55 },
-        { images: bgImages.slice(12, 18), speed: 30, dir: "left" as const, h: 65 },
-        { images: bgImages.slice(18, 24), speed: 45, dir: "right" as const, h: 50 },
-        { images: bgImages.slice(24, 30), speed: 35, dir: "left" as const, h: 60 },
-      ]
+    ? Array.from({ length: 25 }, (_, ri) => {
+        const groupSize = 6;
+        const start = (ri * groupSize) % bgImages.length;
+        const images = [...bgImages.slice(start), ...bgImages.slice(0, start)].slice(0, groupSize);
+        return {
+          images,
+          speed: 20 + (ri * 3) % 40,
+          dir: (ri % 2 === 0 ? "left" : "right") as "left" | "right",
+          h: 25 + (ri % 5) * 8,
+        };
+      })
     : [];
 
   const [isMobile, setIsMobile] = useState(false);
@@ -94,7 +98,7 @@ export default function HomePage() {
                 key={ri}
                 className="absolute"
                 style={{
-                  top: `${ri * 24}%`,
+                  top: `${ri * 4}%`,
                   transform: "rotate(-6deg)",
                   transformOrigin: "center center",
                 }}
@@ -106,14 +110,14 @@ export default function HomePage() {
                     willChange: "transform",
                   }}
                 >
-                  {[...row.images, ...row.images, ...row.images, ...row.images].map((img, i) => (
+                  {[...row.images, ...row.images, ...row.images].map((img, i) => (
                     <div
                       key={i}
                       className="inline-block shrink-0 rounded-lg overflow-hidden bg-[var(--bg2)]"
                       style={{
-                        height: row.h + (i % 4) * 10,
+                        height: row.h + (i % 4) * 6,
                         aspectRatio: `${img.width}/${img.height}`,
-                        margin: `0 ${8 + (i % 3) * 4}px`,
+                        margin: `0 ${6 + (i % 3) * 3}px`,
                       }}
                     >
                       <Image
@@ -122,7 +126,8 @@ export default function HomePage() {
                         width={img.width}
                         height={img.height}
                         className="w-full h-full object-cover"
-                        sizes="200px"
+                        sizes="100px"
+                        quality={15}
                       />
                     </div>
                   ))}
