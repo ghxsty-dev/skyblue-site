@@ -38,15 +38,13 @@ export default function RootLayout({
       data-theme="dark"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <head>
-          <Script
-            async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7679661881079802"
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        </head>
       <body className="min-h-full flex flex-col">
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7679661881079802"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         <AppProvider>
           <SWRegister />
           <SplashScreen />
