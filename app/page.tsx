@@ -92,34 +92,41 @@ export default function HomePage() {
             {rows.map((row, ri) => (
               <div
                 key={ri}
-                className="flex whitespace-nowrap absolute"
+                className="absolute"
                 style={{
                   top: `${5 + ri * 18}%`,
-                  animation: `scroll${row.dir === "right" ? "Right" : "Left"} ${row.speed}s linear infinite`,
-                  willChange: "transform",
+                  transform: `rotate(${ri % 2 === 0 ? "-" : ""}4deg)`,
+                  transformOrigin: "center center",
                 }}
               >
-                {[...row.images, ...row.images, ...row.images, ...row.images].map((img, i) => (
-                  <div
-                    key={i}
-                    className="inline-block shrink-0 rounded-lg overflow-hidden bg-[var(--bg2)]"
-                    style={{
-                      height: row.h + (i % 4) * 20,
-                      aspectRatio: `${img.width}/${img.height}`,
-                      margin: `0 ${8 + (i % 3) * 4}px`,
-                      transform: `rotate(${row.dir === "right" ? "" : "-"}${2 + (i % 3)}deg)`,
-                    }}
-                  >
-                    <Image
-                      src={img.url}
-                      alt=""
-                      width={img.width}
-                      height={img.height}
-                      className="w-full h-full object-cover"
-                      sizes="200px"
-                    />
-                  </div>
-                ))}
+                <div
+                  className="flex whitespace-nowrap"
+                  style={{
+                    animation: `scroll${row.dir === "right" ? "Right" : "Left"} ${row.speed}s linear infinite`,
+                    willChange: "transform",
+                  }}
+                >
+                  {[...row.images, ...row.images, ...row.images, ...row.images].map((img, i) => (
+                    <div
+                      key={i}
+                      className="inline-block shrink-0 rounded-lg overflow-hidden bg-[var(--bg2)]"
+                      style={{
+                        height: row.h + (i % 4) * 20,
+                        aspectRatio: `${img.width}/${img.height}`,
+                        margin: `0 ${8 + (i % 3) * 4}px`,
+                      }}
+                    >
+                      <Image
+                        src={img.url}
+                        alt=""
+                        width={img.width}
+                        height={img.height}
+                        className="w-full h-full object-cover"
+                        sizes="200px"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
