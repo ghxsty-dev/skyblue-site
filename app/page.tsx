@@ -63,7 +63,7 @@ export default function HomePage() {
           images,
           speed: 20 + (ri * 3) % 40,
           dir: (ri % 2 === 0 ? "left" : "right") as "left" | "right",
-          h: 25 + (ri % 5) * 8,
+          h: 60 + (ri % 5) * 15,
         };
       })
     : [];
@@ -115,9 +115,9 @@ export default function HomePage() {
                       key={i}
                       className="inline-block shrink-0 rounded-lg overflow-hidden bg-[var(--bg2)]"
                       style={{
-                        height: row.h + (i % 4) * 6,
+                        height: row.h + (i % 4) * 15,
                         aspectRatio: `${img.width}/${img.height}`,
-                        margin: `0 ${6 + (i % 3) * 3}px`,
+                        margin: `0 ${10 + (i % 3) * 6}px`,
                       }}
                     >
                       <Image
