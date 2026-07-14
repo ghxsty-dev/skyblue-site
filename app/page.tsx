@@ -55,7 +55,7 @@ export default function HomePage() {
   }, []);
 
   const rows = bgImages.length >= 5
-    ? Array.from({ length: 25 }, (_, ri) => {
+    ? Array.from({ length: 6 }, (_, ri) => {
         const groupSize = 6;
         const start = (ri * groupSize) % bgImages.length;
         const images = [...bgImages.slice(start), ...bgImages.slice(0, start)].slice(0, groupSize);
@@ -98,7 +98,7 @@ export default function HomePage() {
                 key={ri}
                 className="absolute"
                 style={{
-                  top: `${ri * 4}%`,
+                  top: `${2 + ri * 16}%`,
                   transform: "rotate(-6deg)",
                   transformOrigin: "center center",
                 }}
