@@ -10,7 +10,6 @@
     { "title": "R10 & Webmaster Design", "desc": "Professional thread and profile designs optimized for R10 and Webmaster platforms." },
     { "title": "Corporate Design", "desc": "Full corporate identity packages including stationery, business cards, and guidelines." },
     { "title": "Mascot Logo", "desc": "Unique mascot and character logos that give your brand a memorable face." },
-    { "title": "UI/UX Design", "desc": "Modern, user-friendly interfaces and experiences for web and mobile applications." },
     { "title": "Custom Design", "desc": "Tailor-made design solutions for any special request you have in mind." }
   ],
   "TR": [
@@ -24,7 +23,6 @@
     { "title": "R10 & Webmaster Tasarımı", "desc": "R10 ve Webmaster platformlarına özel, profesyonel konu ve profil tasarımları." },
     { "title": "Kurumsal Tasarım", "desc": "Kırtasiye, kartvizit ve kılavuzları içeren komple kurumsal kimlik paketleri." },
     { "title": "Maskot Logo", "desc": "Markanıza unutulmaz bir yüz kazandıran özgün maskot ve karakter logoları." },
-    { "title": "UI/UX Tasarım", "desc": "Web ve mobil uygulamalar için modern, kullanıcı dostu arayüz ve deneyim tasarımları." },
     { "title": "Özel Tasarım", "desc": "Aklınızdaki her türlü özel talep için size özel tasarım çözümleri." }
   ]
 }
