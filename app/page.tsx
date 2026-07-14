@@ -56,11 +56,11 @@ export default function HomePage() {
 
   const rows = bgImages.length >= 5
     ? [
-        { images: bgImages.slice(0, 6), speed: 25, dir: "left" as const, h: 50 },
-        { images: bgImages.slice(6, 12), speed: 40, dir: "right" as const, h: 60 },
-        { images: bgImages.slice(12, 18), speed: 30, dir: "left" as const, h: 70 },
-        { images: bgImages.slice(18, 24), speed: 45, dir: "right" as const, h: 55 },
-        { images: bgImages.slice(24, 30), speed: 35, dir: "left" as const, h: 65 },
+        { images: bgImages.slice(0, 6), speed: 25, dir: "left" as const, h: 80 },
+        { images: bgImages.slice(6, 12), speed: 40, dir: "right" as const, h: 100 },
+        { images: bgImages.slice(12, 18), speed: 30, dir: "left" as const, h: 110 },
+        { images: bgImages.slice(18, 24), speed: 45, dir: "right" as const, h: 90 },
+        { images: bgImages.slice(24, 30), speed: 35, dir: "left" as const, h: 120 },
       ]
     : [];
 
@@ -88,7 +88,7 @@ export default function HomePage() {
     <div>
       <section className="relative min-h-[80vh] flex items-center overflow-hidden">
         {rows.length > 0 && (
-          <div className="absolute inset-0 pointer-events-none opacity-[0.08] dark:opacity-[0.06]">
+          <div className="absolute inset-0 pointer-events-none opacity-[0.1] dark:opacity-[0.07]">
             {rows.map((row, ri) => (
               <div
                 key={ri}
@@ -99,11 +99,16 @@ export default function HomePage() {
                   willChange: "transform",
                 }}
               >
-                {[...row.images, ...row.images].map((img, i) => (
+                {[...row.images, ...row.images, ...row.images, ...row.images].map((img, i) => (
                   <div
                     key={i}
-                    className="inline-block mx-4 rounded-lg overflow-hidden bg-[var(--bg2)]"
-                    style={{ height: row.h + (i % 3) * 20, aspectRatio: `${img.width}/${img.height}` }}
+                    className="inline-block shrink-0 rounded-lg overflow-hidden bg-[var(--bg2)]"
+                    style={{
+                      height: row.h + (i % 4) * 20,
+                      aspectRatio: `${img.width}/${img.height}`,
+                      margin: `0 ${8 + (i % 3) * 4}px`,
+                      transform: `rotate(${row.dir === "right" ? "" : "-"}${2 + (i % 3)}deg)`,
+                    }}
                   >
                     <Image
                       src={img.url}
