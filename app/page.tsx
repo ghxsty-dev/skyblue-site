@@ -57,7 +57,7 @@ export default function HomePage() {
   const rows = bgImages.length >= 5
     ? (() => {
         const result: { images: DesignImage[]; speed: number; dir: "left" | "right"; h: number; topPx: number }[] = [];
-        let cumTop = 5;
+        let cumTop = 25;
         for (let ri = 0; ri < 6; ri++) {
           const groupSize = 6;
           const start = (ri * groupSize) % bgImages.length;
@@ -70,7 +70,7 @@ export default function HomePage() {
             h,
             topPx: cumTop,
           });
-          cumTop += h + 3 * 15 + 5;
+          cumTop += h + 3 * 15 + 25;
         }
         return result;
       })()
