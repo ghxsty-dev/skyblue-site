@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SkyBlue — Offline</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0a1a;font-family:sans-serif;gap:1rem;padding:2rem}
+  .dot{width:12px;height:12px;border-radius:50%;background:#ff4444;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  h1{color:#97cdf2;font-size:1.25rem}
+  p{color:#888;font-size:.8rem}
+  canvas{border-radius:12px;border:1px solid #1e2a45;width:300px;height:300px}
+  .score{color:#aaa;font-size:.85rem}
+  .btn{margin-top:.5rem;padding:.6rem 1.5rem;border-radius:999px;border:none;background:linear-gradient(90deg,#97cdf2,#59abfe);color:#fff;font-weight:600;cursor:pointer;transition:opacity .2s}
+  .btn:hover{opacity:.8}
+  .hint{color:#555;font-size:.65rem}
+</style>
+</head>
+<body>
+  <div class="dot"></div>
+  <h1>İnternet bağlantısı yok</h1>
+  <p>No internet connection</p>
+  <canvas id="game" width="300" height="300"></canvas>
+  <div class="score" id="score">Puan: 0</div>
+  <button class="btn" id="reset">Tekrar Oyna</button>
+  <div class="hint" id="hint">Yön tuşları / kaydırarak oyna</div>
+<script>
+(function(){const G=20,C=20,S=120;let snake=[{x:2,y:7}],apple={x:5,y:5},dir="RIGHT",nextDir="RIGHT",score=0,running=true,gameOver=false;
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),scoreEl=document.getElementById('score'),resetBtn=document.getElementById('reset');
+const hint=document.getElementById('hint');const lang=navigator.language||'';
+if(lang.startsWith('tr')){hint.textContent='Yön tuşları / kaydırarak oyna';resetBtn.textContent='Tekrar Oyna'}
+else{hint.textContent='Arrow keys / swipe to play';resetBtn.textContent='Play Again'}
+function randApple(){let p;do{p={x:Math.floor(Math.random()*G),y:Math.floor(Math.random()*G)}}while(snake.some(s=>s.x===p.x&&s.y===p.y));return p}
+function draw(){ctx.clearRect(0,0,300,300);ctx.fillStyle='#1a1a2e';ctx.fillRect(0,0,300,300);
+for(let x=0;x<G;x++)for(let y=0;y<G;y++){if((x+y)%2===0){ctx.fillStyle='#16213e';ctx.fillRect(x*C,y*C,C,C)}}
+for(let i=0;i<snake.length;i++){const r=i/snake.length;ctx.fillStyle=`rgb(${Math.round(89+r*30)},${Math.round(205+r*20)},${Math.round(242-r*30)})`;ctx.shadowBlur=8;ctx.shadowColor='#59abfe';ctx.beginPath();ctx.roundRect(snake[i].x*C+1,snake[i].y*C+1,C-2,C-2,4);ctx.fill()}
+ctx.shadowBlur=0;ctx.fillStyle='#ff6b6b';ctx.shadowBlur=10;ctx.shadowColor='#ff6b6b';ctx.beginPath();ctx.arc(apple.x*C+C/2,apple.y*C+C/2,C/2-2,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}
+function tick(){if(!running)return;dir=nextDir;const head={...snake[0]};
+switch(dir){case'UP':head.y--;break;case'DOWN':head.y++;break;case'LEFT':head.x--;break;case'RIGHT':head.x++;break}
+if(head.x<0||head.x>=G||head.y<0||head.y>=G||snake.some(s=>s.x===head.x&&s.y===head.y)){running=false;gameOver=true;draw();scoreEl.textContent=lang.startsWith('tr')?`Oyun Bitti! Puan: ${score}`:`Game Over! Score: ${score}`;return}
+snake.unshift(head);if(head.x===apple.x&&head.y===apple.y){score+=10;scoreEl.textContent=lang.startsWith('tr')?`Puan: ${score}`:`Score: ${score}`;apple=randApple()}else snake.pop();draw()}
+setInterval(tick,S);apple=randApple();draw();
+document.addEventListener('keydown',e=>{if(!running)return;const m={ArrowUp:'UP',ArrowDown:'DOWN',ArrowLeft:'LEFT',ArrowRight:'RIGHT'};const d=m[e.key];if(!d)return;e.preventDefault();const o={UP:'DOWN',DOWN:'UP',LEFT:'RIGHT',RIGHT:'LEFT'};if(d!==o[dir])nextDir=d});
+let sx=0,sy=0;canvas.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY},{passive:true});
+canvas.addEventListener('touchend',e=>{if(!running)return;const t=e.changedTouches[0];const dx=t.clientX-sx,dy=t.clientY-sy;if(Math.abs(dx)<10&&Math.abs(dy)<10)return;const d=Math.abs(dx)>Math.abs(dy)?(dx>0?'RIGHT':'LEFT'):(dy>0?'DOWN':'UP');const o={UP:'DOWN',DOWN:'UP',LEFT:'RIGHT',RIGHT:'LEFT'};if(d!==o[dir])nextDir=d},{passive:true});
+resetBtn.addEventListener('click',()=>{snake=[{x:2,y:7}];dir='RIGHT';nextDir='RIGHT';score=0;gameOver=false;running=true;apple=randApple();draw();scoreEl.textContent=lang.startsWith('tr')?`Puan: 0`:`Score: 0`})})();
+</script>
+</body>
+</html>
