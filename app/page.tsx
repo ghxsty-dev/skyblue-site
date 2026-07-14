@@ -134,13 +134,22 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="flex justify-center md:justify-end">
+          <div className="flex justify-center md:justify-end relative">
+            <div
+              className="absolute w-[400px] h-[400px] rounded-full opacity-30 blur-3xl pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, rgba(89,171,254,0.6) 0%, rgba(151,205,242,0.3) 50%, transparent 70%)",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            />
             <Image
               src="/anasayfa.png"
               alt="SkyBlue"
               width={600}
               height={600}
-              className="w-full max-w-[500px] h-auto rounded-2xl"
+              className="w-full max-w-[500px] h-auto rounded-2xl animate-float relative"
               priority
             />
           </div>
