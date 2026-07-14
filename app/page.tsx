@@ -14,10 +14,26 @@ interface Review {
   date?: string;
 }
 
+interface DesignImage {
+  url: string;
+  width: number;
+  height: number;
+}
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function HomePage() {
   const { t, lang } = useApp();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [index, setIndex] = useState(0);
+  const [bgImages, setBgImages] = useState<DesignImage[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const info = contactData[lang as "EN" | "TR"];
 
@@ -27,6 +43,24 @@ export default function HomePage() {
       .then((data: { reviews: Review[] }) => setReviews(data.reviews))
       .catch(() => setReviews([]));
   }, [lang]);
+
+  useEffect(() => {
+    fetch("/api/designs")
+      .then((res) => res.json())
+      .then((data: { designs: { images: DesignImage[] }[] }) => {
+        const all = data.designs.flatMap((d) => d.images);
+        setBgImages(shuffle(all).slice(0, 18));
+      })
+      .catch(() => {});
+  }, []);
+
+  const rows = bgImages.length >= 6
+    ? [
+        { images: bgImages.slice(0, 6), speed: 35, dir: "left" as const, h: 60 },
+        { images: bgImages.slice(6, 12), speed: 50, dir: "right" as const, h: 80 },
+        { images: bgImages.slice(12, 18), speed: 25, dir: "left" as const, h: 100 },
+      ]
+    : [];
 
   const visibleCount = 3;
   const maxIndex = Math.max(0, reviews.length - visibleCount);
@@ -42,7 +76,39 @@ export default function HomePage() {
   return (
     <div>
       <section className="relative min-h-[80vh] flex items-center overflow-hidden">
-        <div className="page-inner w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center py-20 md:py-24">
+        {rows.length > 0 && (
+          <div className="absolute inset-0 pointer-events-none opacity-[0.08] dark:opacity-[0.06]">
+            {rows.map((row, ri) => (
+              <div
+                key={ri}
+                className="flex whitespace-nowrap absolute"
+                style={{
+                  top: `${10 + ri * 30}%`,
+                  animation: `scroll${row.dir === "right" ? "Right" : "Left"} ${row.speed}s linear infinite`,
+                  willChange: "transform",
+                }}
+              >
+                {[...row.images, ...row.images].map((img, i) => (
+                  <div
+                    key={i}
+                    className="inline-block mx-4 rounded-lg overflow-hidden"
+                    style={{ height: row.h + (i % 3) * 20, aspectRatio: `${img.width}/${img.height}` }}
+                  >
+                    <Image
+                      src={img.url}
+                      alt=""
+                      width={img.width}
+                      height={img.height}
+                      className="w-full h-full object-cover"
+                      unoptimized
+                    />
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="page-inner w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center py-20 md:py-24 relative z-10">
           <div>
             <span className="inline-block px-5 py-1.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-xs font-semibold mb-5">
               {t.heroBadge}
