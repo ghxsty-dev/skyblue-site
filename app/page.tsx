@@ -64,8 +64,17 @@ export default function HomePage() {
       ]
     : [];
 
-  const visibleCount = 3;
-  const maxIndex = Math.max(0, reviews.length - visibleCount);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const perPage = isMobile ? 1 : 3;
+  const maxIndex = Math.max(0, reviews.length - perPage);
 
   useEffect(() => {
     if (reviews.length === 0) return;
@@ -169,7 +178,7 @@ export default function HomePage() {
           <div className="overflow-hidden">
             <div
               className="flex transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(-${(index * 100) / visibleCount}%)` }}
+              style={{ transform: `translateX(-${(index * 100) / perPage}%)` }}
             >
               {reviews.map((item, i) => (
                 <div key={i} className="min-w-0 w-full md:w-1/3 shrink-0 px-3">
