@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import LangModal from "@/components/LangModal";
 import SplashScreen from "@/components/SplashScreen";
 import AdSidebar from "@/components/AdSidebar";
+import OfflineGame from "@/components/OfflineGame";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <AppProvider>
           <SplashScreen />
+          <OfflineGame />
           <div className="relative">
             <Nav />
             <AdSidebar />
