@@ -56,11 +56,11 @@ export default function HomePage() {
 
   const rows = bgImages.length >= 5
     ? [
-        { images: bgImages.slice(0, 6), speed: 25, dir: "left" as const, h: 80 },
-        { images: bgImages.slice(6, 12), speed: 40, dir: "right" as const, h: 100 },
-        { images: bgImages.slice(12, 18), speed: 30, dir: "left" as const, h: 110 },
-        { images: bgImages.slice(18, 24), speed: 45, dir: "right" as const, h: 90 },
-        { images: bgImages.slice(24, 30), speed: 35, dir: "left" as const, h: 120 },
+        { images: bgImages.slice(0, 6), speed: 25, dir: "left" as const, h: 45 },
+        { images: bgImages.slice(6, 12), speed: 40, dir: "right" as const, h: 55 },
+        { images: bgImages.slice(12, 18), speed: 30, dir: "left" as const, h: 65 },
+        { images: bgImages.slice(18, 24), speed: 45, dir: "right" as const, h: 50 },
+        { images: bgImages.slice(24, 30), speed: 35, dir: "left" as const, h: 60 },
       ]
     : [];
 
@@ -94,7 +94,7 @@ export default function HomePage() {
                 key={ri}
                 className="absolute"
                 style={{
-                  top: `${2 + ri * 22}%`,
+                  top: `${ri * 24}%`,
                   transform: "rotate(-6deg)",
                   transformOrigin: "center center",
                 }}
@@ -111,7 +111,7 @@ export default function HomePage() {
                       key={i}
                       className="inline-block shrink-0 rounded-lg overflow-hidden bg-[var(--bg2)]"
                       style={{
-                        height: row.h + (i % 4) * 20,
+                        height: row.h + (i % 4) * 10,
                         aspectRatio: `${img.width}/${img.height}`,
                         margin: `0 ${8 + (i % 3) * 4}px`,
                       }}
