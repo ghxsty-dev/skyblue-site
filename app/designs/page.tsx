@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useApp } from "@/lib/context";
 import Lightbox from "@/components/Lightbox";
+import Reveal from "@/components/Reveal";
 
 interface DesignImage {
   url: string;
@@ -56,14 +57,16 @@ export default function DesignsPage() {
 
   return (
     <div className="page-inner">
-      <div className="section-header">
-        <h2>
-          <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
-            {t.designsTitle}
-          </span>
-        </h2>
-        <p>{t.designsDesc}</p>
-      </div>
+      <Reveal>
+        <div className="section-header">
+          <h2>
+            <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+              {t.designsTitle}
+            </span>
+          </h2>
+          <p>{t.designsDesc}</p>
+        </div>
+      </Reveal>
 
       {loading ? (
         <div className="flex justify-center py-16">
@@ -74,8 +77,8 @@ export default function DesignsPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {designs.map((post, i) => (
+            <Reveal key={post.id} delay={i * 60}>
             <div
-              key={post.id}
               className="card group cursor-pointer"
               onClick={() => post.images.length > 0 && openLightbox(i, 0)}
             >
@@ -105,7 +108,7 @@ export default function DesignsPage() {
               <div className="p-4">
                 <h4 className="font-bold text-base">{post.title}</h4>
               </div>
-            </div>
+            </div></Reveal>
           ))}
         </div>
       )}

@@ -3,6 +3,7 @@
 import { useApp } from "@/lib/context";
 import { CheckIcon } from "@/lib/icons";
 import data from "@/data/packages.json";
+import Reveal from "@/components/Reveal";
 
 export default function PackagesPage() {
   const { t, lang } = useApp();
@@ -10,19 +11,21 @@ export default function PackagesPage() {
 
   return (
     <div className="page-inner">
-      <div className="section-header">
-        <h2>
-          <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
-            {t.packagesTitle}
-          </span>
-        </h2>
-        <p>{t.packagesDesc}</p>
-      </div>
+      <Reveal>
+        <div className="section-header">
+          <h2>
+            <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+              {t.packagesTitle}
+            </span>
+          </h2>
+          <p>{t.packagesDesc}</p>
+        </div>
+      </Reveal>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
         {packages.map((pkg, i) => (
+          <Reveal key={i} delay={i * 100}>
           <div
-            key={i}
             className={`relative p-8 rounded-2xl border transition-all duration-300 ${
               pkg.featured
                 ? "border-[#59abfe] shadow-[0_8px_30px_var(--card-shadow)] scale-105 md:scale-105"
@@ -80,7 +83,7 @@ export default function PackagesPage() {
                 {t.buyViaDiscord}
               </a>
             </div>
-          </div>
+          </div></Reveal>
         ))}
       </div>
     </div>

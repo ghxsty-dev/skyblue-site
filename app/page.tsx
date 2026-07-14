@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { useApp } from "@/lib/context";
 import { StarIcon, MessageIcon, CameraIcon, MailIcon } from "@/lib/icons";
 import contactData from "@/data/contact.json";
+import Reveal from "@/components/Reveal";
 
 interface Review {
   text: string;
@@ -191,7 +192,8 @@ export default function HomePage() {
       </section>
 
       <section className="page-inner py-16">
-        <div className="section-header">
+        <Reveal>
+          <div className="section-header">
           <h2>
             <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
               {t.reviewsTitle}
@@ -248,56 +250,59 @@ export default function HomePage() {
             {lang === "TR" ? "Tüm yorumları gör →" : "View all reviews →"}
           </Link>
         </div>
+        </Reveal>
       </section>
 
       <section className="page-inner py-16 border-t border-[var(--border)]">
-        <div className="section-header">
-          <h2>
-            <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
-              {t.contactInfo}
-            </span>
-          </h2>
-          <p>{t.contactInfoDesc}</p>
-        </div>
-        <div className="flex flex-wrap justify-center gap-6">
-          <a
-            href={info.discordUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="review-card flex items-center gap-3 px-6 py-4 min-w-[200px] cursor-pointer"
-          >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
-              <MessageIcon size={18} />
-            </div>
-            <div>
-              <div className="font-semibold text-sm">{t.discord}</div>
-              <div className="text-[10px] text-[var(--text2)]">discord.gg/DRnxEXCQU</div>
-            </div>
-          </a>
-          <a
-            href={info.instagramUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="review-card flex items-center gap-3 px-6 py-4 min-w-[200px] cursor-pointer"
-          >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
-              <CameraIcon size={18} />
-            </div>
-            <div>
-              <div className="font-semibold text-sm">Instagram</div>
-              <div className="text-[10px] text-[var(--text2)]">{t.instagram}</div>
-            </div>
-          </a>
-          <div className="review-card flex items-center gap-3 px-6 py-4 min-w-[200px]">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
-              <MailIcon size={18} />
-            </div>
-            <div>
-              <div className="font-semibold text-sm">Email</div>
-              <div className="text-[10px] text-[var(--text2)]">{info.email}</div>
+        <Reveal>
+          <div className="section-header">
+            <h2>
+              <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+                {t.contactInfo}
+              </span>
+            </h2>
+            <p>{t.contactInfoDesc}</p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-6">
+            <a
+              href={info.discordUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="review-card flex items-center gap-3 px-6 py-4 min-w-[200px] cursor-pointer"
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
+                <MessageIcon size={18} />
+              </div>
+              <div>
+                <div className="font-semibold text-sm">{t.discord}</div>
+                <div className="text-[10px] text-[var(--text2)]">discord.gg/DRnxEXCQU</div>
+              </div>
+            </a>
+            <a
+              href={info.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="review-card flex items-center gap-3 px-6 py-4 min-w-[200px] cursor-pointer"
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
+                <CameraIcon size={18} />
+              </div>
+              <div>
+                <div className="font-semibold text-sm">Instagram</div>
+                <div className="text-[10px] text-[var(--text2)]">{t.instagram}</div>
+              </div>
+            </a>
+            <div className="review-card flex items-center gap-3 px-6 py-4 min-w-[200px]">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
+                <MailIcon size={18} />
+              </div>
+              <div>
+                <div className="font-semibold text-sm">Email</div>
+                <div className="text-[10px] text-[var(--text2)]">{info.email}</div>
+              </div>
             </div>
           </div>
-        </div>
+        </Reveal>
       </section>
     </div>
   );
