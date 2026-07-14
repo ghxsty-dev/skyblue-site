@@ -49,16 +49,18 @@ export default function HomePage() {
       .then((res) => res.json())
       .then((data: { designs: { images: DesignImage[] }[] }) => {
         const all = data.designs.flatMap((d) => d.images);
-        setBgImages(shuffle(all).slice(0, 18));
+        setBgImages(shuffle(all).slice(0, 30));
       })
       .catch(() => {});
   }, []);
 
-  const rows = bgImages.length >= 6
+  const rows = bgImages.length >= 5
     ? [
-        { images: bgImages.slice(0, 6), speed: 35, dir: "left" as const, h: 60 },
-        { images: bgImages.slice(6, 12), speed: 50, dir: "right" as const, h: 80 },
-        { images: bgImages.slice(12, 18), speed: 25, dir: "left" as const, h: 100 },
+        { images: bgImages.slice(0, 6), speed: 25, dir: "left" as const, h: 50 },
+        { images: bgImages.slice(6, 12), speed: 40, dir: "right" as const, h: 60 },
+        { images: bgImages.slice(12, 18), speed: 30, dir: "left" as const, h: 70 },
+        { images: bgImages.slice(18, 24), speed: 45, dir: "right" as const, h: 55 },
+        { images: bgImages.slice(24, 30), speed: 35, dir: "left" as const, h: 65 },
       ]
     : [];
 
@@ -83,7 +85,7 @@ export default function HomePage() {
                 key={ri}
                 className="flex whitespace-nowrap absolute"
                 style={{
-                  top: `${10 + ri * 30}%`,
+                  top: `${5 + ri * 18}%`,
                   animation: `scroll${row.dir === "right" ? "Right" : "Left"} ${row.speed}s linear infinite`,
                   willChange: "transform",
                 }}
