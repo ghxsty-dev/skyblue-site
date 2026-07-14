@@ -4,7 +4,7 @@ export default function NotFound() {
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <Image
-        src="/hata.png"
+        src="/hata.jpg"
         alt="404"
         width={400}
         height={400}
