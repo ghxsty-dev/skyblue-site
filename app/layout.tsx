@@ -19,6 +19,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SkyBlue Design",
   description: "Professional design services by SkyBlue",
+  icons: { icon: "/logo.png" },
 };
 
 export default function RootLayout({
