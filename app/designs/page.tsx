@@ -79,7 +79,7 @@ export default function DesignsPage() {
         <>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {designs.slice(0, visible).map((post, i) => (
-            <Reveal key={post.id} delay={i * 60}>
+            <Reveal key={post.id} delay={i * 40}>
             <div
               className="card group cursor-pointer"
               onClick={() => post.images.length > 0 && openLightbox(designs.indexOf(post), 0)}

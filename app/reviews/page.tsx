@@ -48,7 +48,7 @@ export default function ReviewsPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {reviews.map((item, i) => (
-            <Reveal key={i} delay={i * 80}><div className="review-card">
+            <Reveal key={i} delay={i * 50}><div className="review-card">
               <div className="flex gap-0.5 mb-3 text-[#f5a623]">
                 {[1, 2, 3, 4, 5].map((s) => (
                   <StarIcon

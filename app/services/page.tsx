@@ -28,7 +28,7 @@ export default function ServicesPage() {
         {items.map((item, i) => {
           const Icon = serviceIcons[i] || serviceIcons[0];
           return (
-            <Reveal key={i} delay={i * 80}><div className="card">
+            <Reveal key={i} delay={i * 50}><div className="card">
               <div className="w-13 h-13 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white mb-4" style={{ width: 52, height: 52 }}>
                 <Icon size={24} />
               </div>

@@ -24,7 +24,7 @@ export default function PackagesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
         {packages.map((pkg, i) => (
-          <Reveal key={i} delay={i * 100}>
+          <Reveal key={i} delay={i * 60}>
           <div
             className={`relative p-8 rounded-2xl border transition-all duration-300 ${
               pkg.featured
