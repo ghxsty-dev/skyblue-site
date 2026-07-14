@@ -13,7 +13,7 @@ export default function Nav() {
   const pathname = usePathname();
   const { t, theme } = useApp();
   const [open, setOpen] = useState(false);
-  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+  const [indicator, setIndicator] = useState({ left: 0, width: 0, measured: false });
   const navRef = useRef<HTMLDivElement>(null);
 
   const current = pathname === "/" ? "home" : pathname.replace("/", "");
@@ -23,7 +23,7 @@ export default function Nav() {
     const active = navRef.current.querySelector<HTMLAnchorElement>("a.active-link");
     if (active) {
       const parent = active.parentElement as HTMLLIElement;
-      setIndicator({ left: parent.offsetLeft, width: parent.offsetWidth });
+      setIndicator({ left: parent.offsetLeft, width: parent.offsetWidth, measured: true });
     }
   }, [current, open]);
 
@@ -41,10 +41,12 @@ export default function Nav() {
           <MenuIcon size={24} />
         </button>
         <div ref={navRef} className={`relative ${open ? "flex" : "hidden"} md:flex absolute md:static top-16 left-0 right-0 bg-[var(--nav-bg)] md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-b md:border-b-0 border-[var(--border)] md:border-none p-4 md:p-0`}>
-          <div
-            className="hidden md:block absolute bottom-0 h-[2px] bg-gradient-to-r from-[#97cdf2] to-[#59abfe] rounded-full transition-all duration-300 ease-in-out pointer-events-none"
-            style={{ left: indicator.left, width: indicator.width }}
-          />
+          {indicator.measured && (
+            <div
+              className="hidden md:block absolute bottom-0 h-[2px] bg-gradient-to-r from-[#97cdf2] to-[#59abfe] rounded-full transition-all duration-300 ease-in-out pointer-events-none"
+              style={{ left: indicator.left, width: indicator.width }}
+            />
+          )}
           <ul className="list-none flex flex-col md:flex-row gap-1 md:gap-0">
             {links.map((link) => (
               <li key={link}>

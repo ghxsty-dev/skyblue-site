@@ -93,7 +93,7 @@ export default function HomePage() {
                 {[...row.images, ...row.images].map((img, i) => (
                   <div
                     key={i}
-                    className="inline-block mx-4 rounded-lg overflow-hidden"
+                    className="inline-block mx-4 rounded-lg overflow-hidden bg-[var(--bg2)]"
                     style={{ height: row.h + (i % 3) * 20, aspectRatio: `${img.width}/${img.height}` }}
                   >
                     <Image
@@ -102,7 +102,7 @@ export default function HomePage() {
                       width={img.width}
                       height={img.height}
                       className="w-full h-full object-cover"
-                      unoptimized
+                      sizes="200px"
                     />
                   </div>
                 ))}
