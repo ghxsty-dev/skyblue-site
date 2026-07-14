@@ -15,7 +15,7 @@ interface Review {
 }
 
 export default function HomePage() {
-  const { t, lang, theme } = useApp();
+  const { t, lang } = useApp();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [index, setIndex] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -41,39 +41,40 @@ export default function HomePage() {
 
   return (
     <div>
-      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.07] dark:opacity-[0.05]">
-          <Image
-            src={theme === "light" ? "/logo2.png" : "/logo.png"}
-            alt=""
-            width={600}
-            height={600}
-            className="animate-float"
-            priority
-          />
-        </div>
-
-        <div className="page-inner text-center relative z-10 py-20 md:py-24">
-          <span className="inline-block px-5 py-1.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-xs font-semibold mb-5">
-            {t.heroBadge}
-          </span>
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
-            {t.heroTitle.split(t.heroTitleSpan)[0]}
-            <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
-              {t.heroTitleSpan}
+      <section className="relative min-h-[80vh] flex items-center overflow-hidden">
+        <div className="page-inner w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center py-20 md:py-24">
+          <div>
+            <span className="inline-block px-5 py-1.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-xs font-semibold mb-5">
+              {t.heroBadge}
             </span>
-            {t.heroTitle.split(t.heroTitleSpan)[1] || ""}
-          </h1>
-          <p className="text-lg text-[var(--text2)] max-w-xl mx-auto mb-8">
-            {t.heroDesc}
-          </p>
-          <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/packages" className="btn btn-primary">
-              {t.heroCTA}
-            </Link>
-            <Link href="/contact" className="btn btn-outline">
-              {t.contact}
-            </Link>
+            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
+              {t.heroTitle.split(t.heroTitleSpan)[0]}
+              <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+                {t.heroTitleSpan}
+              </span>
+              {t.heroTitle.split(t.heroTitleSpan)[1] || ""}
+            </h1>
+            <p className="text-lg text-[var(--text2)] max-w-xl mb-8">
+              {t.heroDesc}
+            </p>
+            <div className="flex gap-3 flex-wrap">
+              <Link href="/packages" className="btn btn-primary">
+                {t.heroCTA}
+              </Link>
+              <Link href="/contact" className="btn btn-outline">
+                {t.contact}
+              </Link>
+            </div>
+          </div>
+          <div className="flex justify-center md:justify-end">
+            <Image
+              src="/anasayfa.png"
+              alt="SkyBlue"
+              width={600}
+              height={600}
+              className="w-full max-w-[500px] h-auto rounded-2xl"
+              priority
+            />
           </div>
         </div>
       </section>
