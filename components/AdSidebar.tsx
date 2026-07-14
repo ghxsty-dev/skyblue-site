@@ -8,7 +8,8 @@ import ads from "@/data/ads.json";
 
 export default function AdSidebar() {
   const pathname = usePathname();
-  if (pathname === "/") return null;
+  const adPages = ["/designs", "/services", "/packages", "/reviews", "/contact"];
+  if (!adPages.includes(pathname)) return null;
 
   const [left, right] = useMemo(() => {
     const shuffled = [...ads].sort(() => Math.random() - 0.5);
