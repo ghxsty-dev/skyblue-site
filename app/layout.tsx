@@ -38,10 +38,12 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <AppProvider>
           <SplashScreen />
-          <AdSidebar />
-          <Nav />
-          <main>{children}</main>
-          <Footer />
+          <div className="relative">
+            <Nav />
+            <AdSidebar />
+            <main>{children}</main>
+            <Footer />
+          </div>
           <LangModal />
         </AppProvider>
       </body>
