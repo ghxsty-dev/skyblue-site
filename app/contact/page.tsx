@@ -20,7 +20,7 @@ export default function ContactPage() {
         <p>{t.contactDesc}</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         <div className="flex justify-center md:justify-start">
           <Image
             src="/iletisim.png"
