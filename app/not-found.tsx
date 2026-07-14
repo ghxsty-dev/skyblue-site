@@ -9,7 +9,7 @@ export default function NotFound() {
   const { lang } = useApp();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6">
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-[var(--bg)] z-50 gap-6">
       <button onClick={() => router.push("/")} className="cursor-pointer bg-none border-none p-0">
         <Image
           src="/hata.jpg"
