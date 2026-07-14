@@ -43,6 +43,7 @@ export const TR = {
   reklamDetails: "Web sitemizin sağ ve sol kenarlarında bulunan reklam alanlarında görselinizi sergileyebilirsiniz. Detaylı bilgi ve fiyatlandırma için Discord sunucumuz üzerinden bizimle iletişime geçin.",
   reklamCTA: "Discord'a Katıl",
   privacy: "Gizlilik Politikası",
+  status: "Durum",
 };
 
 export const EN: typeof TR = {
@@ -90,6 +91,7 @@ export const EN: typeof TR = {
   reklamDetails: "You can display your image in the ad spaces on the left and right sides of our website. Contact us via our Discord server for detailed information and pricing.",
   reklamCTA: "Join Discord",
   privacy: "Privacy Policy",
+  status: "Status",
 };
 
 export type Lang = "TR" | "EN";
