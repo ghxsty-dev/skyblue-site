@@ -1,16 +1,30 @@
 {
   "EN": [
-    { "title": "Logo & Brand Identity", "desc": "Original logos and brand identity work that reflects the spirit of your brand." },
-    { "title": "Social Media Design", "desc": "Eye-catching social media posts, cover photos, and banners." },
-    { "title": "UI/UX Design", "desc": "Fluid and impressive interfaces prioritizing user experience." },
-    { "title": "Advertising & Posters", "desc": "Professional ad and poster designs for digital and print media." },
-    { "title": "Custom Design", "desc": "Tailor-made, limitless creative design solutions for your needs." }
+    { "title": "Logo & Brand Identity", "desc": "Original logos and complete brand identity design that captures your brand's essence." },
+    { "title": "Banner Design", "desc": "Professional banners for websites, social media, and advertising campaigns." },
+    { "title": "Forum Thread Design", "desc": "Custom forum thread designs for R10, Webmaster, and other platforms." },
+    { "title": "Minecraft Text Logo", "desc": "Pixel-perfect Minecraft-style text logos with unique typography and effects." },
+    { "title": "Minecraft Banner Design", "desc": "Eye-catching banner designs tailored for Minecraft servers and communities." },
+    { "title": "Minecraft Thread Design", "desc": "Custom forum thread designs specifically for Minecraft server listings." },
+    { "title": "Announcement Design", "desc": "Stylish announcement and news post designs for your community or server." },
+    { "title": "R10 & Webmaster Design", "desc": "Professional thread and profile designs optimized for R10 and Webmaster platforms." },
+    { "title": "Corporate Design", "desc": "Full corporate identity packages including stationery, business cards, and guidelines." },
+    { "title": "Mascot Logo", "desc": "Unique mascot and character logos that give your brand a memorable face." },
+    { "title": "UI/UX Design", "desc": "Modern, user-friendly interfaces and experiences for web and mobile applications." },
+    { "title": "Custom Design", "desc": "Tailor-made design solutions for any special request you have in mind." }
   ],
   "TR": [
-    { "title": "Logo & Kurumsal Kimlik", "desc": "Markanızın ruhunu yansıtan özgün logolar ve kurumsal kimlik çalışmaları." },
-    { "title": "Sosyal Medya Tasarımı", "desc": "Dikkat çekici sosyal medya gönderileri, kapak fotoğrafları ve bannerlar." },
-    { "title": "UI/UX Tasarım", "desc": "Kullanıcı deneyimini ön planda tutan, akıcı ve etkileyici arayüzler." },
-    { "title": "Reklam & Afiş", "desc": "Dijital ve basılı mecralar için profesyonel reklam ve afiş tasarımları." },
-    { "title": "Özel Tasarım", "desc": "İhtiyacınıza özel, sınır tanımayan yaratıcı tasarım çözümleri." }
+    { "title": "Logo & Kurumsal Kimlik", "desc": "Markanızın ruhunu yansıtan özgün logolar ve komple kurumsal kimlik tasarımları." },
+    { "title": "Banner Tasarımı", "desc": "Web siteleri, sosyal medya ve reklam kampanyaları için profesyonel bannerlar." },
+    { "title": "Konu Tasarımı", "desc": "R10, Webmaster ve diğer platformlar için özel forum konu tasarımları." },
+    { "title": "Minecraft Text Logo", "desc": "Birebir pixel uyumlu, özgün tipografi ve efektlerle Minecraft tarzı text logolar." },
+    { "title": "Minecraft Banner Tasarımı", "desc": "Minecraft sunucuları ve toplulukları için özel olarak tasarlanmış bannerlar." },
+    { "title": "Minecraft Konu Tasarımı", "desc": "Minecraft sunucu listeleri için özel forum konu tasarımları." },
+    { "title": "Duyuru Mesajı Tasarımı", "desc": "Topluluğunuz veya sunucunuz için şık duyuru ve haber mesajı tasarımları." },
+    { "title": "R10 & Webmaster Tasarımı", "desc": "R10 ve Webmaster platformlarına özel, profesyonel konu ve profil tasarımları." },
+    { "title": "Kurumsal Tasarım", "desc": "Kırtasiye, kartvizit ve kılavuzları içeren komple kurumsal kimlik paketleri." },
+    { "title": "Maskot Logo", "desc": "Markanıza unutulmaz bir yüz kazandıran özgün maskot ve karakter logoları." },
+    { "title": "UI/UX Tasarım", "desc": "Web ve mobil uygulamalar için modern, kullanıcı dostu arayüz ve deneyim tasarımları." },
+    { "title": "Özel Tasarım", "desc": "Aklınızdaki her türlü özel talep için size özel tasarım çözümleri." }
   ]
 }

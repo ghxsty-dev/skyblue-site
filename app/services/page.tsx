@@ -1,11 +1,11 @@
 "use client";
 
 import { useApp } from "@/lib/context";
-import { SparklesIcon, LayersIcon, PaletteIcon, PenToolIcon, GlobeIcon, StarIcon } from "@/lib/icons";
+import { SparklesIcon, PaletteIcon, PenToolIcon, GlobeIcon, BrushIcon, LayersIcon, MegaphoneIcon, StarIcon, CameraIcon, MonitorIcon, SmartphoneIcon, MessageIcon } from "@/lib/icons";
 import data from "@/data/services.json";
 import Reveal from "@/components/Reveal";
 
-const serviceIcons = [SparklesIcon, LayersIcon, PaletteIcon, PenToolIcon, GlobeIcon, StarIcon];
+const serviceIcons = [PaletteIcon, CameraIcon, PenToolIcon, BrushIcon, LayersIcon, MegaphoneIcon, MessageIcon, GlobeIcon, MonitorIcon, StarIcon, SmartphoneIcon, SparklesIcon];
 
 export default function ServicesPage() {
   const { t, lang } = useApp();

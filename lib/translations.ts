@@ -44,6 +44,7 @@ export const TR = {
   reklamCTA: "Discord'a Katıl",
   privacy: "Gizlilik Politikası",
   status: "Durum",
+  minecraft: "Minecraft",
 };
 
 export const EN: typeof TR = {
@@ -92,6 +93,7 @@ export const EN: typeof TR = {
   reklamCTA: "Join Discord",
   privacy: "Privacy Policy",
   status: "Status",
+  minecraft: "Minecraft",
 };
 
 export type Lang = "TR" | "EN";
