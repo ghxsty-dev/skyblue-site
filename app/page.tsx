@@ -65,7 +65,7 @@ export default function HomePage() {
           const h = 60 + (ri % 5) * 15;
           result.push({
             images,
-            speed: 20 + (ri * 3) % 40,
+            speed: 30,
               dir: "left" as "left",
             h,
             topPx: cumTop,
