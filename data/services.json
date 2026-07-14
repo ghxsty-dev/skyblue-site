@@ -1,7 +1,6 @@
 {
   "EN": [
     { "title": "Logo & Brand Identity", "desc": "Original logos and brand identity work that reflects the spirit of your brand." },
-    { "title": "Web & Mobile Design", "desc": "User-focused, modern, responsive website and mobile app interfaces." },
     { "title": "Social Media Design", "desc": "Eye-catching social media posts, cover photos, and banners." },
     { "title": "UI/UX Design", "desc": "Fluid and impressive interfaces prioritizing user experience." },
     { "title": "Advertising & Posters", "desc": "Professional ad and poster designs for digital and print media." },
@@ -9,7 +8,6 @@
   ],
   "TR": [
     { "title": "Logo & Kurumsal Kimlik", "desc": "Markanızın ruhunu yansıtan özgün logolar ve kurumsal kimlik çalışmaları." },
-    { "title": "Web & Mobil Tasarım", "desc": "Kullanıcı odaklı, modern ve responsive web sitesi ile mobil uygulama arayüzleri." },
     { "title": "Sosyal Medya Tasarımı", "desc": "Dikkat çekici sosyal medya gönderileri, kapak fotoğrafları ve bannerlar." },
     { "title": "UI/UX Tasarım", "desc": "Kullanıcı deneyimini ön planda tutan, akıcı ve etkileyici arayüzler." },
     { "title": "Reklam & Afiş", "desc": "Dijital ve basılı mecralar için profesyonel reklam ve afiş tasarımları." },
