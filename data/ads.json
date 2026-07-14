@@ -1,8 +1,8 @@
 [
   { "id": 1, "image": "/reklam1.png", "url": "https://discord.gg/JBpMaAWXhW" },
   { "id": 2, "image": "/reklam2.png", "url": "/reklam" },
-  { "id": 3, "image": "/reklam3.png", "url": "/reklam" },
-  { "id": 4, "image": "/reklam4.png", "url": "/reklam" },
-  { "id": 5, "image": "/reklam5.png", "url": "/reklam" },
-  { "id": 6, "image": "/reklam6.png", "url": "/reklam" }
+  { "id": 3, "image": "/reklam2.png", "url": "/reklam" },
+  { "id": 4, "image": "/reklam2.png", "url": "/reklam" },
+  { "id": 5, "image": "/reklam2.png", "url": "/reklam" },
+  { "id": 6, "image": "/reklam2.png", "url": "/reklam" }
 ]
