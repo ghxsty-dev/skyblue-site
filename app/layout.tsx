@@ -5,6 +5,7 @@ import { AppProvider } from "@/lib/context";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import LangModal from "@/components/LangModal";
+import SplashScreen from "@/components/SplashScreen";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <AppProvider>
+          <SplashScreen />
           <Nav />
           <main>{children}</main>
           <Footer />
