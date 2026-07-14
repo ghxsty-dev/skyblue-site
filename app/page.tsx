@@ -95,7 +95,7 @@ export default function HomePage() {
                 className="absolute"
                 style={{
                   top: `${5 + ri * 18}%`,
-                  transform: `rotate(${ri % 2 === 0 ? "-" : ""}4deg)`,
+                  transform: "rotate(-6deg)",
                   transformOrigin: "center center",
                 }}
               >
