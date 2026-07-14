@@ -42,6 +42,7 @@ export const TR = {
   reklamDesc: "SkyBlue üzerinde reklam verin, binlerce kişiye ulaşın.",
   reklamDetails: "Web sitemizin sağ ve sol kenarlarında bulunan reklam alanlarında görselinizi sergileyebilirsiniz. Detaylı bilgi ve fiyatlandırma için Discord sunucumuz üzerinden bizimle iletişime geçin.",
   reklamCTA: "Discord'a Katıl",
+  privacy: "Gizlilik Politikası",
 };
 
 export const EN: typeof TR = {
@@ -88,6 +89,7 @@ export const EN: typeof TR = {
   reklamDesc: "Advertise on SkyBlue and reach thousands of people.",
   reklamDetails: "You can display your image in the ad spaces on the left and right sides of our website. Contact us via our Discord server for detailed information and pricing.",
   reklamCTA: "Join Discord",
+  privacy: "Privacy Policy",
 };
 
 export type Lang = "TR" | "EN";

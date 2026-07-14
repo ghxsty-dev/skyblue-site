@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useApp } from "@/lib/context";
+import Link from "next/link";
 import { SunIcon, MoonIcon } from "@/lib/icons";
 import type { Lang } from "@/lib/translations";
 
@@ -36,7 +37,10 @@ export default function Footer() {
             </button>
           </div>
         </div>
-        <div className="mt-8 pt-5 border-t border-[var(--footer-border)] text-center text-xs">
+        <div className="mt-8 pt-5 border-t border-[var(--footer-border)] flex flex-col items-center gap-2 text-xs">
+          <Link href="/privacy" className="text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
+            {t.privacy}
+          </Link>
           {t.footerCopyright}
         </div>
       </div>
