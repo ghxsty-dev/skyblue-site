@@ -37,6 +37,11 @@ export const TR = {
   footerBrand: "SkyBlue Tasarım Hizmetleri",
   footerDesc: "Profesyonel tasarım çözümleri",
   footerCopyright: "© 2026 SkyBlue. Tüm hakları saklıdır.",
+  adText: "Burada sizin görseliniz yer alabilir",
+  reklamTitle: "Reklam ve İş Birliği",
+  reklamDesc: "SkyBlue üzerinde reklam verin, binlerce kişiye ulaşın.",
+  reklamDetails: "Web sitemizin sağ ve sol kenarlarında bulunan reklam alanlarında görselinizi sergileyebilirsiniz. Detaylı bilgi ve fiyatlandırma için Discord sunucumuz üzerinden bizimle iletişime geçin.",
+  reklamCTA: "Discord'a Katıl",
 };
 
 export const EN: typeof TR = {
@@ -78,6 +83,11 @@ export const EN: typeof TR = {
   footerBrand: "SkyBlue Design Services",
   footerDesc: "Professional design solutions",
   footerCopyright: "© 2026 SkyBlue. All rights reserved.",
+  adText: "Your ad could be here",
+  reklamTitle: "Advertising & Partnership",
+  reklamDesc: "Advertise on SkyBlue and reach thousands of people.",
+  reklamDetails: "You can display your image in the ad spaces on the left and right sides of our website. Contact us via our Discord server for detailed information and pricing.",
+  reklamCTA: "Join Discord",
 };
 
 export type Lang = "TR" | "EN";
