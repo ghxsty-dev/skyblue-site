@@ -25,8 +25,8 @@ export default function ContactPage() {
           <Image
             src="/iletisim.png"
             alt="SkyBlue"
-            width={512}
-            height={512}
+            width={1024}
+            height={1024}
             className="rounded-2xl w-full max-w-[512px] h-auto"
           />
         </div>
