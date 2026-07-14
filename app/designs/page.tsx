@@ -22,6 +22,7 @@ export default function DesignsPage() {
   const { t, lang } = useApp();
   const [designs, setDesigns] = useState<DesignPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [visible, setVisible] = useState(6);
   const [lightbox, setLightbox] = useState<{ postIdx: number; imgIdx: number } | null>(null);
 
   useEffect(() => {
@@ -75,12 +76,13 @@ export default function DesignsPage() {
       ) : designs.length === 0 ? (
         <p className="text-center text-[var(--text2)] py-16">{lang === "TR" ? "Henüz tasarım bulunmuyor." : "No designs yet."}</p>
       ) : (
+        <>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {designs.map((post, i) => (
+          {designs.slice(0, visible).map((post, i) => (
             <Reveal key={post.id} delay={i * 60}>
             <div
               className="card group cursor-pointer"
-              onClick={() => post.images.length > 0 && openLightbox(i, 0)}
+              onClick={() => post.images.length > 0 && openLightbox(designs.indexOf(post), 0)}
             >
               {post.images.length > 0 ? (
                 <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-[var(--bg2)]">
@@ -111,6 +113,17 @@ export default function DesignsPage() {
             </div></Reveal>
           ))}
         </div>
+        {visible < designs.length && (
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={() => setVisible((v) => v + 6)}
+              className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white font-medium hover:opacity-80 transition-opacity"
+            >
+              {lang === "TR" ? "Daha Fazla Yükle" : "Load More"}
+            </button>
+          </div>
+        )}
+        </>
       )}
 
       {lightbox && currentLightboxImages && currentLightboxImages.length > 0 && (

@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { fetchDiscordDesigns } from "@/lib/discord-designs";
 import fallback from "@/data/designs.json";
 
+let cached: { data: any; timestamp: number } | null = null;
+const CACHE_TTL = 300_000;
+
 export async function GET() {
   if (!process.env.DISCORD_BOT_TOKEN) {
     return NextResponse.json({
@@ -11,10 +14,15 @@ export async function GET() {
     });
   }
 
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return NextResponse.json(cached.data);
+  }
+
   const { designs, debug } = await fetchDiscordDesigns();
 
   if (designs.length > 0) {
-    return NextResponse.json({ source: "discord", debug, designs });
+    cached = { data: { source: "discord", debug, designs }, timestamp: Date.now() };
+    return NextResponse.json(cached.data);
   }
 
   return NextResponse.json({

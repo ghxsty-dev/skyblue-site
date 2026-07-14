@@ -49,19 +49,32 @@ async function apiGet(path: string, token: string) {
   return { status: res.status, data: res.ok ? await res.json() : null };
 }
 
+function resizeUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    if (u.hostname === "cdn.discordapp.com") {
+      u.searchParams.set("width", "600");
+      u.searchParams.set("quality", "80");
+    }
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 function collectImages(msg: DiscordMessage): DesignImage[] {
   const images: DesignImage[] = [];
   if (msg.attachments) {
     for (const att of msg.attachments) {
       if (att.content_type?.startsWith("image/")) {
-        images.push({ url: att.url, width: att.width || 800, height: att.height || 600 });
+        images.push({ url: resizeUrl(att.url), width: att.width || 800, height: att.height || 600 });
       }
     }
   }
   if (msg.embeds) {
     for (const emb of msg.embeds) {
-      if (emb.image?.url) images.push({ url: emb.image.url, width: emb.image.width || 800, height: emb.image.height || 600 });
-      if (emb.thumbnail?.url) images.push({ url: emb.thumbnail.url, width: emb.thumbnail.width || 400, height: emb.thumbnail.height || 400 });
+      if (emb.image?.url) images.push({ url: resizeUrl(emb.image.url), width: emb.image.width || 800, height: emb.image.height || 600 });
+      if (emb.thumbnail?.url) images.push({ url: resizeUrl(emb.thumbnail.url), width: emb.thumbnail.width || 400, height: emb.thumbnail.height || 400 });
     }
   }
   return images;
