@@ -66,7 +66,7 @@ export default function HomePage() {
           result.push({
             images,
             speed: 20 + (ri * 3) % 40,
-            dir: (ri % 2 === 0 ? "left" : "right") as "left" | "right",
+              dir: "left" as "left",
             h,
             topPx: cumTop,
           });
@@ -107,7 +107,7 @@ export default function HomePage() {
                 className="absolute"
                 style={{
                   top: `${row.topPx}px`,
-                  transform: "rotate(-6deg)",
+                  transform: "skewY(-3deg)",
                   transformOrigin: "center center",
                 }}
               >
