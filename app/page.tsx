@@ -52,7 +52,8 @@ export default function HomePage() {
         const all = data.designs.flatMap((d) => d.images);
         setBgImages(shuffle(all).slice(0, 30));
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => window.dispatchEvent(new CustomEvent("app:ready")));
   }, []);
 
   const rows = bgImages.length >= 5
