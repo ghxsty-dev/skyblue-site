@@ -7,6 +7,7 @@ import { useApp } from "@/lib/context";
 import { StarIcon, MessageIcon, CameraIcon, MailIcon } from "@/lib/icons";
 import contactData from "@/data/contact.json";
 import Reveal from "@/components/Reveal";
+import StatsCounter from "@/components/StatsCounter";
 
 interface Review {
   text: string;
@@ -193,6 +194,7 @@ export default function HomePage() {
       </section>
 
       <section className="page-inner py-16">
+        <StatsCounter />
         <Reveal>
           <div className="section-header">
           <h2>
