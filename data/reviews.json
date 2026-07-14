@@ -1,0 +1,14 @@
+{
+  "EN": [
+    { "text": "Amazing team! They made our logo better than we imagined. Highly recommended.", "author": "Ahmet Y.", "role": "Entrepreneur" },
+    { "text": "They rebuilt our website from scratch. Professional, fast, and very creative. Thanks SkyBlue!", "author": "Zeynep K.", "role": "Business Owner" },
+    { "text": "Our social media visuals look so much more professional now. Very pleased with our partnership.", "author": "Mehmet A.", "role": "Digital Marketer" },
+    { "text": "They completely renewed our corporate identity. Added value to our brand.", "author": "Elif D.", "role": "Company Executive" }
+  ],
+  "TR": [
+    { "text": "Harika bir ekip! Logomuzu hayal ettiğimizden daha iyi yaptılar. Kesinlikle tavsiye ediyorum.", "author": "Ahmet Y.", "role": "Girişimci" },
+    { "text": "Web sitemizi baştan yarattılar. Profesyonel, hızlı ve çok yaratıcılar. Teşekkürler SkyBlue!", "author": "Zeynep K.", "role": "İşletme Sahibi" },
+    { "text": "Sosyal medya görsellerimiz artık çok daha profesyonel görünüyor. İş ortaklığımızdan çok memnunuz.", "author": "Mehmet A.", "role": "Dijital Pazarlamacı" },
+    { "text": "Kurumsal kimlik çalışmamızı tamamen yenilediler. Markamıza değer kattılar.", "author": "Elif D.", "role": "Şirket Yöneticisi" }
+  ]
+}

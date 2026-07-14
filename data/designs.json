@@ -1,0 +1,18 @@
+{
+  "EN": [
+    { "title": "Brand Identity", "desc": "Corporate logo and business card design" },
+    { "title": "Web Design", "desc": "Modern and responsive website design" },
+    { "title": "Social Media", "desc": "Social media visuals and banners" },
+    { "title": "UI/UX Design", "desc": "User-friendly interface designs" },
+    { "title": "Ad Design", "desc": "Digital ad and poster designs" },
+    { "title": "Package Design", "desc": "Product packaging and label design" }
+  ],
+  "TR": [
+    { "title": "Kurumsal Kimlik", "desc": "Kurumsal logo ve kartvizit tasarımı" },
+    { "title": "Web Tasarımı", "desc": "Modern ve responsive web sitesi" },
+    { "title": "Sosyal Medya", "desc": "Sosyal medya görsel ve bannerları" },
+    { "title": "UI/UX Tasarım", "desc": "Kullanıcı dostu arayüz tasarımları" },
+    { "title": "Reklam Tasarımı", "desc": "Dijital reklam ve afiş tasarımları" },
+    { "title": "Paket Tasarım", "desc": "Ürün paketleme ve etiket tasarımı" }
+  ]
+}

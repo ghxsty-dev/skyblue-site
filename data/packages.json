@@ -1,0 +1,96 @@
+{
+  "TR": [
+    {
+      "name": "Başlangıç Paketi",
+      "price": "130 TL",
+      "duration": "başlangıç paketi",
+      "features": [
+        "1 adet logo tasarımı",
+        "1 adet banner (Discord / sosyal medya uyumlu)",
+        "1 adet profil fotoğrafı (PP)",
+        "Temel düzeyde tasarım düzenlemeleri",
+        "Sınırsız revizyon hakkı"
+      ],
+      "suitable": "Yeni açılan sunucular, küçük ekipler ve sade ama şık bir görünüm isteyenler.",
+      "featured": false
+    },
+    {
+      "name": "Gelişmiş Paket",
+      "price": "210 TL",
+      "duration": "gelişmiş paket",
+      "features": [
+        "1 adet özel logo tasarımı",
+        "2 adet banner (Discord + sosyal medya)",
+        "2 adet profil fotoğrafı (PP)",
+        "2 adet özel tasarım görsel (duyuru, paylaşım vb.)",
+        "Orta seviye detaylı tasarım çalışmaları",
+        "Sınırsız revizyon hakkı"
+      ],
+      "suitable": "Aktif sunucular, büyüyen topluluklar ve markalaşmaya önem veren ekipler.",
+      "featured": true
+    },
+    {
+      "name": "Tam Paket",
+      "price": "300 TL",
+      "duration": "tam paket",
+      "features": [
+        "1 adet premium logo tasarımı",
+        "3 adet banner (Discord + sosyal medya platformları)",
+        "3 adet profil fotoğrafı (PP)",
+        "3 adet özel tasarım görsel (duyuru, etkinlik, reklam vb.)",
+        "Gelişmiş ve detaylı tasarım çalışmaları",
+        "Renk paleti ve tema uyumu desteği",
+        "Sınırsız revizyon hakkı"
+      ],
+      "suitable": "Profesyonel ekipler, büyük sunucular ve markasını en iyi şekilde yansıtmak isteyenler.",
+      "featured": false
+    }
+  ],
+  "EN": [
+    {
+      "name": "Starter Package",
+      "price": "130 TL",
+      "duration": "starter package",
+      "features": [
+        "1 logo design",
+        "1 banner (Discord / social media compatible)",
+        "1 profile picture (PP)",
+        "Basic design edits",
+        "Unlimited revisions"
+      ],
+      "suitable": "For new servers, small teams, and those who want a simple yet elegant look.",
+      "featured": false
+    },
+    {
+      "name": "Advanced Package",
+      "price": "210 TL",
+      "duration": "advanced package",
+      "features": [
+        "1 custom logo design",
+        "2 banners (Discord + social media)",
+        "2 profile pictures (PP)",
+        "2 custom design visuals (announcements, posts, etc.)",
+        "Intermediate detailed design work",
+        "Unlimited revisions"
+      ],
+      "suitable": "For active servers, growing communities, and teams focused on branding.",
+      "featured": true
+    },
+    {
+      "name": "Full Package",
+      "price": "300 TL",
+      "duration": "full package",
+      "features": [
+        "1 premium logo design",
+        "3 banners (Discord + social media platforms)",
+        "3 profile pictures (PP)",
+        "3 custom design visuals (announcements, events, ads, etc.)",
+        "Advanced detailed design work",
+        "Color palette and theme harmony support",
+        "Unlimited revisions"
+      ],
+      "suitable": "For professional teams, large servers, and those who want to showcase their brand at its best.",
+      "featured": false
+    }
+  ]
+}
