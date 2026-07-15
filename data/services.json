@@ -9,7 +9,7 @@
     ],
     "design": {
       "logo": {
-        "name": "🎨 Logo & Brand",
+        "name": "Logo & Brand",
         "items": [
           { "title": "Logo Design", "price": 50 },
           { "title": "Mascot Logo", "price": 50 },
@@ -20,7 +20,7 @@
         ]
       },
       "social": {
-        "name": "📱 Social Media",
+        "name": "Social Media",
         "items": [
           { "title": "Instagram Post", "price": 50 },
           { "title": "Instagram Story", "price": 50 },
@@ -33,7 +33,7 @@
         ]
       },
       "gaming": {
-        "name": "🎮 Gaming Designs",
+        "name": "Gaming Designs",
         "items": [
           { "title": "Minecraft Server Logo", "price": 50 },
           { "title": "Minecraft Rank Icons", "price": 50 },
@@ -47,7 +47,7 @@
         ]
       },
       "discord": {
-        "name": "💬 Discord Designs",
+        "name": "Discord Designs",
         "items": [
           { "title": "Discord Server Logo", "price": 50 },
           { "title": "Discord Banner", "price": 50 },
@@ -60,7 +60,7 @@
         ]
       },
       "creator": {
-        "name": "🎥 Creator Designs",
+        "name": "Creator Designs",
         "items": [
           { "title": "Twitch Package", "price": 50 },
           { "title": "Kick Package", "price": 50 },
@@ -94,7 +94,7 @@
     ],
     "design": {
       "logo": {
-        "name": "🎨 Logo & Marka",
+        "name": "Logo & Marka",
         "items": [
           { "title": "Logo Tasarımı", "price": 50 },
           { "title": "Maskot Logo", "price": 50 },
@@ -118,7 +118,7 @@
         ]
       },
       "gaming": {
-        "name": "🎮 Oyun Tasarımları",
+        "name": "Oyun Tasarımları",
         "items": [
           { "title": "Minecraft Sunucu Logosu", "price": 50 },
           { "title": "Minecraft Rank İkonları", "price": 50 },
@@ -132,7 +132,7 @@
         ]
       },
       "discord": {
-        "name": "💬 Discord Tasarımları",
+        "name": "Discord Tasarımları",
         "items": [
           { "title": "Discord Sunucu Logosu", "price": 50 },
           { "title": "Discord Banner", "price": 50 },
@@ -145,7 +145,7 @@
         ]
       },
       "creator": {
-        "name": "🎥 İçerik Üretici Tasarımları",
+        "name": "İçerik Üretici Tasarımları",
         "items": [
           { "title": "Twitch Paketi", "price": 50 },
           { "title": "Kick Paketi", "price": 50 },
