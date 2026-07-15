@@ -14,12 +14,12 @@ const iconMap: Record<string, typeof PaletteIcon[]> = {
 const DISCORD_URL = "https://discord.gg/DRnxEXCQU";
 
 interface Props {
-  cat: "design" | "discord" | "minecraft";
+  cat: "discord" | "minecraft";
 }
 
 export default function ServiceCategory({ cat }: Props) {
   const { t, lang } = useApp();
-  const items = data[lang as "EN" | "TR"][cat];
+  const items = data[lang as "EN" | "TR"][cat] as any[];
   const icons = iconMap[cat] || iconMap.design;
 
   return (

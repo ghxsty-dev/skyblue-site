@@ -163,7 +163,7 @@ export default function HomePage() {
               {t.heroDesc}
             </p>
             <div className="flex gap-3 flex-wrap">
-              <Link href="/packages" className="btn btn-primary">
+              <Link href="/services" className="btn btn-primary">
                 {t.heroCTA}
               </Link>
               <Link href="/contact" className="btn btn-outline">

@@ -1,17 +1,77 @@
 {
   "EN": {
-    "design": [
-      { "title": "Logo & Brand Identity", "desc": "Original logos and complete brand identity design that captures your brand's essence." },
-      { "title": "Banner Design", "desc": "Professional banners for websites, social media, and advertising campaigns." },
-      { "title": "Forum Thread Design", "desc": "Custom forum thread designs for R10, Webmaster, and other platforms." },
-      { "title": "Discord Server Design", "desc": "Complete Discord server theme, channel layout, and role organization." },
-      { "title": "Announcement Design", "desc": "Stylish announcement and news post designs for your community." },
-      { "title": "Discord Bot Avatar", "desc": "Custom avatar and banner designs for your Discord bot." },
-      { "title": "R10 & Webmaster Design", "desc": "Professional thread and profile designs optimized for R10 and Webmaster platforms." },
-      { "title": "Corporate Design", "desc": "Full corporate identity packages including stationery, business cards, and guidelines." },
-      { "title": "Mascot Logo", "desc": "Unique mascot and character logos that give your brand a memorable face." },
-      { "title": "Custom Design", "desc": "Tailor-made design solutions for any special request you have in mind." }
+    "packages": [
+      { "title": "Corporate Package", "desc": "Full corporate identity including logo, stationery, and brand guidelines.", "basic": 125, "pro": 250 },
+      { "title": "Social Media Package", "desc": "Social media posts, banner, and profile design for all platforms.", "basic": 125, "pro": 250 },
+      { "title": "Streamer Package", "desc": "Twitch/Kick overlays, panels, emotes, and stream assets.", "basic": 125, "pro": 250 },
+      { "title": "Minecraft Server Package", "desc": "Server logo, banners, thread design, and rank icons.", "basic": 125, "pro": 250 },
+      { "title": "Discord Server Package", "desc": "Server logo, banner, emoji pack, welcome image, and embed visuals.", "basic": 125, "pro": 250 }
     ],
+    "design": {
+      "logo": {
+        "name": "🎨 Logo & Brand",
+        "items": [
+          { "title": "Logo Design", "price": 50 },
+          { "title": "Mascot Logo", "price": 50 },
+          { "title": "Minimal Logo", "price": 50 },
+          { "title": "Premium Logo", "price": 50 },
+          { "title": "Brand Identity", "price": 50 },
+          { "title": "Business Card", "price": 50 }
+        ]
+      },
+      "social": {
+        "name": "📱 Social Media",
+        "items": [
+          { "title": "Instagram Post", "price": 50 },
+          { "title": "Instagram Story", "price": 50 },
+          { "title": "Carousel Design", "price": 50 },
+          { "title": "Social Media Banner", "price": 50 },
+          { "title": "YouTube Thumbnail", "price": 50 },
+          { "title": "YouTube Banner", "price": 50 },
+          { "title": "X (Twitter) Banner", "price": 50 },
+          { "title": "LinkedIn Banner", "price": 50 }
+        ]
+      },
+      "gaming": {
+        "name": "🎮 Gaming Designs",
+        "items": [
+          { "title": "Minecraft Server Logo", "price": 50 },
+          { "title": "Minecraft Rank Icons", "price": 50 },
+          { "title": "Minecraft Server Banner", "price": 50 },
+          { "title": "Minecraft Store Banner", "price": 50 },
+          { "title": "Minecraft Thread Design", "price": 50 },
+          { "title": "FiveM Logo", "price": 50 },
+          { "title": "FiveM Banner", "price": 50 },
+          { "title": "Steam Artwork", "price": 50 },
+          { "title": "Valorant Team Design", "price": 50 }
+        ]
+      },
+      "discord": {
+        "name": "💬 Discord Designs",
+        "items": [
+          { "title": "Discord Server Logo", "price": 50 },
+          { "title": "Discord Banner", "price": 50 },
+          { "title": "Emoji Pack", "price": 50 },
+          { "title": "Sticker Pack", "price": 50 },
+          { "title": "Welcome Image", "price": 50 },
+          { "title": "Embed Images", "price": 50 },
+          { "title": "Partner Banner", "price": 50 },
+          { "title": "Ticket Panel Images", "price": 50 }
+        ]
+      },
+      "creator": {
+        "name": "🎥 Creator Designs",
+        "items": [
+          { "title": "Twitch Package", "price": 50 },
+          { "title": "Kick Package", "price": 50 },
+          { "title": "OBS Overlay", "price": 50 },
+          { "title": "Stream Banner", "price": 50 },
+          { "title": "Webcam Frame", "price": 50 },
+          { "title": "Starting Soon Screen", "price": 50 },
+          { "title": "Offline Screen", "price": 50 }
+        ]
+      }
+    },
     "discord": [
       { "title": "Moderation Discord Bot", "desc": "A fully-featured moderation bot with auto-moderation, warning system, logging, and anti-spam protection.", "price": 120 },
       { "title": "Guide Discord Bot", "desc": "An information and guide bot with commands, FAQ system, ticket panel, and welcome messages.", "price": 120 },
@@ -25,18 +85,78 @@
     ]
   },
   "TR": {
-    "design": [
-      { "title": "Logo & Kurumsal Kimlik", "desc": "Markanızın ruhunu yansıtan özgün logolar ve komple kurumsal kimlik tasarımları." },
-      { "title": "Banner Tasarımı", "desc": "Web siteleri, sosyal medya ve reklam kampanyaları için profesyonel bannerlar." },
-      { "title": "Konu Tasarımı", "desc": "R10, Webmaster ve diğer platformlar için özel forum konu tasarımları." },
-      { "title": "Discord Sunucu Tasarımı", "desc": "Komple Discord sunucu teması, kanal düzeni ve rol organizasyonu." },
-      { "title": "Duyuru Mesajı Tasarımı", "desc": "Topluluğunuz için şık duyuru ve haber mesajı tasarımları." },
-      { "title": "Discord Bot Avatarı", "desc": "Discord botunuz için özel avatar ve banner tasarımları." },
-      { "title": "R10 & Webmaster Tasarımı", "desc": "R10 ve Webmaster platformlarına özel, profesyonel konu ve profil tasarımları." },
-      { "title": "Kurumsal Tasarım", "desc": "Kırtasiye, kartvizit ve kılavuzları içeren komple kurumsal kimlik paketleri." },
-      { "title": "Maskot Logo", "desc": "Markanıza unutulmaz bir yüz kazandıran özgün maskot ve karakter logoları." },
-      { "title": "Özel Tasarım", "desc": "Aklınızdaki her türlü özel talep için size özel tasarım çözümleri." }
+    "packages": [
+      { "title": "Kurumsal Paket", "desc": "Logo, kırtasiye ve marka kılavuzunu içeren komple kurumsal kimlik paketi.", "basic": 125, "pro": 250 },
+      { "title": "Sosyal Medya Paketi", "desc": "Tüm platformlar için sosyal medya gönderileri, banner ve profil tasarımı.", "basic": 125, "pro": 250 },
+      { "title": "Yayıncı Paketi", "desc": "Twitch/Kick overlay, panel, emote ve yayın varlıkları.", "basic": 125, "pro": 250 },
+      { "title": "Minecraft Sunucu Paketi", "desc": "Sunucu logosu, bannerlar, konu tasarımı ve rank ikonları.", "basic": 125, "pro": 250 },
+      { "title": "Discord Sunucu Paketi", "desc": "Sunucu logosu, banner, emoji paketi, hoş geldin görseli ve embed tasarımları.", "basic": 125, "pro": 250 }
     ],
+    "design": {
+      "logo": {
+        "name": "🎨 Logo & Marka",
+        "items": [
+          { "title": "Logo Tasarımı", "price": 50 },
+          { "title": "Maskot Logo", "price": 50 },
+          { "title": "Minimal Logo", "price": 50 },
+          { "title": "Premium Logo", "price": 50 },
+          { "title": "Kurumsal Kimlik", "price": 50 },
+          { "title": "Kartvizit Tasarımı", "price": 50 }
+        ]
+      },
+      "social": {
+        "name": "📱 Sosyal Medya",
+        "items": [
+          { "title": "Instagram Gönderisi", "price": 50 },
+          { "title": "Instagram Hikaye", "price": 50 },
+          { "title": "Carousel Tasarımı", "price": 50 },
+          { "title": "Sosyal Medya Bannerı", "price": 50 },
+          { "title": "YouTube Thumbnail", "price": 50 },
+          { "title": "YouTube Banner", "price": 50 },
+          { "title": "X (Twitter) Banner", "price": 50 },
+          { "title": "LinkedIn Banner", "price": 50 }
+        ]
+      },
+      "gaming": {
+        "name": "🎮 Oyun Tasarımları",
+        "items": [
+          { "title": "Minecraft Sunucu Logosu", "price": 50 },
+          { "title": "Minecraft Rank İkonları", "price": 50 },
+          { "title": "Minecraft Sunucu Bannerı", "price": 50 },
+          { "title": "Minecraft Mağaza Bannerı", "price": 50 },
+          { "title": "Minecraft Konu Tasarımı", "price": 50 },
+          { "title": "FiveM Logosu", "price": 50 },
+          { "title": "FiveM Banner", "price": 50 },
+          { "title": "Steam Artwork", "price": 50 },
+          { "title": "Valorant Takım Tasarımı", "price": 50 }
+        ]
+      },
+      "discord": {
+        "name": "💬 Discord Tasarımları",
+        "items": [
+          { "title": "Discord Sunucu Logosu", "price": 50 },
+          { "title": "Discord Banner", "price": 50 },
+          { "title": "Emoji Paketi", "price": 50 },
+          { "title": "Sticker Paketi", "price": 50 },
+          { "title": "Hoş Geldin Görseli", "price": 50 },
+          { "title": "Embed Görselleri", "price": 50 },
+          { "title": "Partner Bannerı", "price": 50 },
+          { "title": "Ticket Panel Görselleri", "price": 50 }
+        ]
+      },
+      "creator": {
+        "name": "🎥 İçerik Üretici Tasarımları",
+        "items": [
+          { "title": "Twitch Paketi", "price": 50 },
+          { "title": "Kick Paketi", "price": 50 },
+          { "title": "OBS Overlay", "price": 50 },
+          { "title": "Yayın Bannerı", "price": 50 },
+          { "title": "Webcam Çerçevesi", "price": 50 },
+          { "title": "Starting Soon Ekranı", "price": 50 },
+          { "title": "Offline Ekranı", "price": 50 }
+        ]
+      }
+    },
     "discord": [
       { "title": "Moderasyon Discord Botu", "desc": "Auto-mod, uyarı sistemi, loglama ve anti-spam koruması ile tam donanımlı bir moderasyon botu.", "price": 120 },
       { "title": "Rehber Discord Botu", "desc": "Komutlar, SSS sistemi, ticket paneli ve karşılama mesajları ile bir bilgi ve rehber botu.", "price": 120 },

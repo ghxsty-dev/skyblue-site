@@ -5,7 +5,7 @@ import AdUnit from "./AdUnit";
 
 export default function AdSidebar() {
   const pathname = usePathname();
-  const adPages = ["/designs", "/services", "/packages", "/reviews", "/contact"];
+  const adPages = ["/designs", "/services", "/reviews", "/contact"];
   if (!adPages.includes(pathname)) return null;
 
   return (
