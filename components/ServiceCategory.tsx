@@ -15,9 +15,10 @@ const DISCORD_URL = "https://discord.gg/DRnxEXCQU";
 
 interface Props {
   cat: "discord" | "minecraft";
+  desc?: string;
 }
 
-export default function ServiceCategory({ cat }: Props) {
+export default function ServiceCategory({ cat, desc }: Props) {
   const { t, lang } = useApp();
   const items = data[lang as "EN" | "TR"][cat] as any[];
   const icons = iconMap[cat] || iconMap.design;
@@ -31,7 +32,7 @@ export default function ServiceCategory({ cat }: Props) {
               {t[`cat${cat.charAt(0).toUpperCase()}${cat.slice(1)}` as keyof typeof t] as string}
             </span>
           </h2>
-          <p>{t.servicesDesc}</p>
+          <p>{desc || t.servicesDesc}</p>
         </div>
       </Reveal>
 
