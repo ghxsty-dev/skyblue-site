@@ -93,12 +93,12 @@ export default function DesignPage() {
                 ))}
               </div>
               {sub.items.length > 4 && (
-                <p className="text-[11px] text-[var(--text2)] mt-2 text-center">
+                <Link href={`/services/design/${slug}`} className="text-[11px] text-[var(--text2)] mt-2 text-center no-underline block hover:text-[#59abfe] transition-colors">
                   {lang === "TR" ? `+${sub.items.length - 4} daha fazla hizmet` : `+${sub.items.length - 4} more services`}
                   <span className="text-[#59abfe] ml-1">
                     {lang === "TR" ? "Tümünü gör →" : "View all →"}
                   </span>
-                </p>
+                </Link>
               )}
             </Reveal>
           </div>
