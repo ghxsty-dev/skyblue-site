@@ -50,21 +50,39 @@ export default function PackageDetail() {
             {lang === "TR" ? "Sınırsız Revize" : "Unlimited Revisions"}
           </p>
 
-          {pkg.includes && pkg.includes.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-sm font-bold text-[var(--text)] mb-3">
-                {lang === "TR" ? "Paket İçeriği" : "Package Includes"}
-              </h3>
-              <div className="flex flex-col gap-2">
-                {pkg.includes.map((item: string, i: number) => (
-                  <div key={i} className="flex items-center gap-2 text-sm text-[var(--text2)]">
-                    <span className="text-[#59abfe]">✓</span>
-                    {item}
-                  </div>
-                ))}
+          <div className="mb-6">
+            <h3 className="text-sm font-bold text-[var(--text)] mb-3">
+              {lang === "TR" ? "Paket İçeriği" : "Package Includes"}
+            </h3>
+            <div className="flex flex-col gap-4">
+              <div className="rounded-xl bg-[var(--bg2)] p-4">
+                <p className="text-[11px] font-medium text-[var(--text2)] mb-2">
+                  {lang === "TR" ? "Başlangıç" : "Basic"} ({pkg.basic} TL)
+                </p>
+                <div className="flex flex-col gap-1.5">
+                  {pkg.basicIncludes.map((item: string, i: number) => (
+                    <div key={i} className="flex items-center gap-2 text-xs text-[var(--text2)]">
+                      <span className="text-[#59abfe]">✓</span>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-xl bg-[var(--bg2)] p-4">
+                <p className="text-[11px] font-medium text-[var(--text2)] mb-2">
+                  {lang === "TR" ? "Tam" : "Pro"} ({pkg.pro} TL)
+                </p>
+                <div className="flex flex-col gap-1.5">
+                  {pkg.proIncludes.map((item: string, i: number) => (
+                    <div key={i} className="flex items-center gap-2 text-xs text-[var(--text2)]">
+                      <span className="text-[#59abfe]">✓</span>
+                      {item}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          )}
+          </div>
 
           <a
             href={DISCORD_URL}
