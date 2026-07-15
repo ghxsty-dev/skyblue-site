@@ -21,14 +21,14 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0d1117;
+  --bg: #181a1e;
   --bg2: #161b22;
   --text: #e6edf3;
   --text2: #8b949e;
   --card-bg: #161b22;
   --card-shadow: rgba(89, 171, 254, 0.08);
   --border: #21262d;
-  --nav-bg: rgba(13,17,23,0.92);
+  --nav-bg: rgba(24,26,30,0.92);
   --footer-bg: var(--bg2);
   --footer-text: var(--text2);
   --footer-border: var(--border);
