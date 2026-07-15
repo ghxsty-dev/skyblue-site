@@ -51,11 +51,11 @@ export default function PackageDetail() {
           </p>
 
           <div className="mb-6">
-            <h3 className="text-sm font-bold text-[var(--text)] mb-3">
+            <h3 className="text-sm font-bold text-[var(--text)] mb-4 text-center">
               {lang === "TR" ? "Paket İçeriği" : "Package Includes"}
             </h3>
-            <div className="flex flex-col gap-4">
-              <div className="rounded-xl bg-[var(--bg2)] p-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 rounded-xl bg-[var(--bg2)] p-4">
                 <p className="text-[11px] font-medium text-[var(--text2)] mb-2">
                   {lang === "TR" ? "Başlangıç" : "Basic"} ({pkg.basic} TL)
                 </p>
@@ -68,7 +68,7 @@ export default function PackageDetail() {
                   ))}
                 </div>
               </div>
-              <div className="rounded-xl bg-[var(--bg2)] p-4">
+              <div className="flex-1 rounded-xl bg-[var(--bg2)] p-4">
                 <p className="text-[11px] font-medium text-[var(--text2)] mb-2">
                   {lang === "TR" ? "Tam" : "Pro"} ({pkg.pro} TL)
                 </p>
