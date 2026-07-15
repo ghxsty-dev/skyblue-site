@@ -6,8 +6,8 @@ import data from "@/data/services.json";
 import Reveal from "@/components/Reveal";
 
 const iconMap: Record<string, typeof PaletteIcon[]> = {
-  design: [PaletteIcon, CameraIcon, PenToolIcon, GlobeIcon, MonitorIcon, StarIcon, SparklesIcon],
-  discord: [MessageIcon, MegaphoneIcon, BrushIcon, CheckIcon, SmartphoneIcon, MailIcon, SparklesIcon],
+  design: [PaletteIcon, CameraIcon, PenToolIcon, MessageIcon, MegaphoneIcon, BrushIcon, GlobeIcon, MonitorIcon, StarIcon, SparklesIcon],
+  discord: [CheckIcon, SmartphoneIcon, MailIcon, SparklesIcon],
   minecraft: [LayersIcon, CameraIcon, PenToolIcon],
 };
 

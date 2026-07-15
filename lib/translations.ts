@@ -51,7 +51,7 @@ export const TR = {
   catDesign: "Tasarım",
   catDesignDesc: "Logo, banner, kurumsal kimlik ve daha fazlası.",
   catDiscord: "Discord",
-  catDiscordDesc: "Sunucu tasarımı, bot geliştirme ve moderasyon.",
+  catDiscordDesc: "Profesyonel Discord bot geliştirme hizmetleri.",
   catMinecraft: "Minecraft",
   catMinecraftDesc: "Minecraft sunucunuz için özel tasarımlar.",
 };
@@ -109,7 +109,7 @@ export const EN: typeof TR = {
   catDesign: "Design",
   catDesignDesc: "Logos, banners, brand identity and more.",
   catDiscord: "Discord",
-  catDiscordDesc: "Server design, bot development, moderation.",
+  catDiscordDesc: "Professional Discord bot development services.",
   catMinecraft: "Minecraft",
   catMinecraftDesc: "Custom designs for your Minecraft server.",
 };
