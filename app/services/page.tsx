@@ -56,6 +56,32 @@ export default function ServicesOverview() {
           );
         })}
       </div>
+
+      <Reveal delay={180}>
+        <a
+          href="https://discord.gg/DRnxEXCQU"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="card flex items-center justify-between max-w-2xl mx-auto mt-10 px-8 py-5 no-underline hover:border-[#59abfe] transition-all"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
+              <MessageIcon size={20} />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-[var(--text)]">
+                {lang === "TR" ? "Daha fazla bilgi mi almak istiyorsun?" : "Want to learn more?"}
+              </p>
+              <p className="text-xs text-[var(--text2)]">
+                {lang === "TR" ? "Discord sunucumuza katıl!" : "Join our Discord server!"}
+              </p>
+            </div>
+          </div>
+          <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-xs font-medium whitespace-nowrap">
+            {lang === "TR" ? "Katıl" : "Join"}
+          </span>
+        </a>
+      </Reveal>
     </div>
   );
 }
