@@ -54,6 +54,7 @@ export const TR = {
   catDiscordDesc: "Profesyonel Discord bot geliştirme hizmetleri.",
   catMinecraft: "Minecraft",
   catMinecraftDesc: "Minecraft sunucunuz için özel tasarımlar.",
+  contract: "Sözleşme",
 };
 
 export const EN: typeof TR = {
@@ -112,6 +113,7 @@ export const EN: typeof TR = {
   catDiscordDesc: "Professional Discord bot development services.",
   catMinecraft: "Minecraft",
   catMinecraftDesc: "Custom designs for your Minecraft server.",
+  contract: "Contract",
 };
 
 export type Lang = "TR" | "EN";
