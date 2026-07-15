@@ -12,7 +12,11 @@
     "discord": [
       { "title": "Discord Server Design", "desc": "Complete Discord server theme, channel layout, and role organization." },
       { "title": "Announcement Design", "desc": "Stylish announcement and news post designs for your community." },
-      { "title": "Discord Bot Avatar", "desc": "Custom avatar and banner designs for your Discord bot." }
+      { "title": "Discord Bot Avatar", "desc": "Custom avatar and banner designs for your Discord bot." },
+      { "title": "Moderation Discord Bot", "desc": "A fully-featured moderation bot with auto-moderation, warning system, logging, and anti-spam protection.", "price": 120 },
+      { "title": "Guide Discord Bot", "desc": "An information and guide bot with commands, FAQ system, ticket panel, and welcome messages.", "price": 120 },
+      { "title": "Automation Discord Bot", "desc": "An automation bot for auto-roles, scheduled messages, voice channel management, and server statistics.", "price": 120 },
+      { "title": "Custom System Discord Bot", "desc": "A tailor-made bot built from scratch for your unique needs — economy, leveling, custom commands, or any system you imagine.", "price": 200 }
     ],
     "minecraft": [
       { "title": "Minecraft Text Logo", "desc": "Pixel-perfect Minecraft-style text logos with unique typography and effects." },
@@ -33,7 +37,11 @@
     "discord": [
       { "title": "Discord Sunucu Tasarımı", "desc": "Komple Discord sunucu teması, kanal düzeni ve rol organizasyonu." },
       { "title": "Duyuru Mesajı Tasarımı", "desc": "Topluluğunuz için şık duyuru ve haber mesajı tasarımları." },
-      { "title": "Discord Bot Avatarı", "desc": "Discord botunuz için özel avatar ve banner tasarımları." }
+      { "title": "Discord Bot Avatarı", "desc": "Discord botunuz için özel avatar ve banner tasarımları." },
+      { "title": "Moderasyon Discord Botu", "desc": "Auto-mod, uyarı sistemi, loglama ve anti-spam koruması ile tam donanımlı bir moderasyon botu.", "price": 120 },
+      { "title": "Rehber Discord Botu", "desc": "Komutlar, SSS sistemi, ticket paneli ve karşılama mesajları ile bir bilgi ve rehber botu.", "price": 120 },
+      { "title": "Otomasyon Discord Botu", "desc": "Auto-rol, zamanlanmış mesajlar, ses kanalı yönetimi ve sunucu istatistikleri için otomasyon botu.", "price": 120 },
+      { "title": "Özel Sistem Discord Botu", "desc": "Hayal ettiğiniz her şey — ekonomi, seviye sistemi, özel komutlar veya aklınıza gelen herhangi bir sistem.", "price": 200 }
     ],
     "minecraft": [
       { "title": "Minecraft Text Logo", "desc": "Birebir pixel uyumlu, özgün tipografi ve efektlerle Minecraft tarzı text logolar." },
