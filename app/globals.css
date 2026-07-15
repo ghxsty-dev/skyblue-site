@@ -22,10 +22,10 @@
 
 [data-theme="dark"] {
   --bg: #181a1e;
-  --bg2: #161b22;
+  --bg2: #13151a;
   --text: #e6edf3;
   --text2: #8b949e;
-  --card-bg: #161b22;
+  --card-bg: #13151a;
   --card-shadow: rgba(89, 171, 254, 0.08);
   --border: #21262d;
   --nav-bg: rgba(24,26,30,0.92);
