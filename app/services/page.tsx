@@ -6,9 +6,9 @@ import { PaletteIcon, MessageIcon, LayersIcon } from "@/lib/icons";
 import Reveal from "@/components/Reveal";
 
 const cats = [
-  { key: "design", icon: PaletteIcon, color: "from-purple-400 to-blue-500" },
-  { key: "discord", icon: MessageIcon, color: "from-indigo-400 to-blue-500" },
-  { key: "minecraft", icon: LayersIcon, color: "from-green-400 to-blue-500" },
+  { key: "design", icon: PaletteIcon },
+  { key: "discord", icon: MessageIcon },
+  { key: "minecraft", icon: LayersIcon },
 ] as const;
 
 export default function ServicesOverview() {
@@ -39,7 +39,7 @@ export default function ServicesOverview() {
                 href={`/services/${key}`}
                 className="card group flex flex-col items-center text-center py-10 px-6 cursor-pointer no-underline"
               >
-                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${cat.color} flex items-center justify-center text-white mb-5 transition-transform duration-300 group-hover:scale-110`}>
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white mb-5 transition-transform duration-300 group-hover:scale-110">
                   <Icon size={30} />
                 </div>
                 <h3 className="text-lg font-bold text-[var(--text)] mb-2">
