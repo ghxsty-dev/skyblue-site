@@ -55,7 +55,7 @@ export default function ServiceCategory({ cat }: Props) {
                       href={DISCORD_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-xs font-medium hover:opacity-80 transition-opacity no-underline"
+                      className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-xs font-medium hover:opacity-80 transition-opacity no-underline" style={{ color: "#fff" }}
                     >
                       {lang === "TR" ? "Satın Al" : "Buy"}
                     </a>
