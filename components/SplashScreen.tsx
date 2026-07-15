@@ -12,7 +12,7 @@ export default function SplashScreen() {
       setFade(true);
       setTimeout(() => setHidden(true), 500);
     };
-    const fallback = setTimeout(onReady, 5000);
+    const fallback = setTimeout(onReady, 1000);
 
     window.addEventListener("app:ready", onReady, { once: true });
     return () => {
