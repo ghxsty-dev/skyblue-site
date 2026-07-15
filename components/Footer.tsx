@@ -44,6 +44,9 @@ export default function Footer() {
           <Link href="/status" className="text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
             {t.status}
           </Link>
+          <Link href="/minecraft" className="text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
+            Minecraft
+          </Link>
           <p className="mt-2 text-[var(--footer-text)] opacity-50">{t.footerCopyright}</p>
         </div>
       </div>

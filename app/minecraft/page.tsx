@@ -42,7 +42,7 @@ export default function MinecraftPage() {
           <Link
             href="https://discord.gg/DRnxEXCQU"
             target="_blank"
-            className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white font-medium hover:opacity-80 transition-opacity no-underline"
+            className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white font-medium hover:opacity-80 transition-opacity no-underline" style={{ color: "#fff" }}
           >
             {lang === "TR" ? "Discord Sunucumuza Katıl" : "Join Our Discord"}
           </Link>

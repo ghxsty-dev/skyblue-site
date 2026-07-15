@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import { useApp } from "@/lib/context";
 import { MenuIcon } from "@/lib/icons";
 
-const links = ["home", "designs", "services", "minecraft", "packages", "reviews", "contact"] as const;
+const links = ["home", "designs", "services", "packages", "reviews", "contact"] as const;
 
 export default function Nav() {
   const pathname = usePathname();
