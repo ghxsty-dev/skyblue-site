@@ -48,6 +48,9 @@ export const TR = {
   statsRating: "Müşteri Puanı",
   status: "Durum",
   minecraft: "Minecraft",
+  catDesign: "Tasarım",
+  catDiscord: "Discord",
+  catMinecraft: "Minecraft",
 };
 
 export const EN: typeof TR = {
@@ -100,6 +103,9 @@ export const EN: typeof TR = {
   statsRating: "Customer Rating",
   status: "Status",
   minecraft: "Minecraft",
+  catDesign: "Design",
+  catDiscord: "Discord",
+  catMinecraft: "Minecraft",
 };
 
 export type Lang = "TR" | "EN";

@@ -1,28 +1,44 @@
 {
-  "EN": [
-    { "title": "Logo & Brand Identity", "desc": "Original logos and complete brand identity design that captures your brand's essence." },
-    { "title": "Banner Design", "desc": "Professional banners for websites, social media, and advertising campaigns." },
-    { "title": "Forum Thread Design", "desc": "Custom forum thread designs for R10, Webmaster, and other platforms." },
-    { "title": "Minecraft Text Logo", "desc": "Pixel-perfect Minecraft-style text logos with unique typography and effects." },
-    { "title": "Minecraft Banner Design", "desc": "Eye-catching banner designs tailored for Minecraft servers and communities." },
-    { "title": "Minecraft Thread Design", "desc": "Custom forum thread designs specifically for Minecraft server listings." },
-    { "title": "Announcement Design", "desc": "Stylish announcement and news post designs for your community or server." },
-    { "title": "R10 & Webmaster Design", "desc": "Professional thread and profile designs optimized for R10 and Webmaster platforms." },
-    { "title": "Corporate Design", "desc": "Full corporate identity packages including stationery, business cards, and guidelines." },
-    { "title": "Mascot Logo", "desc": "Unique mascot and character logos that give your brand a memorable face." },
-    { "title": "Custom Design", "desc": "Tailor-made design solutions for any special request you have in mind." }
-  ],
-  "TR": [
-    { "title": "Logo & Kurumsal Kimlik", "desc": "Markanızın ruhunu yansıtan özgün logolar ve komple kurumsal kimlik tasarımları." },
-    { "title": "Banner Tasarımı", "desc": "Web siteleri, sosyal medya ve reklam kampanyaları için profesyonel bannerlar." },
-    { "title": "Konu Tasarımı", "desc": "R10, Webmaster ve diğer platformlar için özel forum konu tasarımları." },
-    { "title": "Minecraft Text Logo", "desc": "Birebir pixel uyumlu, özgün tipografi ve efektlerle Minecraft tarzı text logolar." },
-    { "title": "Minecraft Banner Tasarımı", "desc": "Minecraft sunucuları ve toplulukları için özel olarak tasarlanmış bannerlar." },
-    { "title": "Minecraft Konu Tasarımı", "desc": "Minecraft sunucu listeleri için özel forum konu tasarımları." },
-    { "title": "Duyuru Mesajı Tasarımı", "desc": "Topluluğunuz veya sunucunuz için şık duyuru ve haber mesajı tasarımları." },
-    { "title": "R10 & Webmaster Tasarımı", "desc": "R10 ve Webmaster platformlarına özel, profesyonel konu ve profil tasarımları." },
-    { "title": "Kurumsal Tasarım", "desc": "Kırtasiye, kartvizit ve kılavuzları içeren komple kurumsal kimlik paketleri." },
-    { "title": "Maskot Logo", "desc": "Markanıza unutulmaz bir yüz kazandıran özgün maskot ve karakter logoları." },
-    { "title": "Özel Tasarım", "desc": "Aklınızdaki her türlü özel talep için size özel tasarım çözümleri." }
-  ]
+  "EN": {
+    "design": [
+      { "title": "Logo & Brand Identity", "desc": "Original logos and complete brand identity design that captures your brand's essence." },
+      { "title": "Banner Design", "desc": "Professional banners for websites, social media, and advertising campaigns." },
+      { "title": "Forum Thread Design", "desc": "Custom forum thread designs for R10, Webmaster, and other platforms." },
+      { "title": "R10 & Webmaster Design", "desc": "Professional thread and profile designs optimized for R10 and Webmaster platforms." },
+      { "title": "Corporate Design", "desc": "Full corporate identity packages including stationery, business cards, and guidelines." },
+      { "title": "Mascot Logo", "desc": "Unique mascot and character logos that give your brand a memorable face." },
+      { "title": "Custom Design", "desc": "Tailor-made design solutions for any special request you have in mind." }
+    ],
+    "discord": [
+      { "title": "Discord Server Design", "desc": "Complete Discord server theme, channel layout, and role organization." },
+      { "title": "Announcement Design", "desc": "Stylish announcement and news post designs for your community." },
+      { "title": "Discord Bot Avatar", "desc": "Custom avatar and banner designs for your Discord bot." }
+    ],
+    "minecraft": [
+      { "title": "Minecraft Text Logo", "desc": "Pixel-perfect Minecraft-style text logos with unique typography and effects." },
+      { "title": "Minecraft Banner Design", "desc": "Eye-catching banner designs tailored for Minecraft servers and communities." },
+      { "title": "Minecraft Thread Design", "desc": "Custom forum thread designs specifically for Minecraft server listings." }
+    ]
+  },
+  "TR": {
+    "design": [
+      { "title": "Logo & Kurumsal Kimlik", "desc": "Markanızın ruhunu yansıtan özgün logolar ve komple kurumsal kimlik tasarımları." },
+      { "title": "Banner Tasarımı", "desc": "Web siteleri, sosyal medya ve reklam kampanyaları için profesyonel bannerlar." },
+      { "title": "Konu Tasarımı", "desc": "R10, Webmaster ve diğer platformlar için özel forum konu tasarımları." },
+      { "title": "R10 & Webmaster Tasarımı", "desc": "R10 ve Webmaster platformlarına özel, profesyonel konu ve profil tasarımları." },
+      { "title": "Kurumsal Tasarım", "desc": "Kırtasiye, kartvizit ve kılavuzları içeren komple kurumsal kimlik paketleri." },
+      { "title": "Maskot Logo", "desc": "Markanıza unutulmaz bir yüz kazandıran özgün maskot ve karakter logoları." },
+      { "title": "Özel Tasarım", "desc": "Aklınızdaki her türlü özel talep için size özel tasarım çözümleri." }
+    ],
+    "discord": [
+      { "title": "Discord Sunucu Tasarımı", "desc": "Komple Discord sunucu teması, kanal düzeni ve rol organizasyonu." },
+      { "title": "Duyuru Mesajı Tasarımı", "desc": "Topluluğunuz için şık duyuru ve haber mesajı tasarımları." },
+      { "title": "Discord Bot Avatarı", "desc": "Discord botunuz için özel avatar ve banner tasarımları." }
+    ],
+    "minecraft": [
+      { "title": "Minecraft Text Logo", "desc": "Birebir pixel uyumlu, özgün tipografi ve efektlerle Minecraft tarzı text logolar." },
+      { "title": "Minecraft Banner Tasarımı", "desc": "Minecraft sunucuları ve toplulukları için özel olarak tasarlanmış bannerlar." },
+      { "title": "Minecraft Konu Tasarımı", "desc": "Minecraft sunucu listeleri için özel forum konu tasarımları." }
+    ]
+  }
 }
