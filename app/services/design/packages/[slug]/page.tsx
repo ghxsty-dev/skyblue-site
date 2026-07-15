@@ -36,13 +36,13 @@ export default function PackageDetail() {
           <p className="text-sm text-[var(--text2)] mb-6">{pkg.desc}</p>
 
           <div className="flex gap-4 mb-6">
-            <div className="flex-1 rounded-xl bg-[var(--bg2)] p-4 text-center">
-              <p className="text-[11px] text-[var(--text2)] mb-1">{lang === "TR" ? "Başlangıç" : "Basic"}</p>
-              <p className="text-2xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{pkg.basic} TL</p>
+            <div className="flex-1 rounded-xl bg-[var(--bg2)] p-4">
+              <p className="text-[11px] text-[var(--text2)] mb-1 text-center">{lang === "TR" ? "Başlangıç" : "Basic"}</p>
+              <p className="text-2xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center">{pkg.basic} TL</p>
             </div>
-            <div className="flex-1 rounded-xl bg-[var(--bg2)] p-4 text-center">
-              <p className="text-[11px] text-[var(--text2)] mb-1">{lang === "TR" ? "Tam" : "Pro"}</p>
-              <p className="text-2xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{pkg.pro} TL</p>
+            <div className="flex-1 rounded-xl bg-[var(--bg2)] p-4">
+              <p className="text-[11px] text-[var(--text2)] mb-1 text-center">{lang === "TR" ? "Tam" : "Pro"}</p>
+              <p className="text-2xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center">{pkg.pro} TL</p>
             </div>
           </div>
 

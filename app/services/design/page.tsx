@@ -53,12 +53,12 @@ export default function DesignPage() {
                 <p className="text-[11px] text-[var(--text2)] mb-3 flex-1">{pkg.desc}</p>
                 <div className="flex items-center justify-between gap-2 text-xs">
                   <div className="flex flex-col items-center flex-1 rounded-lg bg-[var(--bg2)] py-2">
-                    <span className="text-[10px] text-[var(--text2)]">{lang === "TR" ? "Başlangıç" : "Basic"}</span>
-                    <span className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{pkg.basic} TL</span>
+                    <span className="text-[10px] text-[var(--text2)] text-center w-full">{lang === "TR" ? "Başlangıç" : "Basic"}</span>
+                    <span className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center w-full">{pkg.basic} TL</span>
                   </div>
                   <div className="flex flex-col items-center flex-1 rounded-lg bg-[var(--bg2)] py-2">
-                    <span className="text-[10px] text-[var(--text2)]">{lang === "TR" ? "Tam" : "Pro"}</span>
-                    <span className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{pkg.pro} TL</span>
+                    <span className="text-[10px] text-[var(--text2)] text-center w-full">{lang === "TR" ? "Tam" : "Pro"}</span>
+                    <span className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center w-full">{pkg.pro} TL</span>
                   </div>
                 </div>
                 <p className="text-[10px] text-[var(--text2)] text-center mt-2">
