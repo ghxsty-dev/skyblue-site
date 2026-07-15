@@ -49,8 +49,11 @@ export const TR = {
   status: "Durum",
   minecraft: "Minecraft",
   catDesign: "Tasarım",
+  catDesignDesc: "Logo, banner, kurumsal kimlik ve daha fazlası.",
   catDiscord: "Discord",
+  catDiscordDesc: "Sunucu tasarımı, bot geliştirme ve moderasyon.",
   catMinecraft: "Minecraft",
+  catMinecraftDesc: "Minecraft sunucunuz için özel tasarımlar.",
 };
 
 export const EN: typeof TR = {
@@ -104,8 +107,11 @@ export const EN: typeof TR = {
   status: "Status",
   minecraft: "Minecraft",
   catDesign: "Design",
+  catDesignDesc: "Logos, banners, brand identity and more.",
   catDiscord: "Discord",
+  catDiscordDesc: "Server design, bot development, moderation.",
   catMinecraft: "Minecraft",
+  catMinecraftDesc: "Custom designs for your Minecraft server.",
 };
 
 export type Lang = "TR" | "EN";

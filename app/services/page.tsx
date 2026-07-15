@@ -1,23 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useApp } from "@/lib/context";
-import { PaletteIcon, PenToolIcon, GlobeIcon, BrushIcon, LayersIcon, StarIcon, CameraIcon, MonitorIcon, MessageIcon, MegaphoneIcon, SparklesIcon, SmartphoneIcon, CheckIcon, MailIcon } from "@/lib/icons";
-import data from "@/data/services.json";
+import { PaletteIcon, MessageIcon, LayersIcon } from "@/lib/icons";
 import Reveal from "@/components/Reveal";
 
-const iconMap: Record<string, typeof PaletteIcon[]> = {
-  design: [PaletteIcon, CameraIcon, PenToolIcon, GlobeIcon, MonitorIcon, StarIcon, SparklesIcon],
-  discord: [MessageIcon, MegaphoneIcon, BrushIcon, CheckIcon, SmartphoneIcon, MailIcon, SparklesIcon],
-  minecraft: [LayersIcon, CameraIcon, PenToolIcon],
-};
+const cats = [
+  { key: "design", icon: PaletteIcon, color: "from-purple-400 to-blue-500" },
+  { key: "discord", icon: MessageIcon, color: "from-indigo-400 to-blue-500" },
+  { key: "minecraft", icon: LayersIcon, color: "from-green-400 to-blue-500" },
+] as const;
 
-const cats = ["design", "discord", "minecraft"] as const;
-
-const DISCORD_URL = "https://discord.gg/DRnxEXCQU";
-
-export default function ServicesPage() {
+export default function ServicesOverview() {
   const { t, lang } = useApp();
-  const items = data[lang as "EN" | "TR"];
 
   return (
     <div className="page-inner">
@@ -32,51 +27,35 @@ export default function ServicesPage() {
         </div>
       </Reveal>
 
-      {cats.map((cat) => {
-        const catItems = items[cat];
-        const icons = iconMap[cat] || iconMap.design;
-        return (
-          <div key={cat} className="mb-12">
-            <Reveal>
-              <h3 className="text-lg font-bold mb-1 text-[var(--text)]">
-                {t[`cat${cat.charAt(0).toUpperCase()}${cat.slice(1)}` as keyof typeof t] as string}
-              </h3>
-              <div className="w-12 h-0.5 bg-gradient-to-r from-[#97cdf2] to-[#59abfe] rounded-full mb-6" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        {cats.map((cat, i) => {
+          const Icon = cat.icon;
+          const key = cat.key;
+          const catKey = `cat${key.charAt(0).toUpperCase()}${key.slice(1)}` as keyof typeof t;
+          const descKey = `${catKey}Desc` as keyof typeof t;
+          return (
+            <Reveal key={key} delay={i * 60}>
+              <Link
+                href={`/services/${key}`}
+                className="card group flex flex-col items-center text-center py-10 px-6 cursor-pointer no-underline"
+              >
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${cat.color} flex items-center justify-center text-white mb-5 transition-transform duration-300 group-hover:scale-110`}>
+                  <Icon size={30} />
+                </div>
+                <h3 className="text-lg font-bold text-[var(--text)] mb-2">
+                  {t[catKey] as string}
+                </h3>
+                <p className="text-sm text-[var(--text2)]">
+                  {t[descKey] as string}
+                </p>
+                <span className="mt-4 text-xs font-medium text-[#59abfe] group-hover:underline">
+                  {lang === "TR" ? "İncele →" : "Explore →"}
+                </span>
+              </Link>
             </Reveal>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {catItems.map((item: any, i: number) => {
-                const Icon = icons[i] || icons[0];
-                return (
-                  <Reveal key={i} delay={i * 40}>
-                    <div className="card flex flex-col">
-                      <div className="w-13 h-13 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white mb-4" style={{ width: 52, height: 52 }}>
-                        <Icon size={24} />
-                      </div>
-                      <h4 className="font-bold text-base mb-2">{item.title}</h4>
-                      <p className="text-sm text-[var(--text2)] flex-1">{item.desc}</p>
-                      {item.price && (
-                        <div className="mt-4 flex items-center justify-between">
-                          <span className="text-lg font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
-                            {item.price} TL
-                          </span>
-                          <a
-                            href={DISCORD_URL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-xs font-medium hover:opacity-80 transition-opacity no-underline"
-                          >
-                            {lang === "TR" ? "Satın Al" : "Buy"}
-                          </a>
-                        </div>
-                      )}
-                    </div>
-                  </Reveal>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

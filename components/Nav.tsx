@@ -16,7 +16,7 @@ export default function Nav() {
   const [indicator, setIndicator] = useState({ left: 0, width: 0, measured: false });
   const ulRef = useRef<HTMLUListElement>(null);
 
-  const current = pathname === "/" ? "home" : pathname.replace("/", "");
+  const current = pathname === "/" ? "home" : pathname.replace("/", "").split("/")[0];
 
   useEffect(() => {
     if (!ulRef.current || open) return;
