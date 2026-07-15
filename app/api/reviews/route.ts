@@ -5,13 +5,15 @@ import fallback from "@/data/reviews.json";
 export async function GET(request: NextRequest) {
   const lang = request.nextUrl.searchParams.get("lang") === "TR" ? "TR" : "EN";
 
-  try {
-    const discordReviews = await fetchDiscordReviews();
-    if (discordReviews.length > 0) {
-      return NextResponse.json({ source: "discord", reviews: discordReviews });
+  if (lang === "TR") {
+    try {
+      const discordReviews = await fetchDiscordReviews();
+      if (discordReviews.length > 0) {
+        return NextResponse.json({ source: "discord", reviews: discordReviews });
+      }
+    } catch {
+      // fallback
     }
-  } catch {
-    // fallback
   }
 
   const reviews = fallback[lang].map((r) => ({
