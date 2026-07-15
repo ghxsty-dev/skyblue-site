@@ -8,7 +8,7 @@ import Reveal from "@/components/Reveal";
 const cats = [
   { key: "design", icon: PaletteIcon },
   { key: "discord", icon: MessageIcon },
-  { key: "minecraft", icon: LayersIcon },
+  { key: "minecraft", icon: LayersIcon, external: "/minecraft" as const },
 ] as const;
 
 export default function ServicesOverview() {
@@ -36,7 +36,7 @@ export default function ServicesOverview() {
           return (
             <Reveal key={key} delay={i * 60}>
               <Link
-                href={`/services/${key}`}
+                href={"external" in cat ? cat.external : `/services/${key}`}
                 className="card group flex flex-col items-center text-center py-10 px-6 cursor-pointer no-underline"
               >
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white mb-5 transition-transform duration-300 group-hover:scale-110">

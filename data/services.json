@@ -1,11 +1,11 @@
 {
   "EN": {
     "packages": [
-      { "title": "Corporate Package", "desc": "Full corporate identity including logo, stationery, and brand guidelines.", "basic": 125, "pro": 250 },
-      { "title": "Social Media Package", "desc": "Social media posts, banner, and profile design for all platforms.", "basic": 125, "pro": 250 },
-      { "title": "Streamer Package", "desc": "Twitch/Kick overlays, panels, emotes, and stream assets.", "basic": 125, "pro": 250 },
-      { "title": "Minecraft Server Package", "desc": "Server logo, banners, thread design, and rank icons.", "basic": 125, "pro": 250 },
-      { "title": "Discord Server Package", "desc": "Server logo, banner, emoji pack, welcome image, and embed visuals.", "basic": 125, "pro": 250 }
+      { "title": "Corporate Package", "desc": "Full corporate identity including logo, stationery, and brand guidelines.", "basic": 125, "pro": 250, "slug": "corporate", "includes": ["Logo Design", "Business Card", "Letterhead", "Envelope", "Brand Guidelines", "Social Media Kit"] },
+      { "title": "Social Media Package", "desc": "Social media posts, banner, and profile design for all platforms.", "basic": 125, "pro": 250, "slug": "social-media", "includes": ["10 Instagram Posts", "5 Instagram Stories", "1 Profile Picture", "1 Social Media Banner", "Carousel Template"] },
+      { "title": "Streamer Package", "desc": "Twitch/Kick overlays, panels, emotes, and stream assets.", "basic": 125, "pro": 250, "slug": "streamer", "includes": ["Stream Overlay", "3 Panel Designs", "Emote Pack", "Starting Soon Screen", "Offline Screen", "Webcam Frame"] },
+      { "title": "Minecraft Server Package", "desc": "Server logo, banners, thread design, and rank icons.", "basic": 125, "pro": 250, "slug": "minecraft-server", "includes": ["Server Logo", "3 Server Banners", "Thread Design", "Rank Icons Set", "Store Banner"] },
+      { "title": "Discord Server Package", "desc": "Server logo, banner, emoji pack, welcome image, and embed visuals.", "basic": 125, "pro": 250, "slug": "discord-server", "includes": ["Server Logo", "Server Banner", "10 Custom Emojis", "Welcome Image", "Embed Images Set", "Partner Banner"] }
     ],
     "design": {
       "logo": {
@@ -86,11 +86,11 @@
   },
   "TR": {
     "packages": [
-      { "title": "Kurumsal Paket", "desc": "Logo, kırtasiye ve marka kılavuzunu içeren komple kurumsal kimlik paketi.", "basic": 125, "pro": 250 },
-      { "title": "Sosyal Medya Paketi", "desc": "Tüm platformlar için sosyal medya gönderileri, banner ve profil tasarımı.", "basic": 125, "pro": 250 },
-      { "title": "Yayıncı Paketi", "desc": "Twitch/Kick overlay, panel, emote ve yayın varlıkları.", "basic": 125, "pro": 250 },
-      { "title": "Minecraft Sunucu Paketi", "desc": "Sunucu logosu, bannerlar, konu tasarımı ve rank ikonları.", "basic": 125, "pro": 250 },
-      { "title": "Discord Sunucu Paketi", "desc": "Sunucu logosu, banner, emoji paketi, hoş geldin görseli ve embed tasarımları.", "basic": 125, "pro": 250 }
+      { "title": "Kurumsal Paket", "desc": "Logo, kırtasiye ve marka kılavuzunu içeren komple kurumsal kimlik paketi.", "basic": 125, "pro": 250, "slug": "kurumsal", "includes": ["Logo Tasarımı", "Kartvizit", "Antetli Kağıt", "Zarf", "Marka Kılavuzu", "Sosyal Medya Kiti"] },
+      { "title": "Sosyal Medya Paketi", "desc": "Tüm platformlar için sosyal medya gönderileri, banner ve profil tasarımı.", "basic": 125, "pro": 250, "slug": "sosyal-medya", "includes": ["10 Instagram Gönderisi", "5 Instagram Hikaye", "1 Profil Fotoğrafı", "1 Sosyal Medya Bannerı", "Carousel Şablonu"] },
+      { "title": "Yayıncı Paketi", "desc": "Twitch/Kick overlay, panel, emote ve yayın varlıkları.", "basic": 125, "pro": 250, "slug": "yayinci", "includes": ["Yayın Overlay", "3 Panel Tasarımı", "Emote Paketi", "Starting Soon Ekranı", "Offline Ekranı", "Webcam Çerçevesi"] },
+      { "title": "Minecraft Sunucu Paketi", "desc": "Sunucu logosu, bannerlar, konu tasarımı ve rank ikonları.", "basic": 125, "pro": 250, "slug": "minecraft-sunucu", "includes": ["Sunucu Logosu", "3 Sunucu Bannerı", "Konu Tasarımı", "Rank İkonları Seti", "Mağaza Bannerı"] },
+      { "title": "Discord Sunucu Paketi", "desc": "Sunucu logosu, banner, emoji paketi, hoş geldin görseli ve embed tasarımları.", "basic": 125, "pro": 250, "slug": "discord-sunucu", "includes": ["Sunucu Logosu", "Sunucu Bannerı", "10 Özel Emoji", "Hoş Geldin Görseli", "Embed Görselleri Seti", "Partner Bannerı"] }
     ],
     "design": {
       "logo": {
