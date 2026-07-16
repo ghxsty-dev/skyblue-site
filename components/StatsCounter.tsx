@@ -32,7 +32,7 @@ export default function StatsCounter() {
   const rating = useCount(47, 1800);
 
   return (
-    <div className="card flex flex-col sm:flex-row items-center justify-center mb-14 py-6 px-4 max-w-2xl mx-auto">
+    <div className="flex flex-col sm:flex-row items-center justify-center mb-14 py-6 px-4 max-w-2xl mx-auto">
       <div className="flex flex-col items-center py-2 px-8 min-w-[120px]">
         <span className="text-3xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
           {customers}+

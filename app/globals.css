@@ -21,14 +21,14 @@
 }
 
 [data-theme="dark"] {
-  --bg: #181a1e;
-  --bg2: #13151a;
+  --bg: #0b0d10;
+  --bg2: #080a0d;
   --text: #e6edf3;
   --text2: #8b949e;
-  --card-bg: #13151a;
+  --card-bg: #080a0d;
   --card-shadow: rgba(89, 171, 254, 0.08);
-  --border: #21262d;
-  --nav-bg: rgba(24,26,30,0.92);
+  --border: #1c2128;
+  --nav-bg: rgba(11,13,16,0.92);
   --footer-bg: var(--bg2);
   --footer-text: var(--text2);
   --footer-border: var(--border);

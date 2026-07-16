@@ -211,23 +211,21 @@ export default function HomePage() {
               style={{ transform: `translateX(-${(index * 100) / perPage}%)` }}
             >
               {reviews.map((item, i) => (
-                <div key={i} className="min-w-0 w-full md:w-1/3 shrink-0 px-3">
-                  <div className="review-card h-full">
-                    <div className="flex gap-0.5 mb-3 text-[#f5a623]">
-                      {[1, 2, 3, 4, 5].map((s) => (
-                        <StarIcon
-                          key={s}
-                          size={16}
-                          fill={s <= item.stars ? "#f5a623" : "none"}
-                          stroke={s <= item.stars ? "#f5a623" : "var(--border)"}
-                        />
-                      ))}
-                    </div>
-                    <p className="text-sm text-[var(--text2)] italic leading-relaxed mb-4">
-                      &ldquo;{item.text}&rdquo;
-                    </p>
-                    <div className="font-semibold text-sm">{item.author}</div>
+                <div key={i} className="min-w-0 w-full md:w-1/3 shrink-0 px-6 md:px-8">
+                  <div className="flex gap-0.5 mb-3 text-[#f5a623]">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <StarIcon
+                        key={s}
+                        size={16}
+                        fill={s <= item.stars ? "#f5a623" : "none"}
+                        stroke={s <= item.stars ? "#f5a623" : "var(--border)"}
+                      />
+                    ))}
                   </div>
+                  <p className="text-sm text-[var(--text2)] italic leading-relaxed mb-3">
+                    &ldquo;{item.text}&rdquo;
+                  </p>
+                  <div className="font-semibold text-sm text-[var(--text)]">— {item.author}</div>
                 </div>
               ))}
             </div>
@@ -266,18 +264,18 @@ export default function HomePage() {
             </h2>
             <p>{t.contactInfoDesc}</p>
           </div>
-          <div className="flex flex-wrap justify-center gap-6">
+          <div className="flex flex-wrap justify-center gap-8">
             <a
               href={info.discordUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="review-card flex items-center gap-3 px-6 py-4 min-w-[200px] cursor-pointer"
+              className="flex items-center gap-3 cursor-pointer group"
             >
               <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
                 <MessageIcon size={18} />
               </div>
               <div>
-                <div className="font-semibold text-sm">{t.discord}</div>
+                <div className="font-semibold text-sm text-[var(--text)] group-hover:text-[#59abfe] transition-colors">{t.discord}</div>
                 <div className="text-[10px] text-[var(--text2)]">discord.gg/DRnxEXCQU</div>
               </div>
             </a>
@@ -285,22 +283,22 @@ export default function HomePage() {
               href={info.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="review-card flex items-center gap-3 px-6 py-4 min-w-[200px] cursor-pointer"
+              className="flex items-center gap-3 cursor-pointer group"
             >
               <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
                 <CameraIcon size={18} />
               </div>
               <div>
-                <div className="font-semibold text-sm">Instagram</div>
+                <div className="font-semibold text-sm text-[var(--text)] group-hover:text-[#59abfe] transition-colors">Instagram</div>
                 <div className="text-[10px] text-[var(--text2)]">{t.instagram}</div>
               </div>
             </a>
-            <div className="review-card flex items-center gap-3 px-6 py-4 min-w-[200px]">
+            <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
                 <MailIcon size={18} />
               </div>
               <div>
-                <div className="font-semibold text-sm">Email</div>
+                <div className="font-semibold text-sm text-[var(--text)]">Email</div>
                 <div className="text-[10px] text-[var(--text2)]">{info.email}</div>
               </div>
             </div>
