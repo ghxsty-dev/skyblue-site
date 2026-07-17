@@ -186,7 +186,7 @@ export default function HomePage() {
               alt="SkyBlue"
               width={600}
               height={600}
-              className="w-full max-w-[500px] h-auto rounded-2xl animate-float relative"
+              className="w-full max-w-[500px] h-auto rounded-2xl relative"
               priority
             />
           </div>
