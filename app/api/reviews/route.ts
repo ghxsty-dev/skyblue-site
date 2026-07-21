@@ -15,24 +15,29 @@ async function translateText(text: string): Promise<string> {
 export async function GET(request: NextRequest) {
   const lang = request.nextUrl.searchParams.get("lang") === "TR" ? "TR" : "EN";
 
-  if (lang === "TR") {
-    return NextResponse.json({ source: "fallback", reviews: fallback.TR.map((r) => ({ ...r, stars: 5 })) });
-  }
-
   try {
     let discordReviews = await fetchDiscordReviews();
     if (discordReviews.length > 0) {
-      discordReviews = await Promise.all(
-        discordReviews.map(async (r) => ({
-          ...r,
-          text: await translateText(r.text),
-        }))
-      );
+      if (lang === "EN") {
+        discordReviews = await Promise.all(
+          discordReviews.map(async (r) => ({
+            ...r,
+            text: await translateText(r.text),
+          }))
+        );
+      }
       return NextResponse.json({ source: "discord", reviews: discordReviews });
     }
   } catch {
     // fallback
   }
 
-  return NextResponse.json({ source: "fallback", reviews: fallback.EN.map((r) => ({ ...r, stars: 5 })) });
+  const reviews = fallback[lang].map((r) => ({
+    text: r.text,
+    author: r.author,
+    role: r.role,
+    stars: 5,
+  }));
+
+  return NextResponse.json({ source: "fallback", reviews });
 }
