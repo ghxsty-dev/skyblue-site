@@ -20,6 +20,22 @@ export const metadata: Metadata = {
   title: "SkyBlue Design",
   description: "Professional design services by SkyBlue",
   icons: { icon: "/logo.png" },
+  openGraph: {
+    title: "SkyBlue Design",
+    description: "Professional design services by SkyBlue",
+    images: [
+      {
+        url: "/gifgorsel.gif",
+        alt: "SkyBlue Design",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SkyBlue Design",
+    description: "Professional design services by SkyBlue",
+    images: ["/gifgorsel.gif"],
+  },
 };
 
 export default function RootLayout({
