@@ -18,24 +18,26 @@ export default function Footer() {
             <p className="text-xs text-[var(--footer-text)] opacity-70 leading-relaxed">{t.footerDesc}</p>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <h4 className="text-sm font-semibold text-[var(--footer-text)] mb-1">Quick Links</h4>
-            <Link href="/privacy" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
-              {t.privacy}
-            </Link>
-            <Link href="/status" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
-              {t.status}
-            </Link>
-            <Link href="/sozlesme" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
-              {t.contract}
-            </Link>
-            <Link href="/minecraft" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
-              Minecraft
-            </Link>
+          <div className="flex flex-col gap-3 items-center">
+            <h4 className="text-sm font-semibold text-[var(--footer-text)] mb-1">{t.footerQuickLinks}</h4>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-1">
+              <Link href="/privacy" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
+                {t.privacy}
+              </Link>
+              <Link href="/status" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
+                {t.status}
+              </Link>
+              <Link href="/sozlesme" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
+                {t.contract}
+              </Link>
+              <Link href="/minecraft" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
+                Minecraft
+              </Link>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-3 items-start md:items-end">
-            <h4 className="text-sm font-semibold text-[var(--footer-text)] mb-1">Settings</h4>
+          <div className="flex flex-col gap-3 items-center">
+            <h4 className="text-sm font-semibold text-[var(--footer-text)] mb-1">{t.footerSettings}</h4>
             <div className="flex items-center gap-3">
               <select
                 value={lang}
