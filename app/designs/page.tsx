@@ -12,19 +12,28 @@ interface DesignImage {
   height: number;
 }
 
+interface DesignTag {
+  id: string;
+  name: string;
+  emojiName: string | null;
+}
+
 interface DesignPost {
   id: string;
   title: string;
   images: DesignImage[];
   createdAt: number;
+  tagIds: string[];
 }
 
 export default function DesignsPage() {
   const { t, lang } = useApp();
   const [designs, setDesigns] = useState<DesignPost[]>([]);
+  const [availableTags, setAvailableTags] = useState<DesignTag[]>([]);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(6);
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{ postIdx: number; imgIdx: number } | null>(null);
 
   function isBanner(post: DesignPost) {
@@ -40,7 +49,11 @@ export default function DesignsPage() {
   }
 
   const sorted = useMemo(() => {
-    const copy = [...designs];
+    let filtered = designs;
+    if (selectedTag) {
+      filtered = designs.filter((p) => p.tagIds.includes(selectedTag));
+    }
+    const copy = [...filtered];
     const dir = sortOrder === "newest" ? -1 : 1;
     copy.sort((a, b) => {
       const aBanner = isBanner(a) ? 0 : 1;
@@ -49,13 +62,16 @@ export default function DesignsPage() {
       return (b.createdAt - a.createdAt) * dir;
     });
     return copy;
-  }, [designs, sortOrder]);
+  }, [designs, sortOrder, selectedTag]);
 
   useEffect(() => {
     setLoading(true);
     fetch("/api/designs")
       .then((res) => res.json())
-      .then((data: { designs: DesignPost[] }) => setDesigns(data.designs))
+      .then((data: { designs: DesignPost[]; availableTags: DesignTag[] }) => {
+        setDesigns(data.designs);
+        setAvailableTags(data.availableTags ?? []);
+      })
       .catch(() => setDesigns([]))
       .finally(() => setLoading(false));
   }, []);
@@ -116,6 +132,34 @@ export default function DesignsPage() {
               : (lang === "TR" ? "En Eski" : "Oldest")}
           </button>
         </div>
+        {availableTags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            <button
+              onClick={() => setSelectedTag(null)}
+              className={`px-3 py-1 rounded-full text-xs border transition-all cursor-pointer ${
+                selectedTag === null
+                  ? "bg-[#59abfe] text-white border-[#59abfe]"
+                  : "bg-[var(--bg2)] text-[var(--text2)] border-[var(--footer-border)] hover:border-[#59abfe]"
+              }`}
+            >
+              {lang === "TR" ? "Tümü" : "All"}
+            </button>
+            {availableTags.map((tag) => (
+              <button
+                key={tag.id}
+                onClick={() => setSelectedTag(tag.id === selectedTag ? null : tag.id)}
+                className={`px-3 py-1 rounded-full text-xs border transition-all cursor-pointer ${
+                  selectedTag === tag.id
+                    ? "bg-[#59abfe] text-white border-[#59abfe]"
+                    : "bg-[var(--bg2)] text-[var(--text2)] border-[var(--footer-border)] hover:border-[#59abfe]"
+                }`}
+              >
+                {tag.emojiName && <span className="mr-1">{tag.emojiName}</span>}
+                {tag.name}
+              </button>
+            ))}
+          </div>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {sorted.slice(0, visible).map((post, i) => (
             <Reveal key={post.id} delay={i * 40}>

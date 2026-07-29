@@ -8,11 +8,28 @@ export interface DesignImage {
   height: number;
 }
 
+export interface DesignTag {
+  id: string;
+  name: string;
+  emojiName: string | null;
+}
+
 export interface DesignPost {
   id: string;
   title: string;
   images: DesignImage[];
   createdAt: number;
+  tagIds: string[];
+}
+
+export interface DiscordDebug {
+  activeStatus: number;
+  guildActiveStatus: number;
+  archivedStatus: number;
+  activeCount: number;
+  guildActiveCount: number;
+  archivedCount: number;
+  forumId: string;
 }
 
 const DISCORD_EPOCH = 1420070400000;
@@ -96,11 +113,12 @@ async function fetchThreadImages(threadId: string, token: string): Promise<Desig
   return images;
 }
 
-export async function fetchDiscordDesigns(): Promise<{ designs: DesignPost[]; debug: DiscordDebug }> {
+export async function fetchDiscordDesigns(): Promise<{ designs: DesignPost[]; debug: DiscordDebug; availableTags: DesignTag[] }> {
   const token = process.env.DISCORD_BOT_TOKEN ?? "";
   if (!token) {
     return {
       designs: [],
+      availableTags: [],
       debug: { activeStatus: 0, guildActiveStatus: 0, archivedStatus: 0, activeCount: 0, guildActiveCount: 0, archivedCount: 0, forumId: FORUM_CHANNEL_ID },
     };
   }
@@ -108,11 +126,21 @@ export async function fetchDiscordDesigns(): Promise<{ designs: DesignPost[]; de
   const active = await apiGet(`/channels/${FORUM_CHANNEL_ID}/threads/active`, token);
   const guildActive = await apiGet(`/guilds/${GUILD_ID}/threads/active`, token);
   const archived = await apiGet(`/channels/${FORUM_CHANNEL_ID}/threads/archived/public`, token);
+  const channelRes = await apiGet(`/channels/${FORUM_CHANNEL_ID}`, token);
 
-  let allThreads: { id: string; name: string; last_message_id: string | null }[] = [];
+  let availableTags: DesignTag[] = [];
+  if (channelRes.data?.available_tags) {
+    availableTags = channelRes.data.available_tags.map((t: any) => ({
+      id: t.id,
+      name: t.name,
+      emojiName: t.emoji_name ?? null,
+    }));
+  }
+
+  let allThreads: { id: string; name: string; last_message_id: string | null; applied_tags: string[] }[] = [];
 
   function mapThread(t: any) {
-    return { id: t.id, name: t.name, last_message_id: t.last_message_id ?? null };
+    return { id: t.id, name: t.name, last_message_id: t.last_message_id ?? null, applied_tags: t.applied_tags ?? [] };
   }
 
   if (active.data?.threads) allThreads.push(...active.data.threads.map(mapThread));
@@ -143,7 +171,7 @@ export async function fetchDiscordDesigns(): Promise<{ designs: DesignPost[]; de
     forumId: FORUM_CHANNEL_ID,
   };
 
-  if (allThreads.length === 0) return { designs: [], debug };
+  if (allThreads.length === 0) return { designs: [], debug, availableTags };
 
   function isBanner(images: DesignImage[]) {
     return images.some((img) => {
@@ -159,7 +187,7 @@ export async function fetchDiscordDesigns(): Promise<{ designs: DesignPost[]; de
   const batch = allThreads.map(async (t) => {
     const images = await fetchThreadImages(t.id, token);
     const ts = t.last_message_id ? snowflakeTimestamp(t.last_message_id) : snowflakeTimestamp(t.id);
-    results.push({ id: t.id, title: t.name, images, createdAt: ts });
+    results.push({ id: t.id, title: t.name, images, createdAt: ts, tagIds: t.applied_tags });
   });
 
   await Promise.allSettled(batch);
@@ -170,5 +198,5 @@ export async function fetchDiscordDesigns(): Promise<{ designs: DesignPost[]; de
     return b.createdAt - a.createdAt;
   });
 
-  return { designs: results, debug };
+  return { designs: results, debug, availableTags };
 }

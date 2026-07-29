@@ -10,7 +10,8 @@ export async function GET() {
     return NextResponse.json({
       source: "fallback",
       debug: "DISCORD_BOT_TOKEN not set",
-      designs: fallback["EN"].map((d, i) => ({ id: `fb-${i}`, title: d.title, images: [], createdAt: Date.now() - i * 86400000 })),
+      availableTags: [],
+      designs: fallback["EN"].map((d, i) => ({ id: `fb-${i}`, title: d.title, images: [], createdAt: Date.now() - i * 86400000, tagIds: [] })),
     });
   }
 
@@ -18,16 +19,17 @@ export async function GET() {
     return NextResponse.json(cached.data);
   }
 
-  const { designs, debug } = await fetchDiscordDesigns();
+  const { designs, debug, availableTags } = await fetchDiscordDesigns();
 
   if (designs.length > 0) {
-    cached = { data: { source: "discord", debug, designs }, timestamp: Date.now() };
+    cached = { data: { source: "discord", debug, designs, availableTags }, timestamp: Date.now() };
     return NextResponse.json(cached.data);
   }
 
   return NextResponse.json({
     source: "fallback",
     debug,
-    designs: fallback["EN"].map((d, i) => ({ id: `fb-${i}`, title: d.title, images: [], createdAt: Date.now() - i * 86400000 })),
+    availableTags,
+    designs: fallback["EN"].map((d, i) => ({ id: `fb-${i}`, title: d.title, images: [], createdAt: Date.now() - i * 86400000, tagIds: [] })),
   });
 }
