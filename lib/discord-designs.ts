@@ -12,6 +12,13 @@ export interface DesignPost {
   id: string;
   title: string;
   images: DesignImage[];
+  createdAt: number;
+}
+
+const DISCORD_EPOCH = 1420070400000;
+
+function snowflakeTimestamp(snowflake: string): number {
+  return (Number(snowflake) >> 22) + DISCORD_EPOCH;
 }
 
 interface DiscordAttachment {
@@ -102,14 +109,18 @@ export async function fetchDiscordDesigns(): Promise<{ designs: DesignPost[]; de
   const guildActive = await apiGet(`/guilds/${GUILD_ID}/threads/active`, token);
   const archived = await apiGet(`/channels/${FORUM_CHANNEL_ID}/threads/archived/public`, token);
 
-  let allThreads: { id: string; name: string }[] = [];
+  let allThreads: { id: string; name: string; last_message_id: string | null }[] = [];
 
-  if (active.data?.threads) allThreads.push(...active.data.threads);
+  function mapThread(t: any) {
+    return { id: t.id, name: t.name, last_message_id: t.last_message_id ?? null };
+  }
+
+  if (active.data?.threads) allThreads.push(...active.data.threads.map(mapThread));
 
   if (guildActive.data?.threads) {
     for (const t of guildActive.data.threads) {
       if (t.parent_id === FORUM_CHANNEL_ID && !allThreads.find((x) => x.id === t.id)) {
-        allThreads.push(t);
+        allThreads.push(mapThread(t));
       }
     }
   }
@@ -117,7 +128,7 @@ export async function fetchDiscordDesigns(): Promise<{ designs: DesignPost[]; de
   if (archived.data?.threads) {
     for (const t of archived.data.threads) {
       if (!allThreads.find((x) => x.id === t.id)) {
-        allThreads.push(t);
+        allThreads.push(mapThread(t));
       }
     }
   }
@@ -137,11 +148,12 @@ export async function fetchDiscordDesigns(): Promise<{ designs: DesignPost[]; de
   const results: DesignPost[] = [];
   const batch = allThreads.map(async (t) => {
     const images = await fetchThreadImages(t.id, token);
-    results.push({ id: t.id, title: t.name, images });
+    const ts = t.last_message_id ? snowflakeTimestamp(t.last_message_id) : snowflakeTimestamp(t.id);
+    results.push({ id: t.id, title: t.name, images, createdAt: ts });
   });
 
   await Promise.allSettled(batch);
-  results.sort((a, b) => b.images.length - a.images.length);
+  results.sort((a, b) => b.createdAt - a.createdAt);
 
   return { designs: results, debug };
 }

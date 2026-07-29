@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { useApp } from "@/lib/context";
 import Lightbox from "@/components/Lightbox";
@@ -16,6 +16,7 @@ interface DesignPost {
   id: string;
   title: string;
   images: DesignImage[];
+  createdAt: number;
 }
 
 export default function DesignsPage() {
@@ -23,7 +24,18 @@ export default function DesignsPage() {
   const [designs, setDesigns] = useState<DesignPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(6);
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
   const [lightbox, setLightbox] = useState<{ postIdx: number; imgIdx: number } | null>(null);
+
+  const sorted = useMemo(() => {
+    const copy = [...designs];
+    if (sortOrder === "newest") {
+      copy.sort((a, b) => b.createdAt - a.createdAt);
+    } else {
+      copy.sort((a, b) => a.createdAt - b.createdAt);
+    }
+    return copy;
+  }, [designs, sortOrder]);
 
   useEffect(() => {
     setLoading(true);
@@ -40,7 +52,7 @@ export default function DesignsPage() {
 
   const prevImage = () => {
     if (!lightbox) return;
-    const post = designs[lightbox.postIdx];
+    const post = sorted[lightbox.postIdx];
     const total = post.images.length;
     const next = (lightbox.imgIdx - 1 + total) % total;
     setLightbox({ ...lightbox, imgIdx: next });
@@ -48,13 +60,13 @@ export default function DesignsPage() {
 
   const nextImage = () => {
     if (!lightbox) return;
-    const post = designs[lightbox.postIdx];
+    const post = sorted[lightbox.postIdx];
     const total = post.images.length;
     const next = (lightbox.imgIdx + 1) % total;
     setLightbox({ ...lightbox, imgIdx: next });
   };
 
-  const currentLightboxImages = lightbox ? designs[lightbox.postIdx]?.images : [];
+  const currentLightboxImages = lightbox ? sorted[lightbox.postIdx]?.images : [];
 
   return (
     <div className="page-inner">
@@ -77,12 +89,25 @@ export default function DesignsPage() {
         <p className="text-center text-[var(--text2)] py-16">{lang === "TR" ? "Henüz tasarım bulunmuyor." : "No designs yet."}</p>
       ) : (
         <>
+        <div className="flex items-center justify-end mb-6">
+          <button
+            onClick={() => setSortOrder((o) => (o === "newest" ? "oldest" : "newest"))}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--footer-border)] bg-[var(--bg2)] text-xs text-[var(--text2)] hover:text-[#59abfe] hover:border-[#59abfe] transition-all cursor-pointer"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M11 5h10" /><path d="M11 9h7" /><path d="M11 13h4" /><path d="m3 17 4 4 4-4" /><path d="M7 3v18" />
+            </svg>
+            {sortOrder === "newest"
+              ? (lang === "TR" ? "En Yeni" : "Newest")
+              : (lang === "TR" ? "En Eski" : "Oldest")}
+          </button>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {designs.slice(0, visible).map((post, i) => (
+          {sorted.slice(0, visible).map((post, i) => (
             <Reveal key={post.id} delay={i * 40}>
             <div
               className="card group cursor-pointer"
-              onClick={() => post.images.length > 0 && openLightbox(designs.indexOf(post), 0)}
+              onClick={() => post.images.length > 0 && openLightbox(sorted.indexOf(post), 0)}
             >
               {post.images.length > 0 ? (
                 <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-[var(--bg2)]">
@@ -113,7 +138,7 @@ export default function DesignsPage() {
             </div></Reveal>
           ))}
         </div>
-        {visible < designs.length && (
+        {visible < sorted.length && (
           <div className="flex justify-center mt-8">
             <button
               onClick={() => setVisible((v) => v + 6)}

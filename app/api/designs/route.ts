@@ -10,7 +10,7 @@ export async function GET() {
     return NextResponse.json({
       source: "fallback",
       debug: "DISCORD_BOT_TOKEN not set",
-      designs: fallback["EN"].map((d, i) => ({ id: `fb-${i}`, title: d.title, images: [] })),
+      designs: fallback["EN"].map((d, i) => ({ id: `fb-${i}`, title: d.title, images: [], createdAt: Date.now() - i * 86400000 })),
     });
   }
 
@@ -28,6 +28,6 @@ export async function GET() {
   return NextResponse.json({
     source: "fallback",
     debug,
-    designs: fallback["EN"].map((d, i) => ({ id: `fb-${i}`, title: d.title, images: [] })),
+    designs: fallback["EN"].map((d, i) => ({ id: `fb-${i}`, title: d.title, images: [], createdAt: Date.now() - i * 86400000 })),
   });
 }
