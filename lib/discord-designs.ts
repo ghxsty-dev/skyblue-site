@@ -145,6 +145,16 @@ export async function fetchDiscordDesigns(): Promise<{ designs: DesignPost[]; de
 
   if (allThreads.length === 0) return { designs: [], debug };
 
+  function isBanner(images: DesignImage[]) {
+    return images.some((img) => {
+      return (
+        (img.width === 1920 && img.height === 1080) ||
+        (img.width === 2160 && img.height === 1440) ||
+        (img.width === 3840 && img.height === 2160)
+      );
+    });
+  }
+
   const results: DesignPost[] = [];
   const batch = allThreads.map(async (t) => {
     const images = await fetchThreadImages(t.id, token);
@@ -153,7 +163,12 @@ export async function fetchDiscordDesigns(): Promise<{ designs: DesignPost[]; de
   });
 
   await Promise.allSettled(batch);
-  results.sort((a, b) => b.createdAt - a.createdAt);
+  results.sort((a, b) => {
+    const aBanner = isBanner(a.images) ? 0 : 1;
+    const bBanner = isBanner(b.images) ? 0 : 1;
+    if (aBanner !== bBanner) return aBanner - bBanner;
+    return b.createdAt - a.createdAt;
+  });
 
   return { designs: results, debug };
 }

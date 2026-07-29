@@ -27,13 +27,27 @@ export default function DesignsPage() {
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
   const [lightbox, setLightbox] = useState<{ postIdx: number; imgIdx: number } | null>(null);
 
+  function isBanner(post: DesignPost) {
+    return post.images.some((img) => {
+      const w = img.width;
+      const h = img.height;
+      return (
+        (w === 1920 && h === 1080) ||
+        (w === 2160 && h === 1440) ||
+        (w === 3840 && h === 2160)
+      );
+    });
+  }
+
   const sorted = useMemo(() => {
     const copy = [...designs];
-    if (sortOrder === "newest") {
-      copy.sort((a, b) => b.createdAt - a.createdAt);
-    } else {
-      copy.sort((a, b) => a.createdAt - b.createdAt);
-    }
+    const dir = sortOrder === "newest" ? -1 : 1;
+    copy.sort((a, b) => {
+      const aBanner = isBanner(a) ? 0 : 1;
+      const bBanner = isBanner(b) ? 0 : 1;
+      if (aBanner !== bBanner) return aBanner - bBanner;
+      return (b.createdAt - a.createdAt) * dir;
+    });
     return copy;
   }, [designs, sortOrder]);
 
