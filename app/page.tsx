@@ -16,26 +16,10 @@ interface Review {
   date?: string;
 }
 
-interface DesignImage {
-  url: string;
-  width: number;
-  height: number;
-}
-
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
 export default function HomePage() {
   const { t, lang } = useApp();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [index, setIndex] = useState(0);
-  const [bgImages, setBgImages] = useState<DesignImage[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const info = contactData[lang as "EN" | "TR"];
 
@@ -45,39 +29,6 @@ export default function HomePage() {
       .then((data: { reviews: Review[] }) => setReviews(data.reviews))
       .catch(() => setReviews([]));
   }, [lang]);
-
-  useEffect(() => {
-    fetch("/api/designs")
-      .then((res) => res.json())
-      .then((data: { designs: { images: DesignImage[] }[] }) => {
-        const all = data.designs.flatMap((d) => d.images);
-        setBgImages(shuffle(all).slice(0, 30));
-      })
-      .catch(() => {})
-      .finally(() => window.dispatchEvent(new CustomEvent("app:ready")));
-  }, []);
-
-  const rows = bgImages.length >= 5
-    ? (() => {
-        const result: { images: DesignImage[]; speed: number; dir: "left" | "right"; h: number; topPx: number }[] = [];
-        let cumTop = 25;
-        for (let ri = 0; ri < 6; ri++) {
-          const groupSize = 6;
-          const start = (ri * groupSize) % bgImages.length;
-          const images = [...bgImages.slice(start), ...bgImages.slice(0, start)].slice(0, groupSize);
-          const h = 60 + (ri % 5) * 15;
-          result.push({
-            images,
-            speed: 30,
-              dir: "left" as "left",
-            h,
-            topPx: cumTop,
-          });
-          cumTop += h + 3 * 15 + 25;
-        }
-        return result;
-      })()
-    : [];
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -101,53 +52,8 @@ export default function HomePage() {
 
   return (
     <div>
-      <section className="relative min-h-[80vh] flex items-center overflow-hidden">
-        {rows.length > 0 && (
-          <div className="absolute inset-0 pointer-events-none opacity-[0.1] dark:opacity-[0.07]">
-            {rows.map((row, ri) => (
-              <div
-                key={ri}
-                className="absolute"
-                style={{
-                  top: `${row.topPx}px`,
-                  transform: "skewY(-3deg)",
-                  transformOrigin: "center center",
-                }}
-              >
-                <div
-                  className="flex whitespace-nowrap"
-                  style={{
-                    animation: `scroll${row.dir === "right" ? "Right" : "Left"} ${row.speed}s linear infinite`,
-                    willChange: "transform",
-                  }}
-                >
-                  {[...row.images, ...row.images, ...row.images].map((img, i) => (
-                    <div
-                      key={i}
-                      className="inline-block shrink-0 rounded-lg overflow-hidden bg-[var(--bg2)]"
-                      style={{
-                        height: row.h + (i % 4) * 15,
-                        aspectRatio: `${img.width}/${img.height}`,
-                        margin: `0 ${10 + (i % 3) * 6}px`,
-                      }}
-                    >
-                      <Image
-                        src={img.url}
-                        alt=""
-                        width={img.width}
-                        height={img.height}
-                        className="w-full h-full object-cover"
-                        sizes="100px"
-                        quality={15}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-        <div className="page-inner w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center py-20 md:py-24 relative z-10">
+      <section className="relative min-h-[80vh] flex items-center">
+        <div className="page-inner w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center py-20 md:py-24">
           <div>
             <span className="inline-block px-5 py-1.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-xs font-semibold mb-5">
               {t.heroBadge}
