@@ -56,7 +56,7 @@ a:hover { text-decoration: underline; }
 main {
   margin-top: 64px;
   min-height: calc(100vh - 64px - 180px);
-  padding: 60px 24px 80px;
+  padding: 24px 24px 80px;
 }
 
 .page-inner {

@@ -53,7 +53,7 @@ export default function HomePage() {
   return (
     <div>
       <section className="relative flex items-center">
-        <div className="page-inner w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center pt-12 pb-16 md:pt-16 md:pb-20">
+        <div className="page-inner w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center pb-16 md:pb-20">
           <div>
             <span className="inline-block px-5 py-1.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-xs font-semibold mb-5">
               {t.heroBadge}
