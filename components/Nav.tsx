@@ -18,14 +18,29 @@ export default function Nav() {
 
   const current = pathname === "/" ? "home" : pathname.replace("/", "").split("/")[0];
 
-  useEffect(() => {
+  const measure = () => {
     if (!ulRef.current || open) return;
     const active = ulRef.current.querySelector<HTMLAnchorElement>("a.active-link");
     if (active) {
       const parent = active.parentElement as HTMLLIElement;
       setIndicator({ left: parent.offsetLeft, width: parent.offsetWidth, measured: true });
     }
+  };
+
+  useEffect(() => {
+    measure();
+    const onResize = () => measure();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, [current, open]);
+
+  useEffect(() => {
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(() => measure());
+    }
+    const t = setTimeout(measure, 300);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[1000] bg-[var(--nav-bg)] backdrop-blur-md border-b border-[var(--border)] px-6 transition-colors">
@@ -40,24 +55,45 @@ export default function Nav() {
         >
           <MenuIcon size={24} />
         </button>
-        <ul
-          ref={ulRef}
-          className={`list-none flex-col md:flex-row gap-1 md:gap-0 flex md:flex absolute md:static top-full left-0 right-0 bg-[var(--nav-bg)] md:bg-transparent backdrop-blur-md border-b md:border-b-0 border-[var(--border)] md:border-none p-4 md:p-0 ${open ? "flex" : "hidden md:flex"}`}
-        >
+        <div className="hidden md:flex items-center relative">
           {indicator.measured && (
             <div
-              className="hidden md:block absolute bottom-0 h-[2px] bg-gradient-to-r from-[#97cdf2] to-[#59abfe] rounded-full transition-all duration-300 ease-in-out pointer-events-none"
+              className="absolute bottom-[-2px] h-[2px] bg-gradient-to-r from-[#97cdf2] to-[#59abfe] rounded-full transition-all duration-300 ease-in-out pointer-events-none"
               style={{ left: indicator.left, width: indicator.width }}
             />
           )}
+          <ul
+            ref={ulRef}
+            className="list-none flex items-center gap-0 m-0 p-0"
+          >
+            {links.map((link) => (
+              <li key={link}>
+                <Link
+                  href={link === "home" ? "/" : `/${link}`}
+                  onClick={() => setOpen(false)}
+                  className={`block px-3.5 py-2.5 rounded-none text-sm font-medium transition-all duration-300 no-underline ${
+                    current === link || (link === "home" && current === "home")
+                      ? "text-[#59abfe] active-link"
+                      : "text-[var(--text2)] hover:text-[#59abfe]"
+                  }`}
+                >
+                  {t[link]}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <ul
+          className={`md:hidden list-none flex-col gap-1 flex absolute top-full left-0 right-0 bg-[var(--nav-bg)] backdrop-blur-md border-b border-[var(--border)] p-4 ${open ? "flex" : "hidden"}`}
+        >
           {links.map((link) => (
             <li key={link}>
               <Link
                 href={link === "home" ? "/" : `/${link}`}
                 onClick={() => setOpen(false)}
-                className={`block px-3.5 py-2.5 rounded-lg md:rounded-none text-sm font-medium transition-all duration-300 no-underline ${
+                className={`block px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 no-underline ${
                   current === link || (link === "home" && current === "home")
-                    ? "text-[#59abfe] active-link"
+                    ? "text-[#59abfe]"
                     : "text-[var(--text2)] hover:text-[#59abfe]"
                 }`}
               >
