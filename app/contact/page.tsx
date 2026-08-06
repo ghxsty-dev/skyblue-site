@@ -76,24 +76,6 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="flex gap-3 mt-5">
-            <a
-              href={info.discordUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-11 h-11 rounded-xl border border-[var(--border)] bg-[var(--bg2)] flex items-center justify-center text-[var(--text2)] transition-all duration-300 hover:bg-gradient-to-r hover:from-[#97cdf2] hover:to-[#59abfe] hover:text-white hover:border-transparent hover:-translate-y-0.5"
-            >
-              <MessageIcon size={20} />
-            </a>
-            <a
-              href={info.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-11 h-11 rounded-xl border border-[var(--border)] bg-[var(--bg2)] flex items-center justify-center text-[var(--text2)] transition-all duration-300 hover:bg-gradient-to-r hover:from-[#97cdf2] hover:to-[#59abfe] hover:text-white hover:border-transparent hover:-translate-y-0.5"
-            >
-              <CameraIcon size={20} />
-            </a>
-          </div>
         </div>
         </Reveal>
       </div>
