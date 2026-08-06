@@ -37,7 +37,7 @@ export default function ServicesOverview() {
             <Reveal key={key} delay={i * 60}>
               <Link
                 href={"external" in cat ? cat.external : `/services/${key}`}
-                className="card group flex flex-col items-center text-center py-10 px-6 cursor-pointer no-underline"
+                className="card group flex flex-col items-center text-center py-10 px-6 cursor-pointer no-underline !bg-transparent hover:!shadow-none"
               >
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white mb-5 transition-transform duration-300 group-hover:scale-110">
                   <Icon size={30} />
@@ -62,7 +62,7 @@ export default function ServicesOverview() {
           href="https://discord.gg/DRnxEXCQU"
           target="_blank"
           rel="noopener noreferrer"
-          className="card flex items-center justify-between max-w-2xl mx-auto mt-10 px-8 py-5 no-underline hover:border-[#59abfe] transition-all"
+          className="card flex items-center justify-between max-w-2xl mx-auto mt-10 px-8 py-5 no-underline hover:border-[#59abfe] transition-all !bg-transparent hover:!shadow-none"
         >
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
