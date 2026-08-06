@@ -42,7 +42,7 @@ export default function Nav() {
         </button>
         <ul
           ref={ulRef}
-          className={`list-none flex-col md:flex-row gap-1 md:gap-0 flex md:flex absolute md:relative top-full left-0 right-0 bg-[var(--nav-bg)] md:bg-transparent backdrop-blur-md border-b md:border-b-0 border-[var(--border)] md:border-none p-4 md:p-0 ${open ? "flex" : "hidden md:flex"}`}
+          className={`list-none flex-col md:flex-row gap-1 md:gap-0 flex md:flex absolute md:static top-full left-0 right-0 bg-[var(--nav-bg)] md:bg-transparent backdrop-blur-md border-b md:border-b-0 border-[var(--border)] md:border-none p-4 md:p-0 ${open ? "flex" : "hidden md:flex"}`}
         >
           {indicator.measured && (
             <div
