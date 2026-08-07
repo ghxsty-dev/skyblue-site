@@ -91,8 +91,6 @@ main {
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px var(--card-shadow);
   border-color: var(--c2);
 }
 
@@ -106,8 +104,7 @@ main {
 }
 
 .review-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px var(--card-shadow);
+  border-color: var(--c2);
 }
 
 /* Buttons */
