@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useApp } from "@/lib/context";
-import { StarIcon } from "@/lib/icons";
 import Reveal from "@/components/Reveal";
 
 interface Review {
@@ -63,14 +62,11 @@ export default function ReviewsPage() {
                   {item.date && <div className="text-[10px] text-[var(--text2)] opacity-60">{item.date}</div>}
                 </div>
               </div>
-              <div className="flex gap-0.5 mb-3 text-[#f5a623]">
+              <div className="flex gap-0.5 mb-3 text-[#8ec8f4]">
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <StarIcon
-                    key={s}
-                    size={16}
-                    fill={s <= item.stars ? "#f5a623" : "none"}
-                    stroke={s <= item.stars ? "#f5a623" : "var(--border)"}
-                  />
+                  <span key={s} className={`text-sm ${s <= item.stars ? "opacity-100" : "opacity-25"}`}>
+                    {"⭐"}
+                  </span>
                 ))}
               </div>
               <p className="text-sm text-[var(--text2)] leading-relaxed">
