@@ -202,7 +202,7 @@ export default function HomePage() {
                 <img
                   src={`/${brand.slug}.png`}
                   alt={brand.name}
-                  className="max-h-16 md:max-h-20 w-auto object-contain transition-all duration-300 group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
                   <span className="text-white font-semibold text-sm">{brand.name}</span>
