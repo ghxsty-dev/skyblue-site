@@ -8,6 +8,7 @@ import { StarIcon, MessageIcon, CameraIcon, MailIcon } from "@/lib/icons";
 import contactData from "@/data/contact.json";
 import Reveal from "@/components/Reveal";
 import StatsCounter from "@/components/StatsCounter";
+import DiscordWidget from "@/components/DiscordWidget";
 
 interface Review {
   text: string;
@@ -104,13 +105,13 @@ export default function HomePage() {
         <StatsCounter />
         <Reveal>
           <div className="section-header">
-          <h2>
-            <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
-              {t.reviewsTitle}
-            </span>
-          </h2>
-          <p>{t.reviewsDesc}</p>
-        </div>
+            <h2>
+              <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+                {t.reviewsTitle}
+              </span>
+            </h2>
+            <p>{t.reviewsDesc}</p>
+          </div>
         {reviews.length > 0 ? (
           <div className="overflow-hidden">
             <div
@@ -172,6 +173,43 @@ export default function HomePage() {
             {lang === "TR" ? "Tüm yorumları gör →" : "View all reviews →"}
           </Link>
         </div>
+        </Reveal>
+      </section>
+
+      <section className="page-inner py-16 border-t border-[var(--border)]">
+        <Reveal>
+          <div className="section-header">
+            <h2>
+              <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+                {t.brandsTitle}
+              </span>
+            </h2>
+            <p>{t.brandsDesc}</p>
+          </div>
+          <div className="flex flex-wrap justify-center items-center gap-12 opacity-60">
+            {["modique", "armea", "hostolog", "mangitto"].map((brand) => (
+              <div key={brand} className="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300">
+                <img
+                  src={`/${brand}.png`}
+                  alt={brand}
+                  className="h-10 md:h-12 w-auto object-contain"
+                />
+              </div>
+            ))}
+          </div>
+        </Reveal>
+      </section>
+
+      <section className="page-inner py-16 border-t border-[var(--border)]">
+        <Reveal>
+          <div className="section-header">
+            <h2>
+              <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+                {t.discordWidgetTitle}
+              </span>
+            </h2>
+          </div>
+          <DiscordWidget />
         </Reveal>
       </section>
 
