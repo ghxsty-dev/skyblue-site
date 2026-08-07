@@ -188,6 +188,7 @@ export default function HomePage() {
           </div>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
             {[
+              { slug: "discore", name: "DisCore", url: "https://discore.app" },
               { slug: "modique", name: "Modique", url: "https://modiqueps.com" },
               { slug: "armea", name: "Armea", url: "https://armea.xyz" },
               { slug: "mangitto", name: "Mangitto", url: "https://mangtto.com" },
