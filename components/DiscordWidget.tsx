@@ -8,7 +8,6 @@ interface DiscordData {
   icon: string | null;
   memberCount: number;
   onlineCount: number;
-  voiceCount: number;
   boostCount: number;
 }
 
@@ -19,19 +18,9 @@ export default function DiscordWidget() {
 
   useEffect(() => {
     fetch("/api/discord-widget")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed");
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((d: DiscordData) => setData(d))
-      .catch(() => setData({
-        name: "SkyBlue",
-        icon: null,
-        memberCount: 0,
-        onlineCount: 0,
-        voiceCount: 0,
-        boostCount: 0,
-      }))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
@@ -39,7 +28,6 @@ export default function DiscordWidget() {
     ? [
         { label: lang === "TR" ? "Toplam Üye" : "Total Members", value: data.memberCount, color: "text-[#59abfe]" },
         { label: lang === "TR" ? "Aktif Üye" : "Online", value: data.onlineCount, color: "text-green-400" },
-        { label: lang === "TR" ? "Sesteki Üye" : "In Voice", value: data.voiceCount, color: "text-purple-400" },
         { label: "Boost", value: data.boostCount, color: "text-pink-400" },
       ]
     : [];
@@ -54,7 +42,7 @@ export default function DiscordWidget() {
             <img src={data.icon} alt={data.name} className="w-16 h-16 rounded-2xl object-cover shrink-0" />
           ) : (
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white font-bold text-xl shrink-0">
-              {data?.name?.charAt(0) ?? "S"}
+              S
             </div>
           )}
           <div className="min-w-0">
@@ -72,9 +60,9 @@ export default function DiscordWidget() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 px-6 pb-6">
+        <div className="grid grid-cols-3 gap-3 px-6 pb-6">
           {loading
-            ? Array.from({ length: 4 }).map((_, i) => (
+            ? Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="bg-[var(--bg2)] rounded-xl p-3 text-center animate-pulse">
                   <div className="w-8 h-6 bg-[var(--border)] rounded mx-auto mb-1" />
                   <div className="w-16 h-3 bg-[var(--border)] rounded mx-auto" />
