@@ -186,15 +186,28 @@ export default function HomePage() {
             </h2>
             <p>{t.brandsDesc}</p>
           </div>
-          <div className="flex flex-wrap justify-center items-center gap-12 opacity-60">
-            {["modique", "armea", "mangitto"].map((brand) => (
-              <div key={brand} className="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300">
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+            {[
+              { slug: "modique", name: "Modique", url: "https://modiqueps.com" },
+              { slug: "armea", name: "Armea", url: "https://armea.xyz" },
+              { slug: "mangitto", name: "Mangitto", url: "https://mangtto.com" },
+            ].map((brand) => (
+              <a
+                key={brand.slug}
+                href={brand.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center justify-center w-40 h-20 md:w-52 md:h-24 rounded-2xl border border-[var(--border)] bg-[var(--bg2)] grayscale opacity-70 hover:grayscale-0 hover:opacity-100 hover:border-[#59abfe] transition-all duration-300 overflow-hidden"
+              >
                 <img
-                  src={`/${brand}.png`}
-                  alt={brand}
-                  className="h-10 md:h-12 w-auto object-contain"
+                  src={`/${brand.slug}.png`}
+                  alt={brand.name}
+                  className="max-h-12 md:max-h-14 w-auto object-contain transition-all duration-300 group-hover:scale-105"
                 />
-              </div>
+                <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-2xl">
+                  <span className="text-white font-semibold text-sm">{brand.name}</span>
+                </div>
+              </a>
             ))}
           </div>
         </Reveal>
