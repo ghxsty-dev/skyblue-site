@@ -10,6 +10,7 @@ interface Review {
   author: string;
   stars: number;
   date?: string;
+  avatar?: string;
 }
 
 export default function ReviewsPage() {
@@ -50,9 +51,13 @@ export default function ReviewsPage() {
           {reviews.map((item, i) => (
             <Reveal key={i} delay={i * 50}><div className="card group">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white font-bold text-sm shrink-0">
-                  {item.author.charAt(0).toUpperCase()}
-                </div>
+                {item.avatar ? (
+                  <img src={item.avatar} alt={item.author} className="w-10 h-10 rounded-full object-cover" />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                    {item.author.charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <div>
                   <div className="font-semibold text-sm">{item.author}</div>
                   {item.date && <div className="text-[10px] text-[var(--text2)] opacity-60">{item.date}</div>}

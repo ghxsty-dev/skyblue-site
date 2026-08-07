@@ -6,6 +6,7 @@ export interface DiscordReview {
   author: string;
   stars: number;
   date?: string;
+  avatar?: string;
 }
 
 interface DiscordEmbed {
@@ -19,6 +20,7 @@ interface DiscordUser {
   id: string;
   username: string;
   global_name?: string;
+  avatar?: string;
 }
 
 interface DiscordMessage {
@@ -96,7 +98,11 @@ export async function fetchDiscordReviews(): Promise<DiscordReview[]> {
       if (!text) continue;
       if (!author) author = msg.author.global_name || msg.author.username;
 
-      reviews.push({ text, author, stars: Math.max(1, Math.min(5, stars)), date });
+      const avatarUrl = msg.author.avatar
+        ? `https://cdn.discordapp.com/avatars/${msg.author.id}/${msg.author.avatar}.png?size=64`
+        : undefined;
+
+      reviews.push({ text, author, stars: Math.max(1, Math.min(5, stars)), date, avatar: avatarUrl });
     }
   }
 

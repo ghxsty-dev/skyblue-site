@@ -14,6 +14,7 @@ interface Review {
   author: string;
   stars: number;
   date?: string;
+  avatar?: string;
 }
 
 export default function HomePage() {
@@ -117,21 +118,35 @@ export default function HomePage() {
               style={{ transform: `translateX(-${(index * 100) / perPage}%)` }}
             >
               {reviews.map((item, i) => (
-                <div key={i} className="min-w-0 w-full md:w-1/3 shrink-0 px-6 md:px-8">
-                  <div className="flex gap-0.5 mb-3 text-[#f5a623]">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <StarIcon
-                        key={s}
-                        size={16}
-                        fill={s <= item.stars ? "#f5a623" : "none"}
-                        stroke={s <= item.stars ? "#f5a623" : "var(--border)"}
-                      />
-                    ))}
+                <div key={i} className="min-w-0 w-full md:w-1/3 shrink-0 px-4">
+                  <div className="card group h-full">
+                    <div className="flex items-center gap-3 mb-3">
+                      {item.avatar ? (
+                        <img src={item.avatar} alt={item.author} className="w-10 h-10 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                          {item.author.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div>
+                        <div className="font-semibold text-sm text-[var(--text)]">{item.author}</div>
+                        {item.date && <div className="text-[10px] text-[var(--text2)] opacity-60">{item.date}</div>}
+                      </div>
+                    </div>
+                    <div className="flex gap-0.5 mb-3 text-[#f5a623]">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <StarIcon
+                          key={s}
+                          size={16}
+                          fill={s <= item.stars ? "#f5a623" : "none"}
+                          stroke={s <= item.stars ? "#f5a623" : "var(--border)"}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-sm text-[var(--text2)] leading-relaxed">
+                      &ldquo;{item.text}&rdquo;
+                    </p>
                   </div>
-                  <p className="text-sm text-[var(--text2)] italic leading-relaxed mb-3">
-                    &ldquo;{item.text}&rdquo;
-                  </p>
-                  <div className="font-semibold text-sm text-[var(--text)]">— {item.author}</div>
                 </div>
               ))}
             </div>
