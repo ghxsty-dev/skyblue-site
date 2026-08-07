@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useApp } from "@/lib/context";
 import Link from "next/link";
 import { SunIcon, MoonIcon } from "@/lib/icons";
-import type { Lang } from "@/lib/translations";
 
 export default function Footer() {
   const { t, lang, setLang, theme, toggleTheme } = useApp();
@@ -39,14 +38,19 @@ export default function Footer() {
           <div className="flex flex-col gap-3 items-center">
             <h4 className="text-sm font-semibold text-[var(--footer-text)] mb-1">{t.footerSettings}</h4>
             <div className="flex items-center gap-3">
-              <select
-                value={lang}
-                onChange={(e) => setLang(e.target.value as Lang)}
-                className="bg-[var(--bg2)] border border-[var(--footer-border)] text-[var(--footer-text)] text-xs px-3 py-1.5 rounded-lg cursor-pointer focus:outline-none focus:border-[#59abfe]"
+              <button
+                onClick={() => setLang(lang === "TR" ? "EN" : "TR")}
+                className="flex items-center gap-2 bg-[var(--bg2)] border border-[var(--footer-border)] text-[var(--footer-text)] text-xs px-3 py-1.5 rounded-lg cursor-pointer transition-all hover:border-[#59abfe]"
               >
-                <option value="TR">🇹🇷 Türkçe</option>
-                <option value="EN">🇬🇧 English</option>
-              </select>
+                <img
+                  src={lang === "TR" ? "https://flagcdn.com/w20/gb.png" : "https://flagcdn.com/w20/tr.png"}
+                  alt={lang === "TR" ? "EN" : "TR"}
+                  width={20}
+                  height={14}
+                  className="rounded-sm"
+                />
+                {lang === "TR" ? "English" : "Türkçe"}
+              </button>
               <button
                 onClick={toggleTheme}
                 className="w-8 h-8 rounded-lg border border-[var(--footer-border)] bg-[var(--bg2)] cursor-pointer flex items-center justify-center text-[var(--footer-text)] transition-all duration-300 hover:bg-gradient-to-r hover:from-[#97cdf2] hover:to-[#59abfe] hover:text-white hover:border-transparent"
