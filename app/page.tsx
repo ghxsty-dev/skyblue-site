@@ -187,7 +187,7 @@ export default function HomePage() {
             <p>{t.brandsDesc}</p>
           </div>
           <div className="flex flex-wrap justify-center items-center gap-12 opacity-60">
-            {["modique", "armea", "hostolog", "mangitto"].map((brand) => (
+            {["modique", "armea", "mangitto"].map((brand) => (
               <div key={brand} className="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300">
                 <img
                   src={`/${brand}.png`}

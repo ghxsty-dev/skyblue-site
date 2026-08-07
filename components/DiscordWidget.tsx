@@ -19,9 +19,19 @@ export default function DiscordWidget() {
 
   useEffect(() => {
     fetch("/api/discord-widget")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed");
+        return res.json();
+      })
       .then((d: DiscordData) => setData(d))
-      .catch(() => {})
+      .catch(() => setData({
+        name: "SkyBlue",
+        icon: null,
+        memberCount: 0,
+        onlineCount: 0,
+        voiceCount: 0,
+        boostCount: 0,
+      }))
       .finally(() => setLoading(false));
   }, []);
 
