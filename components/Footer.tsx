@@ -122,7 +122,7 @@ export default function Footer() {
                   onClick={() => setOpen(!open)}
                   className="flex items-center gap-1.5 bg-[var(--bg2)] border border-[var(--footer-border)] text-[var(--footer-text)] text-xs px-2 py-1.5 rounded-lg cursor-pointer transition-all hover:border-[#59abfe]"
                 >
-                  <img src={current.flag} alt={current.code} width={18} height={12} className="rounded-sm" />
+                  <img src={current.flag} alt={current.code} width={18} height={12} />
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
                 </button>
                 {open && (
@@ -137,7 +137,7 @@ export default function Footer() {
                             : "text-[var(--footer-text)] hover:bg-[var(--border)]"
                         }`}
                       >
-                        <img src={l.flag} alt={l.code} width={18} height={12} className="rounded-sm" />
+                        <img src={l.flag} alt={l.code} width={18} height={12} />
                         {l.label}
                       </button>
                     ))}
