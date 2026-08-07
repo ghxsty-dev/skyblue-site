@@ -197,7 +197,7 @@ export default function HomePage() {
                 href={brand.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative flex items-center justify-center w-48 h-24 md:w-60 md:h-28 border border-[var(--border)] bg-[var(--bg2)] opacity-80 hover:opacity-100 hover:border-[#59abfe] transition-all duration-300 overflow-hidden"
+                className="group relative flex items-center justify-center w-36 h-36 md:w-44 md:h-44 rounded-2xl border border-[var(--border)] bg-[var(--bg2)] opacity-80 hover:opacity-100 hover:border-[#59abfe] transition-all duration-300 overflow-hidden"
               >
                 <img
                   src={`/${brand.slug}.png`}
