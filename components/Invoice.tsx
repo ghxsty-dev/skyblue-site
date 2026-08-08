@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
-import html2canvas from "html2canvas";
+import { useState } from "react";
 
 interface InvoiceItem {
   title: string;
@@ -15,44 +14,194 @@ interface InvoiceProps {
   onClose: () => void;
 }
 
+function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | null> {
+  return new Promise((resolve) => {
+    const canvas = document.createElement("canvas");
+    const scale = 2;
+    const w = 480;
+    const h = 160 + items.length * 52 + 100;
+    canvas.width = w * scale;
+    canvas.height = h * scale;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) { resolve(null); return; }
+
+    ctx.scale(scale, scale);
+
+    // Background
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, "#0f1729");
+    grad.addColorStop(1, "#162040");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect(0, 0, w, h, 16);
+    ctx.fill();
+
+    let y = 28;
+
+    // Header
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 22px sans-serif";
+    ctx.fillText("SkyBlue", 24, y);
+    ctx.fillStyle = "rgba(147,205,242,0.5)";
+    ctx.font = "11px sans-serif";
+    ctx.fillText("Tasarim Hizmetleri", 24, y + 16);
+
+    // Invoice no
+    const now = new Date();
+    const invoiceNo = `SB-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
+    ctx.fillStyle = "rgba(147,205,242,0.5)";
+    ctx.font = "10px sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText("Siparis No", w - 24, y - 4);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 12px sans-serif";
+    ctx.fillText(invoiceNo, w - 24, y + 12);
+    ctx.textAlign = "left";
+
+    y += 40;
+
+    // Divider
+    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(24, y);
+    ctx.lineTo(w - 24, y);
+    ctx.stroke();
+
+    y += 20;
+
+    // Date & status
+    const dateStr = now.toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
+    const timeStr = now.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+    ctx.fillStyle = "rgba(147,205,242,0.4)";
+    ctx.font = "9px sans-serif";
+    ctx.fillText("Tarih", 24, y);
+    ctx.fillStyle = "rgba(255,255,255,0.8)";
+    ctx.font = "11px sans-serif";
+    ctx.fillText(`${dateStr} ${timeStr}`, 24, y + 14);
+
+    ctx.fillStyle = "rgba(147,205,242,0.4)";
+    ctx.font = "9px sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText("Durum", w - 24, y);
+    ctx.fillStyle = "#4ade80";
+    ctx.font = "11px sans-serif";
+    ctx.fillText("Beklemede", w - 24, y + 14);
+    ctx.textAlign = "left";
+
+    y += 36;
+
+    // Divider
+    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.beginPath();
+    ctx.moveTo(24, y);
+    ctx.lineTo(w - 24, y);
+    ctx.stroke();
+
+    y += 18;
+
+    // Section title
+    ctx.fillStyle = "rgba(147,205,242,0.4)";
+    ctx.font = "9px sans-serif";
+    ctx.fillText("SIPARIS DETAYI", 24, y);
+
+    y += 18;
+
+    // Items
+    items.forEach((item) => {
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "12px sans-serif";
+      ctx.fillText(item.title, 24, y);
+
+      ctx.fillStyle = "rgba(147,205,242,0.4)";
+      ctx.font = "10px sans-serif";
+      ctx.fillText(`x${item.qty} x ${item.price} TL`, 24, y + 14);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 12px sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText(`${item.price * item.qty} TL`, w - 24, y);
+      ctx.textAlign = "left";
+
+      y += 34;
+
+      ctx.strokeStyle = "rgba(255,255,255,0.05)";
+      ctx.beginPath();
+      ctx.moveTo(24, y - 8);
+      ctx.lineTo(w - 24, y - 8);
+      ctx.stroke();
+    });
+
+    y += 8;
+
+    // Total divider
+    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(24, y);
+    ctx.lineTo(w - 24, y);
+    ctx.stroke();
+
+    y += 24;
+
+    // Total
+    ctx.fillStyle = "rgba(147,205,242,0.6)";
+    ctx.font = "12px sans-serif";
+    ctx.fillText("Toplam", 24, y);
+
+    ctx.fillStyle = "#59abfe";
+    ctx.font = "bold 22px sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText(`${totalPrice} TL`, w - 24, y);
+    ctx.textAlign = "left";
+
+    y += 30;
+
+    // Footer note
+    ctx.fillStyle = "rgba(147,205,242,0.25)";
+    ctx.font = "9px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("Bu gorseli Discord'a yapistirarak siparis verebilirsiniz.", w / 2, y);
+
+    canvas.toBlob((blob) => resolve(blob), "image/png");
+  });
+}
+
 export default function Invoice({ items, totalPrice, onClose }: InvoiceProps) {
-  const invoiceRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
   const handleCopy = async () => {
-    if (!invoiceRef.current) return;
     try {
-      const canvas = await html2canvas(invoiceRef.current, {
-        backgroundColor: "#0f1729",
-        scale: 2,
-      });
-      canvas.toBlob(async (blob) => {
-        if (blob) {
-          await navigator.clipboard.write([
-            new ClipboardItem({ "image/png": blob }),
-          ]);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 2000);
-        }
-      }, "image/png");
+      const blob = await drawInvoice(items, totalPrice);
+      if (!blob) return;
+      await navigator.clipboard.write([
+        new ClipboardItem({ "image/png": blob }),
+      ]);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Copy failed:", err);
+      const blob = await drawInvoice(items, totalPrice);
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
     }
   };
 
   const handleDownload = async () => {
-    if (!invoiceRef.current) return;
     setDownloading(true);
     try {
-      const canvas = await html2canvas(invoiceRef.current, {
-        backgroundColor: "#0f1729",
-        scale: 2,
-      });
+      const blob = await drawInvoice(items, totalPrice);
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.download = "skyblue-siparis.png";
-      link.href = canvas.toDataURL("image/png");
+      link.href = url;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     } catch (err) {
       console.error("Download failed:", err);
     }
@@ -73,7 +222,7 @@ export default function Invoice({ items, totalPrice, onClose }: InvoiceProps) {
         </div>
 
         <div className="p-4 overflow-y-auto flex-1">
-          <div ref={invoiceRef} className="rounded-xl p-5" style={{ background: "linear-gradient(135deg, #0f1729 0%, #162040 100%)" }}>
+          <div className="rounded-xl p-5" style={{ background: "linear-gradient(135deg, #0f1729 0%, #162040 100%)" }}>
             <div className="flex items-center justify-between mb-5">
               <div>
                 <h2 className="text-lg font-extrabold text-white tracking-tight">SkyBlue</h2>
