@@ -24,39 +24,63 @@ export default function DesignPage() {
   const { t, lang } = useApp();
   const d = data[lang as "EN" | "TR"];
   const [selectedCategory, setSelectedCategory] = useState<string>("logo");
-  const [selectedItems, setSelectedItems] = useState<Record<string, boolean>>({});
+  const [selectedItems, setSelectedItems] = useState<Record<string, number>>({});
 
   const toggleItem = (key: string, itemTitle: string) => {
     const itemKey = `${key}-${itemTitle}`;
-    setSelectedItems((prev) => ({ ...prev, [itemKey]: !prev[itemKey] }));
+    setSelectedItems((prev) => ({
+      ...prev,
+      [itemKey]: prev[itemKey] ? 0 : 1,
+    }));
   };
 
-  const selectedCount = Object.values(selectedItems).filter(Boolean).length;
+  const updateQuantity = (key: string, itemTitle: string, qty: number) => {
+    const itemKey = `${key}-${itemTitle}`;
+    if (qty <= 0) {
+      setSelectedItems((prev) => {
+        const next = { ...prev };
+        delete next[itemKey];
+        return next;
+      });
+    } else {
+      setSelectedItems((prev) => ({ ...prev, [itemKey]: qty }));
+    }
+  };
+
+  const selectedEntries = Object.entries(selectedItems).filter(([, qty]) => qty > 0);
+  const selectedCount = selectedEntries.length;
 
   const totalPrice = useMemo(() => {
     let total = 0;
-    for (const [key, val] of Object.entries(selectedItems)) {
-      if (!val) continue;
+    for (const [key, qty] of selectedEntries) {
       const [catKey, ...rest] = key.split("-");
       const itemTitle = rest.join("-");
       const cat = (d.design as any)[catKey];
       if (cat) {
         const item = cat.items.find((i: any) => i.title === itemTitle);
-        if (item) total += item.price;
+        if (item) total += item.price * qty;
       }
     }
     return total;
-  }, [selectedItems, d]);
+  }, [selectedEntries, d]);
 
   const buildSelectionText = () => {
     const lines: string[] = [];
     for (const key of categoryKeys) {
       const cat = (d.design as any)[key];
       if (!cat) continue;
-      const selected = cat.items.filter((item: any) => selectedItems[`${key}-${item.title}`]);
-      if (selected.length > 0) {
+      const items = selectedEntries
+        .map(([k, qty]) => {
+          const [catKey, ...rest] = k.split("-");
+          if (catKey !== key) return null;
+          const itemTitle = rest.join("-");
+          const item = cat.items.find((i: any) => i.title === itemTitle);
+          return item ? { ...item, qty } : null;
+        })
+        .filter(Boolean);
+      if (items.length > 0) {
         lines.push(`**${cat.name}:**`);
-        selected.forEach((item: any) => lines.push(`- ${item.title} (${item.price} TL)`));
+        items.forEach((item: any) => lines.push(`- ${item.title} x${item.qty} (${item.price * item.qty} TL)`));
       }
     }
     if (lines.length > 0) {
@@ -74,6 +98,14 @@ export default function DesignPage() {
   };
 
   const currentCat = (d.design as any)[selectedCategory];
+
+  const getSelectedItemInfo = (itemKey: string) => {
+    const [catKey, ...rest] = itemKey.split("-");
+    const itemTitle = rest.join("-");
+    const cat = (d.design as any)[catKey];
+    if (!cat) return null;
+    return cat.items.find((i: any) => i.title === itemTitle) || null;
+  };
 
   return (
     <div className="page-inner">
@@ -159,90 +191,132 @@ export default function DesignPage() {
           </div>
           <p className="text-sm text-[var(--text2)] mb-5">{t.createOwnDesc}</p>
 
-          {/* Category Tabs */}
-          <div className="flex gap-2 mb-5 overflow-x-auto pb-2">
-            {categoryKeys.map((key) => {
-              const cat = (d.design as any)[key];
-              if (!cat) return null;
-              const Icon = subIcons[categoryKeys.indexOf(key)] || subIcons[0];
-              return (
-                <button
-                  key={key}
-                  onClick={() => setSelectedCategory(key)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
-                    selectedCategory === key
-                      ? "bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white"
-                      : "bg-[var(--bg2)] text-[var(--text2)] hover:text-[var(--text)] border border-[var(--border)]"
-                  }`}
-                >
-                  <Icon size={14} />
-                  {cat.name}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Items Grid */}
-          {currentCat && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-5">
-              {currentCat.items.map((item: any, ii: number) => {
-                const itemKey = `${selectedCategory}-${item.title}`;
-                const isSelected = selectedItems[itemKey] || false;
-                return (
-                  <button
-                    key={ii}
-                    onClick={() => toggleItem(selectedCategory, item.title)}
-                    className={`rounded-xl border p-3 flex flex-col items-center text-center transition-all cursor-pointer ${
-                      isSelected
-                        ? "border-[#59abfe] bg-[#59abfe]/10"
-                        : "border-[var(--border)] hover:border-[#59abfe]"
-                    }`}
-                  >
-                    <span className="text-sm font-medium text-[var(--text)]">{item.title}</span>
-                    <div className="flex flex-col items-center mt-1">
-                      <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{item.price} TL</span>
-                      {item.unit && (
-                        <span className="text-[9px] text-[var(--text2)]">/ {item.unit}</span>
-                      )}
-                    </div>
-                    {isSelected && (
-                      <span className="text-[10px] text-[#59abfe] mt-1">✓ Seçildi</span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Selected Summary & Total */}
-          {selectedCount > 0 && (
-            <Reveal>
-              <div className="card p-5 border-[var(--border)]">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <p className="text-sm font-bold text-[var(--text)]">
-                      {selectedCount} {t.itemSelected}
-                    </p>
-                    <p className="text-xs text-[var(--text2)]">
-                      {lang === "TR" ? "Discord'a göndermek için hazır" : "Ready to send to Discord"}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[10px] text-[var(--text2)]">{t.totalPrice}</p>
-                    <p className="text-xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
-                      {totalPrice} TL
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={sendToDiscord}
-                  className="w-full py-2.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
-                >
-                  {t.sendToDiscord}
-                </button>
+          <div className="flex flex-col lg:flex-row gap-5">
+            {/* Left: Categories & Items */}
+            <div className="flex-1 min-w-0">
+              {/* Category Tabs */}
+              <div className="flex gap-2 mb-5 overflow-x-auto pb-2">
+                {categoryKeys.map((key) => {
+                  const cat = (d.design as any)[key];
+                  if (!cat) return null;
+                  const Icon = subIcons[categoryKeys.indexOf(key)] || subIcons[0];
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => setSelectedCategory(key)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
+                        selectedCategory === key
+                          ? "bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white"
+                          : "bg-[var(--bg2)] text-[var(--text2)] hover:text-[var(--text)] border border-[var(--border)]"
+                      }`}
+                    >
+                      <Icon size={14} />
+                      {cat.name}
+                    </button>
+                  );
+                })}
               </div>
-            </Reveal>
-          )}
+
+              {/* Items Grid */}
+              {currentCat && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {currentCat.items.map((item: any, ii: number) => {
+                    const itemKey = `${selectedCategory}-${item.title}`;
+                    const qty = selectedItems[itemKey] || 0;
+                    const isSelected = qty > 0;
+                    return (
+                      <div
+                        key={ii}
+                        className={`rounded-xl border p-3 flex flex-col items-center text-center transition-all ${
+                          isSelected
+                            ? "border-[#59abfe] bg-[#59abfe]/10"
+                            : "border-[var(--border)] hover:border-[#59abfe]"
+                        }`}
+                      >
+                        <button
+                          onClick={() => toggleItem(selectedCategory, item.title)}
+                          className="w-full cursor-pointer bg-transparent border-none p-0"
+                        >
+                          <span className="text-sm font-medium text-[var(--text)]">{item.title}</span>
+                          <div className="flex flex-col items-center mt-1">
+                            <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{item.price} TL</span>
+                            {item.unit && (
+                              <span className="text-[9px] text-[var(--text2)]">/ {item.unit}</span>
+                            )}
+                          </div>
+                        </button>
+                        {isSelected && (
+                          <div className="flex items-center gap-2 mt-2">
+                            <button
+                              onClick={() => updateQuantity(selectedCategory, item.title, qty - 1)}
+                              className="w-6 h-6 rounded-md bg-[var(--bg2)] border border-[var(--border)] text-[var(--text)] text-xs flex items-center justify-center hover:bg-[#59abfe] hover:text-white hover:border-[#59abfe] transition-all cursor-pointer"
+                            >
+                              −
+                            </button>
+                            <span className="text-sm font-bold text-[#59abfe] min-w-[20px] text-center">{qty}</span>
+                            <button
+                              onClick={() => updateQuantity(selectedCategory, item.title, qty + 1)}
+                              className="w-6 h-6 rounded-md bg-[var(--bg2)] border border-[var(--border)] text-[var(--text)] text-xs flex items-center justify-center hover:bg-[#59abfe] hover:text-white hover:border-[#59abfe] transition-all cursor-pointer"
+                            >
+                              +
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Right: Selection Summary */}
+            <div className="w-full lg:w-72 shrink-0">
+              <div className="card p-4 border-[var(--border)] sticky top-24">
+                <h4 className="text-sm font-bold text-[var(--text)] mb-3 flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-md bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-[10px] flex items-center justify-center font-bold">{selectedCount}</span>
+                  {lang === "TR" ? "Seçili Ürünler" : "Selected Items"}
+                </h4>
+
+                {selectedCount === 0 ? (
+                  <p className="text-xs text-[var(--text2)] text-center py-6">
+                    {lang === "TR" ? "Henüz ürün seçmediniz" : "No items selected yet"}
+                  </p>
+                ) : (
+                  <>
+                    <div className="flex flex-col gap-2 mb-4 max-h-[300px] overflow-y-auto">
+                      {selectedEntries.map(([itemKey, qty]) => {
+                        const info = getSelectedItemInfo(itemKey);
+                        if (!info) return null;
+                        return (
+                          <div key={itemKey} className="flex items-center justify-between text-xs py-1.5 border-b border-[var(--border)] last:border-0">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[var(--text)] font-medium truncate">{info.title}</p>
+                              <p className="text-[var(--text2)] text-[10px]">x{qty} × {info.price} TL</p>
+                            </div>
+                            <span className="font-bold text-[#59abfe] ml-2">{info.price * qty} TL</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="border-t border-[var(--border)] pt-3 mb-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-[var(--text2)]">{t.totalPrice}</span>
+                        <span className="text-lg font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{totalPrice} TL</span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={sendToDiscord}
+                      className="w-full py-2.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
+                    >
+                      {t.sendToDiscord}
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </Reveal>
 
