@@ -4,6 +4,7 @@ const FORUM_CHANNEL_ID = "1516801626617413753";
 
 export interface DesignImage {
   url: string;
+  originalUrl: string;
   width: number;
   height: number;
 }
@@ -73,16 +74,18 @@ async function apiGet(path: string, token: string) {
   return { status: res.status, data: res.ok ? await res.json() : null };
 }
 
-function resizeUrl(url: string): string {
+function resizeUrl(url: string): { thumb: string; original: string } {
+  const original = url;
   try {
     const u = new URL(url);
     if (u.hostname === "cdn.discordapp.com") {
       u.searchParams.set("width", "400");
       u.searchParams.set("quality", "40");
+      return { thumb: u.toString(), original };
     }
-    return u.toString();
+    return { thumb: url, original };
   } catch {
-    return url;
+    return { thumb: url, original };
   }
 }
 
@@ -91,14 +94,21 @@ function collectImages(msg: DiscordMessage): DesignImage[] {
   if (msg.attachments) {
     for (const att of msg.attachments) {
       if (att.content_type?.startsWith("image/")) {
-        images.push({ url: resizeUrl(att.url), width: att.width || 800, height: att.height || 600 });
+        const urls = resizeUrl(att.url);
+        images.push({ url: urls.thumb, originalUrl: urls.original, width: att.width || 800, height: att.height || 600 });
       }
     }
   }
   if (msg.embeds) {
     for (const emb of msg.embeds) {
-      if (emb.image?.url) images.push({ url: resizeUrl(emb.image.url), width: emb.image.width || 800, height: emb.image.height || 600 });
-      if (emb.thumbnail?.url) images.push({ url: resizeUrl(emb.thumbnail.url), width: emb.thumbnail.width || 400, height: emb.thumbnail.height || 400 });
+      if (emb.image?.url) {
+        const urls = resizeUrl(emb.image.url);
+        images.push({ url: urls.thumb, originalUrl: urls.original, width: emb.image.width || 800, height: emb.image.height || 600 });
+      }
+      if (emb.thumbnail?.url) {
+        const urls = resizeUrl(emb.thumbnail.url);
+        images.push({ url: urls.thumb, originalUrl: urls.original, width: emb.thumbnail.width || 400, height: emb.thumbnail.height || 400 });
+      }
     }
   }
   return images;

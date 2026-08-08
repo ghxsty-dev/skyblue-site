@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useCallback } from "react";
 
 interface LightboxProps {
-  images: { url: string; width: number; height: number }[];
+  images: { url: string; originalUrl?: string; width: number; height: number }[];
   index: number;
   onClose: () => void;
   onPrev: () => void;
@@ -68,7 +68,7 @@ export default function Lightbox({ images, index, onClose, onPrev, onNext }: Lig
 
       <div className="max-w-[90vw] max-h-[85vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
         <Image
-          src={img.url}
+          src={img.originalUrl || img.url}
           alt=""
           width={img.width || 1200}
           height={img.height || 800}
