@@ -92,34 +92,47 @@ export default function DesignPage() {
       <Reveal delay={40}>
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-2">
-            <StarIcon size={22} />
-            <h3 className="text-lg font-bold text-[var(--text)]">
-              {t.wantPackage}
-            </h3>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white">
+              <StarIcon size={20} />
+            </div>
+            <div>
+              <h3 className="text-xl font-extrabold text-[var(--text)]">
+                {t.wantPackage}
+              </h3>
+              <p className="text-xs text-[var(--text2)]">{t.packagesDesc}</p>
+            </div>
           </div>
-          <p className="text-sm text-[var(--text2)] mb-5">{t.packagesDesc}</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
             {d.packages.map((pkg: any, i: number) => (
               <Link
                 key={i}
                 href={`/services/design/packages/${pkg.slug}`}
-                className="rounded-xl border border-[var(--border)] p-4 flex flex-col hover:border-[#59abfe] transition-all no-underline cursor-pointer"
+                className="group relative rounded-2xl border border-[var(--border)] p-5 flex flex-col hover:border-[#59abfe] hover:shadow-[0_0_30px_rgba(89,171,254,0.15)] transition-all duration-300 no-underline cursor-pointer overflow-hidden"
               >
-                <h4 className="font-bold text-sm text-[var(--text)] mb-1">{pkg.title}</h4>
-                <p className="text-[11px] text-[var(--text2)] mb-3 flex-1">{pkg.desc}</p>
-                <div className="flex items-center justify-between gap-2 text-xs">
-                  <div className="flex flex-col items-center flex-1 rounded-lg bg-[var(--bg2)] py-2">
-                    <span className="text-[10px] text-[var(--text2)] text-center w-full">{lang === "TR" ? "Başlangıç" : "Basic"}</span>
-                    <span className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center w-full">{pkg.basic} TL</span>
+                <div className="absolute inset-0 bg-gradient-to-br from-[#97cdf2]/5 to-[#59abfe]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--bg2)] flex items-center justify-center text-[#59abfe]">
+                      <StarIcon size={14} />
+                    </div>
+                    <h4 className="font-bold text-sm text-[var(--text)] group-hover:text-[#59abfe] transition-colors">{pkg.title}</h4>
                   </div>
-                  <div className="flex flex-col items-center flex-1 rounded-lg bg-[var(--bg2)] py-2">
-                    <span className="text-[10px] text-[var(--text2)] text-center w-full">{lang === "TR" ? "Tam" : "Pro"}</span>
-                    <span className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center w-full">{pkg.pro} TL</span>
+                  <p className="text-[11px] text-[var(--text2)] mb-4 leading-relaxed">{pkg.desc}</p>
+                  <div className="flex items-center gap-2 text-xs mb-3">
+                    <div className="flex-1 rounded-xl bg-[var(--bg2)] py-3 px-2">
+                      <p className="text-[9px] text-[var(--text2)] text-center mb-1">{lang === "TR" ? "Başlangıç" : "Basic"}</p>
+                      <p className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center text-base">{pkg.basic} TL</p>
+                    </div>
+                    <div className="flex-1 rounded-xl bg-[var(--bg2)] py-3 px-2">
+                      <p className="text-[9px] text-[var(--text2)] text-center mb-1">{lang === "TR" ? "Tam" : "Pro"}</p>
+                      <p className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center text-base">{pkg.pro} TL</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center gap-1.5 text-[10px] text-[var(--text2)]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#59abfe]"></span>
+                    {lang === "TR" ? "Sınırsız Revize" : "Unlimited Revisions"}
                   </div>
                 </div>
-                <p className="text-[10px] text-[var(--text2)] text-center mt-2">
-                  {lang === "TR" ? "Sınırsız Revize" : "Unlimited Revisions"}
-                </p>
               </Link>
             ))}
           </div>
