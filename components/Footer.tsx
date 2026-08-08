@@ -45,11 +45,22 @@ function MailIcon({ size = 24 }: { size?: number }) {
   );
 }
 
+interface ApiStatus {
+  key: string;
+  label: string;
+  status: "up" | "down" | "checking";
+}
+
 export default function Footer() {
   const { t, lang, setLang, theme, toggleTheme } = useApp();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const info = contactData[lang as "EN" | "TR"];
+  const [statuses, setStatuses] = useState<ApiStatus[]>([
+    { key: "designs", label: "Tasarımlar", status: "checking" },
+    { key: "reviews", label: "Yorumlar", status: "checking" },
+    { key: "status", label: "Sistem", status: "checking" },
+  ]);
 
   const current = langs.find((l) => l.code === lang) ?? langs[0];
 
@@ -59,6 +70,22 @@ export default function Footer() {
     };
     document.addEventListener("mousedown", onClickOutside);
     return () => document.removeEventListener("mousedown", onClickOutside);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/designs")
+      .then((r) => r.json())
+      .then((d) => setStatuses((prev) => prev.map((s) => s.key === "designs" ? { ...s, status: d.designs?.length > 0 ? "up" : "down" } : s)))
+      .catch(() => setStatuses((prev) => prev.map((s) => s.key === "designs" ? { ...s, status: "down" } : s)));
+
+    fetch("/api/reviews")
+      .then((r) => r.json())
+      .then((d) => setStatuses((prev) => prev.map((s) => s.key === "reviews" ? { ...s, status: d.reviews?.length > 0 ? "up" : "down" } : s)))
+      .catch(() => setStatuses((prev) => prev.map((s) => s.key === "reviews" ? { ...s, status: "down" } : s)));
+
+    fetch("/status")
+      .then((r) => setStatuses((prev) => prev.map((s) => s.key === "status" ? { ...s, status: r.ok ? "up" : "down" } : s)))
+      .catch(() => setStatuses((prev) => prev.map((s) => s.key === "status" ? { ...s, status: "down" } : s)));
   }, []);
 
   const socials = [
@@ -98,6 +125,17 @@ export default function Footer() {
               <Link href="/minecraft" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
                 Minecraft
               </Link>
+            </div>
+            <div className="flex flex-col gap-3">
+              <h4 className="text-sm font-semibold text-[var(--footer-text)] mb-1">{lang === "TR" ? "Durum" : "Status"}</h4>
+              {statuses.map((s) => (
+                <div key={s.key} className="flex items-center gap-2">
+                  <span className="text-xs" style={{ color: s.status === "up" ? "#22c55e" : s.status === "down" ? "#ef4444" : "#6b7280" }}>●</span>
+                  <Link href="/status" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
+                    {s.label}
+                  </Link>
+                </div>
+              ))}
             </div>
           </div>
 
