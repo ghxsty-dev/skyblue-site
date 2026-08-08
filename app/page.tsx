@@ -35,11 +35,28 @@ export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
   const [videoHover, setVideoHover] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const fadeRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const fadeVolume = (target: number) => {
+    if (!videoRef.current) return;
+    if (fadeRef.current) clearInterval(fadeRef.current);
+    const step = target > videoRef.current.volume ? 0.05 : -0.05;
+    fadeRef.current = setInterval(() => {
+      if (!videoRef.current) { if (fadeRef.current) clearInterval(fadeRef.current); return; }
+      const next = videoRef.current.volume + step;
+      if ((step > 0 && next >= target) || (step < 0 && next <= target)) {
+        videoRef.current.volume = target;
+        videoRef.current.muted = target === 0;
+        if (fadeRef.current) clearInterval(fadeRef.current);
+      } else {
+        videoRef.current.volume = next;
+      }
+    }, 30);
+  };
 
   useEffect(() => {
-    if (!videoRef.current) return;
-    videoRef.current.muted = !videoHover;
-    videoRef.current.volume = 0.5;
+    fadeVolume(videoHover ? 0.5 : 0);
+    return () => { if (fadeRef.current) clearInterval(fadeRef.current); };
   }, [videoHover]);
 
   useEffect(() => {
