@@ -284,7 +284,7 @@ export default function DesignPage() {
                   </p>
                 ) : (
                   <>
-                    <div className="flex flex-col gap-2 mb-4 max-h-[300px] overflow-y-auto">
+                    <div className="flex flex-col gap-2 mb-4">
                       {selectedEntries.map(([itemKey, qty]) => {
                         const info = getSelectedItemInfo(itemKey);
                         if (!info) return null;
