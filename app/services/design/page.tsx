@@ -6,6 +6,7 @@ import { useApp } from "@/lib/context";
 import { PaletteIcon, SmartphoneIcon, LayersIcon, MessageIcon, CameraIcon, StarIcon } from "@/lib/icons";
 import data from "@/data/services.json";
 import Reveal from "@/components/Reveal";
+import Invoice from "@/components/Invoice";
 
 const DISCORD_URL = "https://discord.gg/DRnxEXCQU";
 const subIcons = [PaletteIcon, SmartphoneIcon, LayersIcon, MessageIcon, CameraIcon];
@@ -25,6 +26,7 @@ export default function DesignPage() {
   const d = data[lang as "EN" | "TR"];
   const [selectedCategory, setSelectedCategory] = useState<string>("logo");
   const [selectedItems, setSelectedItems] = useState<Record<string, number>>({});
+  const [showInvoice, setShowInvoice] = useState(false);
 
   const toggleItem = (key: string, itemTitle: string) => {
     const itemKey = `${key}-${itemTitle}`;
@@ -64,37 +66,18 @@ export default function DesignPage() {
     return total;
   }, [selectedEntries, d]);
 
-  const buildSelectionText = () => {
-    const lines: string[] = [];
-    for (const key of categoryKeys) {
-      const cat = (d.design as any)[key];
-      if (!cat) continue;
-      const items = selectedEntries
-        .map(([k, qty]) => {
-          const [catKey, ...rest] = k.split("-");
-          if (catKey !== key) return null;
-          const itemTitle = rest.join("-");
-          const item = cat.items.find((i: any) => i.title === itemTitle);
-          return item ? { ...item, qty } : null;
-        })
-        .filter(Boolean);
-      if (items.length > 0) {
-        lines.push(`**${cat.name}:**`);
-        items.forEach((item: any) => lines.push(`- ${item.title} x${item.qty} (${item.price * item.qty} TL)`));
+  const getInvoiceItems = () => {
+    const items: { title: string; qty: number; price: number }[] = [];
+    for (const [key, qty] of selectedEntries) {
+      const [catKey, ...rest] = key.split("-");
+      const itemTitle = rest.join("-");
+      const cat = (d.design as any)[catKey];
+      if (cat) {
+        const item = cat.items.find((i: any) => i.title === itemTitle);
+        if (item) items.push({ title: item.title, qty, price: item.price });
       }
     }
-    if (lines.length > 0) {
-      lines.push("");
-      lines.push(`**Toplam: ${totalPrice} TL**`);
-    }
-    return lines.join("\n");
-  };
-
-  const sendToDiscord = () => {
-    const text = buildSelectionText();
-    if (!text) return;
-    const message = encodeURIComponent(`Yeni bir özel paket siparişi!\n\n${text}`);
-    window.open(`https://discord.gg/DRnxEXCQU?message=${message}`, "_blank");
+    return items;
   };
 
   const currentCat = (d.design as any)[selectedCategory];
@@ -308,10 +291,10 @@ export default function DesignPage() {
                     </div>
 
                     <button
-                      onClick={sendToDiscord}
+                      onClick={() => setShowInvoice(true)}
                       className="w-full py-2.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
                     >
-                      {t.sendToDiscord}
+                      {lang === "TR" ? "Sipariş Oluştur" : "Create Order"}
                     </button>
                   </>
                 )}
@@ -384,6 +367,14 @@ export default function DesignPage() {
           </a>
         </div>
       </Reveal>
+
+      {showInvoice && (
+        <Invoice
+          items={getInvoiceItems()}
+          totalPrice={totalPrice}
+          onClose={() => setShowInvoice(false)}
+        />
+      )}
     </div>
   );
 }
