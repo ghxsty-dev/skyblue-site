@@ -33,6 +33,16 @@ export default function HomePage() {
   }, [lang]);
 
   const [isMobile, setIsMobile] = useState(false);
+  const [videoHover, setVideoHover] = useState(false);
+  const [videoMuted, setVideoMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const toggleVideoSound = () => {
+    if (!videoRef.current) return;
+    const newMuted = !videoMuted;
+    videoRef.current.muted = newMuted;
+    setVideoMuted(newMuted);
+  };
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -100,9 +110,14 @@ export default function HomePage() {
 
       <section className="page-inner py-12">
         <Reveal>
-          <div className="relative rounded-2xl overflow-hidden border border-[var(--border)] group">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#97cdf2]/10 to-[#59abfe]/10 pointer-events-none z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div
+            className="relative rounded-2xl overflow-hidden border border-[var(--border)] group cursor-pointer"
+            onMouseEnter={() => setVideoHover(true)}
+            onMouseLeave={() => { setVideoHover(false); if (videoRef.current) videoRef.current.muted = true; }}
+            onClick={toggleVideoSound}
+          >
             <video
+              ref={videoRef}
               src="/tanitim.mp4"
               autoPlay
               loop
@@ -111,6 +126,24 @@ export default function HomePage() {
               className="w-full h-auto rounded-2xl"
               poster="/anasayfa.png"
             />
+            <div className={`absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-3 transition-opacity duration-300 z-20 ${videoHover ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+              <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
+                {videoMuted ? (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <line x1="23" y1="9" x2="17" y2="15" />
+                    <line x1="17" y1="9" x2="23" y2="15" />
+                  </svg>
+                ) : (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                  </svg>
+                )}
+              </div>
+              <p className="text-white text-sm font-medium">{videoMuted ? "Sesi Aç" : "Sesi Kapat"}</p>
+            </div>
           </div>
         </Reveal>
       </section>
