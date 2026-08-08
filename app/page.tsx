@@ -130,16 +130,17 @@ export default function HomePage() {
             onMouseEnter={() => setVideoHover(true)}
             onMouseLeave={() => setVideoHover(false)}
           >
-            <video
-              ref={videoRef}
-              src="/tanitim.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-auto rounded-2xl"
-              poster="/anasayfa.png"
-            />
+            <div className="w-full rounded-2xl overflow-hidden bg-black">
+              <video
+                ref={videoRef}
+                src="/tanitim.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-auto block"
+              />
+            </div>
           </div>
         </Reveal>
       </section>
