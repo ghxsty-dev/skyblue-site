@@ -195,23 +195,24 @@ export default function DesignPage() {
             {/* Left: Categories & Items */}
             <div className="flex-1 min-w-0">
               {/* Category Tabs */}
-              <div className="flex gap-2 mb-5 overflow-x-auto pb-2">
+              <div className="flex gap-1 p-1 bg-[var(--bg2)] rounded-xl mb-5 border border-[var(--border)]">
                 {categoryKeys.map((key) => {
                   const cat = (d.design as any)[key];
                   if (!cat) return null;
                   const Icon = subIcons[categoryKeys.indexOf(key)] || subIcons[0];
+                  const isActive = selectedCategory === key;
                   return (
                     <button
                       key={key}
                       onClick={() => setSelectedCategory(key)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
-                        selectedCategory === key
-                          ? "bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white"
-                          : "bg-[var(--bg2)] text-[var(--text2)] hover:text-[var(--text)] border border-[var(--border)]"
+                      className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-semibold transition-all flex-1 cursor-pointer ${
+                        isActive
+                          ? "bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white shadow-md"
+                          : "text-[var(--text2)] hover:text-[var(--text)] hover:bg-[var(--bg)]"
                       }`}
                     >
-                      <Icon size={14} />
-                      {cat.name}
+                      <Icon size={13} />
+                      <span className="hidden sm:inline">{cat.name}</span>
                     </button>
                   );
                 })}
