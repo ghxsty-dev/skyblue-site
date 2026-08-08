@@ -39,6 +39,7 @@ export default function HomePage() {
   useEffect(() => {
     if (!videoRef.current) return;
     videoRef.current.muted = !videoHover;
+    videoRef.current.volume = 0.5;
   }, [videoHover]);
 
   useEffect(() => {
