@@ -18,8 +18,8 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
   return new Promise((resolve) => {
     const canvas = document.createElement("canvas");
     const scale = 2;
-    const w = 480;
-    const h = 160 + items.length * 52 + 100;
+    const w = 600;
+    const h = 220 + items.length * 70 + 160;
     canvas.width = w * scale;
     canvas.height = h * scale;
     const ctx = canvas.getContext("2d");
@@ -33,135 +33,155 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     grad.addColorStop(1, "#162040");
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.roundRect(0, 0, w, h, 16);
+    ctx.roundRect(0, 0, w, h, 20);
     ctx.fill();
 
-    let y = 28;
+    const px = 40;
+    let y = 50;
 
-    // Header
+    // Header - SkyBlue logo
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 22px sans-serif";
-    ctx.fillText("SkyBlue", 24, y);
-    ctx.fillStyle = "rgba(147,205,242,0.5)";
-    ctx.font = "11px sans-serif";
-    ctx.fillText("Tasarim Hizmetleri", 24, y + 16);
+    ctx.font = "bold 32px sans-serif";
+    ctx.fillText("SkyBlue", px, y);
+    ctx.fillStyle = "rgba(147,205,242,0.6)";
+    ctx.font = "14px sans-serif";
+    ctx.fillText("Tasarım Hizmetleri", px, y + 22);
 
     // Invoice no
     const now = new Date();
     const invoiceNo = `SB-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
-    ctx.fillStyle = "rgba(147,205,242,0.5)";
-    ctx.font = "10px sans-serif";
+    ctx.fillStyle = "rgba(147,205,242,0.6)";
+    ctx.font = "13px sans-serif";
     ctx.textAlign = "right";
-    ctx.fillText("Siparis No", w - 24, y - 4);
+    ctx.fillText("Sipariş No", w - px, y - 6);
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 12px sans-serif";
-    ctx.fillText(invoiceNo, w - 24, y + 12);
+    ctx.font = "bold 16px sans-serif";
+    ctx.fillText(invoiceNo, w - px, y + 18);
     ctx.textAlign = "left";
 
-    y += 40;
+    y += 56;
 
     // Divider
-    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.strokeStyle = "rgba(255,255,255,0.1)";
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(24, y);
-    ctx.lineTo(w - 24, y);
+    ctx.moveTo(px, y);
+    ctx.lineTo(w - px, y);
     ctx.stroke();
 
-    y += 20;
+    y += 30;
 
     // Date & status
     const dateStr = now.toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
     const timeStr = now.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
-    ctx.fillStyle = "rgba(147,205,242,0.4)";
-    ctx.font = "9px sans-serif";
-    ctx.fillText("Tarih", 24, y);
-    ctx.fillStyle = "rgba(255,255,255,0.8)";
-    ctx.font = "11px sans-serif";
-    ctx.fillText(`${dateStr} ${timeStr}`, 24, y + 14);
 
-    ctx.fillStyle = "rgba(147,205,242,0.4)";
-    ctx.font = "9px sans-serif";
+    ctx.fillStyle = "rgba(147,205,242,0.5)";
+    ctx.font = "12px sans-serif";
+    ctx.fillText("Tarih", px, y);
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    ctx.font = "14px sans-serif";
+    ctx.fillText(`${dateStr}  ${timeStr}`, px, y + 20);
+
+    ctx.fillStyle = "rgba(147,205,242,0.5)";
+    ctx.font = "12px sans-serif";
     ctx.textAlign = "right";
-    ctx.fillText("Durum", w - 24, y);
+    ctx.fillText("Durum", w - px, y);
     ctx.fillStyle = "#4ade80";
-    ctx.font = "11px sans-serif";
-    ctx.fillText("Beklemede", w - 24, y + 14);
+    ctx.font = "bold 14px sans-serif";
+    ctx.fillText("Beklemede", w - px, y + 20);
     ctx.textAlign = "left";
+
+    y += 48;
+
+    // Divider
+    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+    ctx.beginPath();
+    ctx.moveTo(px, y);
+    ctx.lineTo(w - px, y);
+    ctx.stroke();
+
+    y += 30;
+
+    // Section title
+    ctx.fillStyle = "rgba(147,205,242,0.5)";
+    ctx.font = "bold 11px sans-serif";
+    ctx.letterSpacing = "2px";
+    ctx.fillText("SİPARİŞ DETAYI", px, y);
+
+    y += 30;
+
+    // Items
+    items.forEach((item, i) => {
+      // Item name
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "15px sans-serif";
+      ctx.fillText(item.title, px, y);
+
+      // Price right
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 15px sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText(`${item.price * item.qty} TL`, w - px, y);
+      ctx.textAlign = "left";
+
+      // Sub detail
+      ctx.fillStyle = "rgba(147,205,242,0.5)";
+      ctx.font = "12px sans-serif";
+      ctx.fillText(`x${item.qty}  ×  ${item.price} TL`, px, y + 18);
+
+      y += 44;
+
+      // Subtle separator
+      if (i < items.length - 1) {
+        ctx.strokeStyle = "rgba(255,255,255,0.06)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(px, y - 10);
+        ctx.lineTo(w - px, y - 10);
+        ctx.stroke();
+      }
+    });
+
+    y += 16;
+
+    // Total divider
+    ctx.strokeStyle = "rgba(255,255,255,0.15)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(px, y);
+    ctx.lineTo(w - px, y);
+    ctx.stroke();
 
     y += 36;
 
-    // Divider
+    // Total
+    ctx.fillStyle = "rgba(147,205,242,0.7)";
+    ctx.font = "15px sans-serif";
+    ctx.fillText("Toplam", px, y);
+
+    ctx.fillStyle = "#59abfe";
+    ctx.font = "bold 28px sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText(`${totalPrice} TL`, w - px, y + 4);
+    ctx.textAlign = "left";
+
+    y += 48;
+
+    // Footer divider
     ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(24, y);
-    ctx.lineTo(w - 24, y);
-    ctx.stroke();
-
-    y += 18;
-
-    // Section title
-    ctx.fillStyle = "rgba(147,205,242,0.4)";
-    ctx.font = "9px sans-serif";
-    ctx.fillText("SIPARIS DETAYI", 24, y);
-
-    y += 18;
-
-    // Items
-    items.forEach((item) => {
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "12px sans-serif";
-      ctx.fillText(item.title, 24, y);
-
-      ctx.fillStyle = "rgba(147,205,242,0.4)";
-      ctx.font = "10px sans-serif";
-      ctx.fillText(`x${item.qty} x ${item.price} TL`, 24, y + 14);
-
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 12px sans-serif";
-      ctx.textAlign = "right";
-      ctx.fillText(`${item.price * item.qty} TL`, w - 24, y);
-      ctx.textAlign = "left";
-
-      y += 34;
-
-      ctx.strokeStyle = "rgba(255,255,255,0.05)";
-      ctx.beginPath();
-      ctx.moveTo(24, y - 8);
-      ctx.lineTo(w - 24, y - 8);
-      ctx.stroke();
-    });
-
-    y += 8;
-
-    // Total divider
-    ctx.strokeStyle = "rgba(255,255,255,0.1)";
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(24, y);
-    ctx.lineTo(w - 24, y);
+    ctx.moveTo(px, y);
+    ctx.lineTo(w - px, y);
     ctx.stroke();
 
     y += 24;
 
-    // Total
-    ctx.fillStyle = "rgba(147,205,242,0.6)";
-    ctx.font = "12px sans-serif";
-    ctx.fillText("Toplam", 24, y);
-
-    ctx.fillStyle = "#59abfe";
-    ctx.font = "bold 22px sans-serif";
-    ctx.textAlign = "right";
-    ctx.fillText(`${totalPrice} TL`, w - 24, y);
-    ctx.textAlign = "left";
-
-    y += 30;
-
     // Footer note
-    ctx.fillStyle = "rgba(147,205,242,0.25)";
-    ctx.font = "9px sans-serif";
+    ctx.fillStyle = "rgba(147,205,242,0.35)";
+    ctx.font = "12px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("Bu gorseli Discord'a yapistirarak siparis verebilirsiniz.", w / 2, y);
+    ctx.fillText("Bu görseli Discord'a yapıştırarak sipariş verebilirsiniz.", w / 2, y);
 
     canvas.toBlob((blob) => resolve(blob), "image/png");
   });
@@ -182,10 +202,6 @@ export default function Invoice({ items, totalPrice, onClose }: InvoiceProps) {
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Copy failed:", err);
-      const blob = await drawInvoice(items, totalPrice);
-      if (!blob) return;
-      const url = URL.createObjectURL(blob);
-      window.open(url, "_blank");
     }
   };
 
