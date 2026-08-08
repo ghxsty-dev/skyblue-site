@@ -62,6 +62,17 @@ export const TR = {
   catMinecraft: "Minecraft",
   catMinecraftDesc: "Minecraft sunucunuz için özel tasarımlar.",
   contract: "Sözleşme",
+  customPackageTitle: "Kendi Paketinizi Oluşturun",
+  customPackageDesc: "İhtiyacınıza göre ürünleri seçin, özel paketinizi oluşturun.",
+  wantPackage: "Paket mi istiyorsunuz?",
+  wantPackageDesc: "Hazır paketlerimizden birini seçin veya kendi paketinizi oluşturun.",
+  createOwn: "Kendi Paketinizi mi Oluşturmak İstiyorsunuz?",
+  createOwnDesc: "İhtiyacınıza göre ürünleri seçin, size özel fiyat teklifi alın.",
+  selectItems: "Ürünleri Seçin",
+  totalPrice: "Toplam Fiyat",
+  sendToDiscord: "Discord'a Gönder",
+  itemSelected: "ürün seçildi",
+  selectCategory: "Kategori Seçin",
 };
 
 export const EN: typeof TR = {
@@ -128,6 +139,17 @@ export const EN: typeof TR = {
   catMinecraft: "Minecraft",
   catMinecraftDesc: "Custom designs for your Minecraft server.",
   contract: "Contract",
+  customPackageTitle: "Create Your Own Package",
+  customPackageDesc: "Select items according to your needs, create your custom package.",
+  wantPackage: "Want a Package?",
+  wantPackageDesc: "Choose one of our ready-made packages or create your own.",
+  createOwn: "Want to Create Your Own Package?",
+  createOwnDesc: "Select items according to your needs, get a custom price quote.",
+  selectItems: "Select Items",
+  totalPrice: "Total Price",
+  sendToDiscord: "Send to Discord",
+  itemSelected: "items selected",
+  selectCategory: "Select Category",
 };
 
 export type Lang = "TR" | "EN";
