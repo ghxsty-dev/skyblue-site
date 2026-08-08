@@ -57,9 +57,6 @@ export default function HomePage() {
       <section className="relative flex items-center">
         <div className="page-inner w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center pb-16 md:pb-20">
           <div>
-            <span className="inline-block px-5 py-1.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-xs font-semibold mb-5">
-              {t.heroBadge}
-            </span>
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
               {t.heroTitle.split(t.heroTitleSpan)[0]}
               <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">

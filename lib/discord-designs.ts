@@ -77,8 +77,8 @@ function resizeUrl(url: string): string {
   try {
     const u = new URL(url);
     if (u.hostname === "cdn.discordapp.com") {
-      u.searchParams.set("width", "600");
-      u.searchParams.set("quality", "80");
+      u.searchParams.set("width", "400");
+      u.searchParams.set("quality", "40");
     }
     return u.toString();
   } catch {
