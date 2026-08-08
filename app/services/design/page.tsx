@@ -186,7 +186,12 @@ export default function DesignPage() {
                     }`}
                   >
                     <span className="text-sm font-medium text-[var(--text)]">{item.title}</span>
-                    <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent mt-1">{item.price} TL</span>
+                    <div className="flex flex-col items-center mt-1">
+                      <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{item.price} TL</span>
+                      {item.unit && (
+                        <span className="text-[9px] text-[var(--text2)]">/ {item.unit}</span>
+                      )}
+                    </div>
                     {isSelected && (
                       <span className="text-[10px] text-[#59abfe] mt-1">✓ Seçildi</span>
                     )}
@@ -253,7 +258,12 @@ export default function DesignPage() {
                 {sub.items.slice(0, 4).map((item: any, ii: number) => (
                   <div key={ii} className="rounded-xl border border-[var(--border)] p-3 flex flex-col items-center text-center hover:border-[#59abfe] transition-all">
                     <span className="text-sm font-medium text-[var(--text)]">{item.title}</span>
-                    <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent mt-1">{item.price} TL</span>
+                    <div className="flex flex-col items-center mt-1">
+                      <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{item.price} TL</span>
+                      {item.unit && (
+                        <span className="text-[9px] text-[var(--text2)]">/ {item.unit}</span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

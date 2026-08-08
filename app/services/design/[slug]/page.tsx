@@ -63,14 +63,19 @@ export default function SubCategoryDetail() {
         </div>
 
         <p className="text-xs text-[var(--text2)] mb-1">
-          {lang === "TR" ? "Tüm tasarımlar 50 TL, sınırsız revize." : "All designs 50 TL, unlimited revisions."}
+          {lang === "TR" ? "Tüm tasarımlar sınırsız revize." : "All designs unlimited revisions."}
         </p>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
           {sub.items.map((item: any, i: number) => (
             <div key={i} className="rounded-xl border border-[var(--border)] p-4 text-center hover:border-[#59abfe] transition-all">
               <p className="font-medium text-sm text-[var(--text)] mb-2">{item.title}</p>
-              <p className="text-lg font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">50 TL</p>
+              <div className="flex flex-col items-center">
+                <p className="text-lg font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{item.price} TL</p>
+                {item.unit && (
+                  <p className="text-[10px] text-[var(--text2)]">/ {item.unit}</p>
+                )}
+              </div>
               <p className="text-[10px] text-[var(--text2)] mt-1">
                 {lang === "TR" ? "Sınırsız Revize" : "Unlimited Revisions"}
               </p>
