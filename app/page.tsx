@@ -98,6 +98,23 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="page-inner py-12">
+        <Reveal>
+          <div className="relative rounded-2xl overflow-hidden border border-[var(--border)] group">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#97cdf2]/10 to-[#59abfe]/10 pointer-events-none z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <video
+              src="/tanitim.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-auto rounded-2xl"
+              poster="/anasayfa.png"
+            />
+          </div>
+        </Reveal>
+      </section>
+
       <section className="page-inner py-16">
         <StatsCounter />
         <Reveal>
