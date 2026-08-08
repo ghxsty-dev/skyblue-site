@@ -122,15 +122,6 @@ export default function HomePage() {
               className="w-full h-auto rounded-2xl"
               poster="/anasayfa.png"
             />
-            <div className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity duration-300 z-20 ${videoHover ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
-              <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                  <line x1="23" y1="9" x2="17" y2="15" />
-                  <line x1="17" y1="9" x2="23" y2="15" />
-                </svg>
-              </div>
-            </div>
           </div>
         </Reveal>
       </section>
