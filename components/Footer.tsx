@@ -96,7 +96,8 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-[var(--footer-bg)] text-[var(--footer-text)] px-6 py-12 pb-8">
+    <footer className="relative bg-[var(--footer-bg)] text-[var(--footer-text)] px-6 py-12 pb-8 overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#59abfe] to-transparent opacity-60 animate-[gradientSlide_4s_linear_infinite]" style={{ backgroundSize: "200% 100%" }} />
       <div className="max-w-[1100px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div className="flex flex-col gap-3">
