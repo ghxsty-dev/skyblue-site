@@ -87,6 +87,12 @@ export default function HomePage() {
   return (
     <div>
       <section className="relative h-[80vh] min-h-[500px] w-full flex items-center justify-center overflow-hidden">
+        <img
+          src="/background.png"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-6 text-white">
             {t.heroTitle.split(t.heroTitleSpan)[0]}
