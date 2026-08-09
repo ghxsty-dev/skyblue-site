@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
-import { motion } from "motion/react";
 import { useApp } from "@/lib/context";
 import { StarIcon, MessageIcon, CameraIcon, MailIcon } from "@/lib/icons";
 import contactData from "@/data/contact.json";
@@ -88,14 +87,6 @@ export default function HomePage() {
   return (
     <div>
       <section className="relative h-[80vh] min-h-[500px] w-full flex items-center justify-center overflow-hidden">
-        <motion.img
-          src="/anasayfa.png"
-          alt=""
-          className="h-full w-full object-cover absolute inset-0 [mask-image:radial-gradient(circle,transparent,black_80%)] pointer-events-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.5 }}
-          transition={{ duration: 1 }}
-        />
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-6 text-white">
             {t.heroTitle.split(t.heroTitleSpan)[0]}
