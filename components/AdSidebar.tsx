@@ -6,6 +6,10 @@ import Link from "next/link";
 
 const MAX_ADS = 20;
 
+const adLinks: Record<number, string> = {
+  3: "https://discore.app",
+};
+
 function shuffle(arr: number[]) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -48,10 +52,13 @@ export default function AdSidebar() {
 
   if (pathname === "/" || leftAd === null) return null;
 
+  const leftHref = adLinks[leftAd] || "/reklam";
+  const rightHref = rightAd !== null ? (adLinks[rightAd] || "/reklam") : "/reklam";
+
   return (
     <>
       <div className="absolute left-0 top-32 z-40 hidden xl:block w-[180px]">
-        <Link href="/reklam" target="_blank" rel="noopener noreferrer" className="block">
+        <Link href={leftHref} target="_blank" rel="noopener noreferrer" className="block">
           <img
             src={`/reklam${leftAd}.png`}
             alt="Reklam"
@@ -61,7 +68,7 @@ export default function AdSidebar() {
       </div>
       {rightAd !== null && rightAd !== leftAd && (
         <div className="absolute right-0 top-32 z-40 hidden xl:block w-[180px]">
-          <Link href="/reklam" target="_blank" rel="noopener noreferrer" className="block">
+          <Link href={rightHref} target="_blank" rel="noopener noreferrer" className="block">
             <img
               src={`/reklam${rightAd}.png`}
               alt="Reklam"
