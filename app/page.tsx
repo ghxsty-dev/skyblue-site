@@ -55,11 +55,11 @@ export default function HomePage() {
 
   return (
     <div>
-      <section className="relative h-[80vh] min-h-[500px] w-full flex items-center justify-center overflow-hidden -mt-16 pt-16">
+      <section className="relative h-[80vh] min-h-[500px] ml-[calc(-50vw+50%)] mr-[calc(-50vw+50%)] w-[100vw] flex items-center justify-center overflow-hidden">
         <img
           src="/background.png"
           alt=""
-          className="absolute inset-0 w-full h-full object-cover object-center min-w-full min-h-full scale-105"
+          className="absolute inset-0 w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--bg)]" />
