@@ -27,33 +27,33 @@ function useCount(target: number, duration: number, decimals = 0) {
 
 export default function StatsCounter() {
   const { t } = useApp();
-  const customers = useCount(30, 2000);
-  const products = useCount(100, 2500);
-  const rating = useCount(47, 1800);
+  const customers = useCount(40, 2000);
+  const products = useCount(120, 2500);
+  const rating = useCount(49, 1800);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-center mb-14 py-6 px-4 max-w-2xl mx-auto">
-      <div className="flex flex-col items-center py-2 px-8 min-w-[120px]">
-        <span className="text-3xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+    <div className="flex flex-col sm:flex-row items-center justify-center mb-14 py-10 px-6 max-w-3xl mx-auto">
+      <div className="flex flex-col items-center py-3 px-10 min-w-[150px]">
+        <span className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
           {customers}+
         </span>
-        <span className="text-xs text-[var(--text2)] mt-1 font-medium">{t.statsCustomers}</span>
+        <span className="text-sm text-[var(--text2)] mt-2 font-medium">{t.statsCustomers}</span>
       </div>
-      <div className="hidden sm:block w-px h-12 bg-[var(--border)]" />
-      <div className="block sm:hidden w-12 h-px bg-[var(--border)] my-3" />
-      <div className="flex flex-col items-center py-2 px-8 min-w-[120px]">
-        <span className="text-3xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+      <div className="hidden sm:block w-px h-16 bg-[var(--border)]" />
+      <div className="block sm:hidden w-16 h-px bg-[var(--border)] my-3" />
+      <div className="flex flex-col items-center py-3 px-10 min-w-[150px]">
+        <span className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
           {products}+
         </span>
-        <span className="text-xs text-[var(--text2)] mt-1 font-medium">{t.statsProducts}</span>
+        <span className="text-sm text-[var(--text2)] mt-2 font-medium">{t.statsProducts}</span>
       </div>
-      <div className="hidden sm:block w-px h-12 bg-[var(--border)]" />
-      <div className="block sm:hidden w-12 h-px bg-[var(--border)] my-3" />
-      <div className="flex flex-col items-center py-2 px-8 min-w-[120px]">
-        <span className="text-3xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+      <div className="hidden sm:block w-px h-16 bg-[var(--border)]" />
+      <div className="block sm:hidden w-16 h-px bg-[var(--border)] my-3" />
+      <div className="flex flex-col items-center py-3 px-10 min-w-[150px]">
+        <span className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
           {(rating / 10).toFixed(1)}
         </span>
-        <span className="text-xs text-[var(--text2)] mt-1 font-medium">{t.statsRating}</span>
+        <span className="text-sm text-[var(--text2)] mt-2 font-medium">{t.statsRating}</span>
       </div>
     </div>
   );
