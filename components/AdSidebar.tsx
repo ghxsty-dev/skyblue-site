@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-const TOTAL_ADS = 6;
+const MAX_ADS = 20;
 
 function shuffle(arr: number[]) {
   const a = [...arr];
@@ -15,19 +15,38 @@ function shuffle(arr: number[]) {
   return a;
 }
 
+async function checkImage(src: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = src;
+  });
+}
+
+async function getAvailableAds(): Promise<number[]> {
+  const checks = Array.from({ length: MAX_ADS }, (_, i) =>
+    checkImage(`/reklam${i + 1}.png`).then((ok) => (ok ? i + 1 : 0))
+  );
+  const results = await Promise.all(checks);
+  return results.filter((n) => n > 0);
+}
+
 export default function AdSidebar() {
   const pathname = usePathname();
-  const [leftAd, setLeftAd] = useState(1);
-  const [rightAd, setRightAd] = useState(2);
+  const [leftAd, setLeftAd] = useState<number | null>(null);
+  const [rightAd, setRightAd] = useState<number | null>(null);
 
   useEffect(() => {
-    const indices = Array.from({ length: TOTAL_ADS }, (_, i) => i + 1);
-    const shuffled = shuffle(indices);
-    setLeftAd(shuffled[0]);
-    setRightAd(shuffled[1]);
+    getAvailableAds().then((ads) => {
+      if (ads.length === 0) return;
+      const shuffled = shuffle(ads);
+      setLeftAd(shuffled[0]);
+      setRightAd(shuffled.length > 1 ? shuffled[1] : shuffled[0]);
+    });
   }, [pathname]);
 
-  if (pathname === "/") return null;
+  if (pathname === "/" || leftAd === null) return null;
 
   return (
     <>
@@ -40,15 +59,17 @@ export default function AdSidebar() {
           />
         </Link>
       </div>
-      <div className="absolute right-0 top-32 z-40 hidden xl:block w-[180px]">
-        <Link href="/reklam" target="_blank" rel="noopener noreferrer" className="block">
-          <img
-            src={`/reklam${rightAd}.png`}
-            alt="Reklam"
-            className="w-[160px] mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all cursor-pointer"
-          />
-        </Link>
-      </div>
+      {rightAd !== null && rightAd !== leftAd && (
+        <div className="absolute right-0 top-32 z-40 hidden xl:block w-[180px]">
+          <Link href="/reklam" target="_blank" rel="noopener noreferrer" className="block">
+            <img
+              src={`/reklam${rightAd}.png`}
+              alt="Reklam"
+              className="w-[160px] mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all cursor-pointer"
+            />
+          </Link>
+        </div>
+      )}
     </>
   );
 }
