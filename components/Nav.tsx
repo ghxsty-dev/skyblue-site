@@ -53,7 +53,7 @@ export default function Nav() {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-[1000] px-6 transition-all duration-300 ${
       scrolled
-        ? "bg-[var(--nav-bg)]/80 backdrop-blur-xl border-b border-[var(--border)] shadow-lg shadow-black/5"
+        ? "bg-[var(--nav-bg)]/50 backdrop-blur-xl border-b border-[var(--border)]/50 shadow-lg shadow-black/5"
         : "bg-transparent backdrop-blur-none border-b border-transparent"
     }`}>
       <div className="max-w-[1200px] mx-auto flex items-center justify-between h-16">
