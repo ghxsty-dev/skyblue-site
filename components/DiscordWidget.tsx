@@ -26,7 +26,6 @@ export default function DiscordWidget() {
 
   const stats = data
     ? [
-        { label: lang === "TR" ? "Toplam Üye" : "Total Members", value: data.memberCount, color: "text-[#59abfe]" },
         { label: lang === "TR" ? "Aktif Üye" : "Online", value: data.onlineCount, color: "text-green-400" },
         { label: "Boost", value: data.boostCount, color: "text-pink-400" },
       ]
@@ -60,18 +59,18 @@ export default function DiscordWidget() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 px-6 pb-6">
+        <div className="grid grid-cols-2 gap-3 px-6 pb-6">
           {loading
-            ? Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="bg-[var(--bg2)] rounded-xl p-3 text-center animate-pulse">
-                  <div className="w-8 h-6 bg-[var(--border)] rounded mx-auto mb-1" />
-                  <div className="w-16 h-3 bg-[var(--border)] rounded mx-auto" />
+            ? Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="bg-[var(--bg2)] rounded-xl p-4 text-center animate-pulse">
+                  <div className="w-10 h-8 bg-[var(--border)] rounded mx-auto mb-1" />
+                  <div className="w-20 h-3 bg-[var(--border)] rounded mx-auto" />
                 </div>
               ))
             : stats.map((s) => (
-                <div key={s.label} className="bg-[var(--bg2)] rounded-xl p-3 text-center">
-                  <div className={`text-xl font-bold ${s.color}`}>{s.value.toLocaleString()}</div>
-                  <div className="text-[10px] text-[var(--text2)] mt-0.5">{s.label}</div>
+                <div key={s.label} className="bg-[var(--bg2)] rounded-xl p-4 text-center">
+                  <div className={`text-2xl font-bold ${s.color}`}>{s.value.toLocaleString()}</div>
+                  <div className="text-xs text-[var(--text2)] mt-1">{s.label}</div>
                 </div>
               ))}
         </div>
