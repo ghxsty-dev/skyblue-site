@@ -3,12 +3,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
+import { motion } from "motion/react";
 import { useApp } from "@/lib/context";
 import { StarIcon, MessageIcon, CameraIcon, MailIcon } from "@/lib/icons";
 import contactData from "@/data/contact.json";
 import Reveal from "@/components/Reveal";
 import StatsCounter from "@/components/StatsCounter";
 import DiscordWidget from "@/components/DiscordWidget";
+import ColourfulText from "@/components/ui/colourful-text";
 
 interface Review {
   text: string;
@@ -85,46 +87,31 @@ export default function HomePage() {
 
   return (
     <div>
-      <section className="relative flex items-center">
-        <div className="page-inner w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center pb-16 md:pb-20">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
-              {t.heroTitle.split(t.heroTitleSpan)[0]}
-              <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
-                {t.heroTitleSpan}
-              </span>
-              {t.heroTitle.split(t.heroTitleSpan)[1] || ""}
-            </h1>
-            <p className="text-lg text-[var(--text2)] max-w-xl mb-8">
-              {t.heroDesc}
-            </p>
-            <div className="flex gap-3 flex-wrap">
-              <Link href="/services" className="btn btn-primary">
-                {t.heroCTA}
-              </Link>
-              <Link href="/contact" className="btn btn-outline">
-                {t.contact}
-              </Link>
-            </div>
-          </div>
-          <div className="flex justify-center md:justify-end relative">
-            <div
-              className="absolute w-[500px] h-[500px] rounded-full opacity-50 blur-3xl pointer-events-none"
-              style={{
-                background: "radial-gradient(circle, rgba(89,171,254,0.8) 0%, rgba(151,205,242,0.4) 40%, transparent 65%)",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-            />
-            <Image
-              src="/anasayfa.png"
-              alt="SkyBlue"
-              width={600}
-              height={600}
-              className="w-full max-w-[500px] h-auto rounded-2xl relative"
-              priority
-            />
+      <section className="relative h-[80vh] min-h-[500px] w-full flex items-center justify-center overflow-hidden">
+        <motion.img
+          src="/anasayfa.png"
+          alt=""
+          className="h-full w-full object-cover absolute inset-0 [mask-image:radial-gradient(circle,transparent,black_80%)] pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.5 }}
+          transition={{ duration: 1 }}
+        />
+        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-6 text-white">
+            {t.heroTitle.split(t.heroTitleSpan)[0]}
+            <ColourfulText text={t.heroTitleSpan} />
+            {t.heroTitle.split(t.heroTitleSpan)[1] || ""}
+          </h1>
+          <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-8">
+            {t.heroDesc}
+          </p>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Link href="/services" className="btn btn-primary">
+              {t.heroCTA}
+            </Link>
+            <Link href="/contact" className="btn btn-outline">
+              {t.contact}
+            </Link>
           </div>
         </div>
       </section>
