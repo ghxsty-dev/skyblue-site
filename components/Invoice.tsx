@@ -14,12 +14,14 @@ interface InvoiceProps {
   onClose: () => void;
 }
 
+const FONT = "Plus Jakarta Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+
 function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | null> {
   return new Promise((resolve) => {
     const canvas = document.createElement("canvas");
     const scale = 2;
     const w = 600;
-    const h = 220 + items.length * 70 + 160;
+    const h = 200 + items.length * 56 + 120;
     canvas.width = w * scale;
     canvas.height = h * scale;
     const ctx = canvas.getContext("2d");
@@ -37,29 +39,29 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     ctx.fill();
 
     const px = 40;
-    let y = 50;
+    let y = 48;
 
-    // Header - SkyBlue logo
+    // Header
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 32px sans-serif";
+    ctx.font = `bold 32px ${FONT}`;
     ctx.fillText("SkyBlue", px, y);
     ctx.fillStyle = "rgba(147,205,242,0.6)";
-    ctx.font = "14px sans-serif";
-    ctx.fillText("Tasarım Hizmetleri", px, y + 22);
+    ctx.font = `14px ${FONT}`;
+    ctx.fillText("Tasar\u0131m Hizmetleri", px, y + 22);
 
     // Invoice no
     const now = new Date();
     const invoiceNo = `SB-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
     ctx.fillStyle = "rgba(147,205,242,0.6)";
-    ctx.font = "13px sans-serif";
+    ctx.font = `13px ${FONT}`;
     ctx.textAlign = "right";
-    ctx.fillText("Sipariş No", w - px, y - 6);
+    ctx.fillText("Sipari\u015f No", w - px, y - 6);
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 16px sans-serif";
+    ctx.font = `bold 16px ${FONT}`;
     ctx.fillText(invoiceNo, w - px, y + 18);
     ctx.textAlign = "left";
 
-    y += 56;
+    y += 52;
 
     // Divider
     ctx.strokeStyle = "rgba(255,255,255,0.1)";
@@ -69,29 +71,29 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     ctx.lineTo(w - px, y);
     ctx.stroke();
 
-    y += 30;
+    y += 26;
 
     // Date & status
     const dateStr = now.toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
     const timeStr = now.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
 
     ctx.fillStyle = "rgba(147,205,242,0.5)";
-    ctx.font = "12px sans-serif";
+    ctx.font = `12px ${FONT}`;
     ctx.fillText("Tarih", px, y);
     ctx.fillStyle = "rgba(255,255,255,0.85)";
-    ctx.font = "14px sans-serif";
-    ctx.fillText(`${dateStr}  ${timeStr}`, px, y + 20);
+    ctx.font = `14px ${FONT}`;
+    ctx.fillText(`${dateStr}  ${timeStr}`, px, y + 18);
 
     ctx.fillStyle = "rgba(147,205,242,0.5)";
-    ctx.font = "12px sans-serif";
+    ctx.font = `12px ${FONT}`;
     ctx.textAlign = "right";
     ctx.fillText("Durum", w - px, y);
     ctx.fillStyle = "#4ade80";
-    ctx.font = "bold 14px sans-serif";
-    ctx.fillText("Beklemede", w - px, y + 20);
+    ctx.font = `bold 14px ${FONT}`;
+    ctx.fillText("Beklemede", w - px, y + 18);
     ctx.textAlign = "left";
 
-    y += 48;
+    y += 42;
 
     // Divider
     ctx.strokeStyle = "rgba(255,255,255,0.1)";
@@ -100,49 +102,44 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     ctx.lineTo(w - px, y);
     ctx.stroke();
 
-    y += 30;
+    y += 26;
 
     // Section title
     ctx.fillStyle = "rgba(147,205,242,0.5)";
-    ctx.font = "bold 11px sans-serif";
-    ctx.letterSpacing = "2px";
-    ctx.fillText("SİPARİŞ DETAYI", px, y);
+    ctx.font = `bold 11px ${FONT}`;
+    ctx.fillText("S\u0130PAR\u0130\u015e DETAYI", px, y);
 
-    y += 30;
+    y += 24;
 
     // Items
     items.forEach((item, i) => {
-      // Item name
       ctx.fillStyle = "#ffffff";
-      ctx.font = "15px sans-serif";
+      ctx.font = `14px ${FONT}`;
       ctx.fillText(item.title, px, y);
 
-      // Price right
       ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 15px sans-serif";
+      ctx.font = `bold 14px ${FONT}`;
       ctx.textAlign = "right";
       ctx.fillText(`${item.price * item.qty} TL`, w - px, y);
       ctx.textAlign = "left";
 
-      // Sub detail
       ctx.fillStyle = "rgba(147,205,242,0.5)";
-      ctx.font = "12px sans-serif";
-      ctx.fillText(`x${item.qty}  ×  ${item.price} TL`, px, y + 18);
+      ctx.font = `11px ${FONT}`;
+      ctx.fillText(`x${item.qty}  \u00d7  ${item.price} TL`, px, y + 16);
 
-      y += 44;
+      y += 38;
 
-      // Subtle separator
       if (i < items.length - 1) {
         ctx.strokeStyle = "rgba(255,255,255,0.06)";
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.moveTo(px, y - 10);
-        ctx.lineTo(w - px, y - 10);
+        ctx.moveTo(px, y - 8);
+        ctx.lineTo(w - px, y - 8);
         ctx.stroke();
       }
     });
 
-    y += 16;
+    y += 12;
 
     // Total divider
     ctx.strokeStyle = "rgba(255,255,255,0.15)";
@@ -152,20 +149,20 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     ctx.lineTo(w - px, y);
     ctx.stroke();
 
-    y += 36;
+    y += 30;
 
     // Total
     ctx.fillStyle = "rgba(147,205,242,0.7)";
-    ctx.font = "15px sans-serif";
+    ctx.font = `14px ${FONT}`;
     ctx.fillText("Toplam", px, y);
 
     ctx.fillStyle = "#59abfe";
-    ctx.font = "bold 28px sans-serif";
+    ctx.font = `bold 26px ${FONT}`;
     ctx.textAlign = "right";
     ctx.fillText(`${totalPrice} TL`, w - px, y + 4);
     ctx.textAlign = "left";
 
-    y += 48;
+    y += 40;
 
     // Footer divider
     ctx.strokeStyle = "rgba(255,255,255,0.08)";
@@ -175,13 +172,13 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     ctx.lineTo(w - px, y);
     ctx.stroke();
 
-    y += 24;
+    y += 22;
 
     // Footer note
     ctx.fillStyle = "rgba(147,205,242,0.35)";
-    ctx.font = "12px sans-serif";
+    ctx.font = `11px ${FONT}`;
     ctx.textAlign = "center";
-    ctx.fillText("Bu görseli Discord'a yapıştırarak sipariş verebilirsiniz.", w / 2, y);
+    ctx.fillText("Bu g\u00f6rseli Discord'a yap\u0131\u015ft\u0131rarak sipari\u015f verebilirsiniz.", w / 2, y);
 
     canvas.toBlob((blob) => resolve(blob), "image/png");
   });
