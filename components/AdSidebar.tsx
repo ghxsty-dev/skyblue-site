@@ -1,20 +1,31 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import AdUnit from "./AdUnit";
+import Link from "next/link";
 
 export default function AdSidebar() {
   const pathname = usePathname();
-  const adPages = ["/designs", "/services", "/reviews", "/contact"];
-  if (!adPages.includes(pathname)) return null;
+  if (pathname === "/") return null;
 
   return (
     <>
-      <div className="absolute left-0 top-32 z-40 hidden xl:block w-[200px]">
-        <AdUnit slot="1234567890" format="vertical" className="w-[160px] mx-auto" />
+      <div className="absolute left-0 top-32 z-40 hidden xl:block w-[180px]">
+        <Link href="/reklam" target="_blank" rel="noopener noreferrer" className="block">
+          <img
+            src="/reklam1.png"
+            alt="Reklam"
+            className="w-[160px] mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all cursor-pointer"
+          />
+        </Link>
       </div>
-      <div className="absolute right-0 top-32 z-40 hidden xl:block w-[200px]">
-        <AdUnit slot="1234567891" format="vertical" className="w-[160px] mx-auto" />
+      <div className="absolute right-0 top-32 z-40 hidden xl:block w-[180px]">
+        <Link href="/reklam" target="_blank" rel="noopener noreferrer" className="block">
+          <img
+            src="/reklam2.png"
+            alt="Reklam"
+            className="w-[160px] mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all cursor-pointer"
+          />
+        </Link>
       </div>
     </>
   );
