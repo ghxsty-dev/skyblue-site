@@ -17,24 +17,24 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "SkyBlue Design",
-  description: "Professional design services by SkyBlue",
+  title: "SkyBlue Tasarım Hizmetleri",
+  description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
   icons: { icon: "/logo.png" },
   openGraph: {
-    title: "SkyBlue Design",
-    description: "Professional design services by SkyBlue",
+    title: "SkyBlue Tasarım Hizmetleri",
+    description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
     images: [
       {
-        url: "/gifgorsel.gif",
-        alt: "SkyBlue Design",
+        url: "/skyblue-design.png",
+        alt: "SkyBlue Tasarım Hizmetleri",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "SkyBlue Design",
-    description: "Professional design services by SkyBlue",
-    images: ["/gifgorsel.gif"],
+    title: "SkyBlue Tasarım Hizmetleri",
+    description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
+    images: ["/skyblue-design.png"],
   },
 };
 
