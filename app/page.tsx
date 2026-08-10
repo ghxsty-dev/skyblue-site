@@ -56,7 +56,7 @@ export default function HomePage() {
   return (
     <div>
       <section className="relative h-[calc(100vh-64px)] min-h-[500px] -mt-6 flex items-center justify-center overflow-hidden">
-        <div className="absolute top-0 bottom-0 left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-[100vw]">
+        <div className="absolute top-0 bottom-0 left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-[100vw] overflow-hidden rounded-b-3xl">
           <img
             src="/background.png"
             alt=""
