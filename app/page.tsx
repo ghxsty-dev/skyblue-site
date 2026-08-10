@@ -55,12 +55,14 @@ export default function HomePage() {
 
   return (
     <div>
-      <section className="relative h-[calc(100vh-64px)] min-h-[500px] -mt-6 ml-[calc(-50vw+50%-24px)] mr-[calc(-50vw+50%-24px)] w-[100vw] flex items-center justify-center overflow-hidden">
-        <img
-          src="/background.png"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        />
+      <section className="relative h-[calc(100vh-64px)] min-h-[500px] -mt-6 flex items-center justify-center overflow-hidden">
+        <div className="absolute top-0 bottom-0 left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-[100vw]">
+          <img
+            src="/background.png"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover object-center"
+          />
+        </div>
         <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--bg)]" />
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
