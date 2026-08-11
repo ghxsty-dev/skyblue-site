@@ -20,9 +20,15 @@ export const metadata: Metadata = {
   title: "SkyBlue Tasarım Hizmetleri",
   description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
   icons: { icon: "/logo.png" },
+  metadataBase: new URL("https://skyblue.tr"),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "SkyBlue Tasarım Hizmetleri",
     description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
+    url: "https://skyblue.tr",
+    siteName: "SkyBlue Tasarım Hizmetleri",
     images: [
       {
         url: "/skyblue-design.png",
@@ -50,6 +56,28 @@ export default function RootLayout({
       className={`${plusJakarta.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "SkyBlue Tasarım Hizmetleri",
+              url: "https://skyblue.tr",
+              logo: "https://skyblue.tr/logo.png",
+              description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
+              sameAs: [
+                "https://www.instagram.com/skyblue",
+                "https://discord.gg/DRnxEXCQU",
+              ],
+              contactPoint: {
+                "@type": "ContactPoint",
+                contactType: "customer service",
+                availableLanguage: ["Turkish", "English"],
+              },
+            }),
+          }}
+        />
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7679661881079802"

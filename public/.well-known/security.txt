@@ -1,0 +1,5 @@
+Contact:mailto:kivancghxsty@gmail.com
+Expires:2027-08-11T00:00:00.000Z
+Preferred-Languages:tr,en
+Canonical:https://skyblue.tr/.well-known/security.txt
+Policy:https://skyblue.tr/privacy
