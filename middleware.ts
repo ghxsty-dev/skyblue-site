@@ -19,8 +19,8 @@ export function middleware(request: NextRequest) {
     "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://pagead2.googlesyndication.com https://www.googletagmanager.com; " +
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
     "font-src 'self' https://fonts.gstatic.com; " +
-    "img-src 'self' data: blob: https://cdn.discordapp.com https://flagcdn.com https://*.googleusercontent.com; " +
-    "connect-src 'self' https://discord.com https://api.github.com; " +
+    "img-src 'self' data: blob: https://cdn.discordapp.com https://media.discordapp.net https://flagcdn.com https://*.googleusercontent.com; " +
+    "connect-src 'self' https://discord.com https://api.github.com https://cdn.discordapp.com https://media.discordapp.net; " +
     "frame-src https://www.youtube.com https://discord.com; " +
     "frame-ancestors 'none'"
   );

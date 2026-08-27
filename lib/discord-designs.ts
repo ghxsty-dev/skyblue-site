@@ -79,8 +79,9 @@ function resizeUrl(url: string): { thumb: string; original: string } {
   try {
     const u = new URL(url);
     if (u.hostname === "cdn.discordapp.com") {
+      u.hostname = "media.discordapp.net";
       u.searchParams.set("width", "400");
-      u.searchParams.set("quality", "40");
+      u.searchParams.set("height", "300");
       return { thumb: u.toString(), original };
     }
     return { thumb: url, original };
