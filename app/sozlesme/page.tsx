@@ -38,17 +38,16 @@ export default function SozlesmePage() {
       </Reveal>
 
       <Reveal delay={40}>
-        <div className="card p-6">
-          <div className="flex flex-col gap-3">
+        <div className="py-2">
+          <div className="flex flex-col gap-4">
             {items.map((item, i) => (
-              <div key={i} className="flex items-start gap-2 text-sm text-[var(--text2)] leading-relaxed">
-                <span className="text-[#59abfe] shrink-0 mt-0.5">✦</span>
+              <div key={i} className="text-sm text-[var(--text2)] leading-relaxed">
                 <span>{lang === "TR" ? item.tr : item.en}</span>
               </div>
             ))}
           </div>
 
-          <div className="mt-6 pt-5 border-t border-[var(--border)] text-sm text-[var(--text2)] leading-relaxed">
+          <div className="mt-8 pt-6 border-t border-[var(--border)] text-sm text-[var(--text2)] leading-relaxed">
             <p className="mb-3">
               {lang === "TR"
                 ? "SkyBlue ve müşteriler bu sözleşmede yer alan şartları kabul ettiklerini beyan eder."
@@ -56,8 +55,8 @@ export default function SozlesmePage() {
             </p>
             <p>
               {lang === "TR"
-                ? "SkyBlue sonradan sözleşmede değişiklik yapma hakkına sahiptir. SkyBlue Tasarım Hizmetleri | ⭐・tasarımlarımız kısmından tasarımlarımıza ulaşabilirsiniz."
-                : "SkyBlue reserves the right to make changes to the contract at a later date. SkyBlue Design Services | You can view our designs in the ⭐・tasarımlarımız section."}
+                ? "SkyBlue sonradan sözleşmede değişiklik yapma hakkına sahiptir. SkyBlue Tasarım Hizmetleri | tasarımlarımız kısmından tasarımlarımıza ulaşabilirsiniz."
+                : "SkyBlue reserves the right to make changes to the contract at a later date. SkyBlue Design Services | You can view our designs in the designs section."}
             </p>
           </div>
         </div>
