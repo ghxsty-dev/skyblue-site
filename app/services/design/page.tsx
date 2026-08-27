@@ -3,41 +3,31 @@
 import Link from "next/link";
 import { useState, useMemo } from "react";
 import { useApp } from "@/lib/context";
-import { PaletteIcon, SmartphoneIcon, LayersIcon, MessageIcon, CameraIcon, StarIcon } from "@/lib/icons";
+import { StarIcon, LayersIcon } from "@/lib/icons";
 import data from "@/data/services.json";
 import Reveal from "@/components/Reveal";
 import Invoice from "@/components/Invoice";
 
 const DISCORD_URL = "https://discord.gg/F3uQ2fU8RV";
-const subIcons = [PaletteIcon, SmartphoneIcon, LayersIcon, MessageIcon, CameraIcon];
-
-const subSlugs: Record<string, string> = {
-  logo: "logo",
-  social: "sosyal-medya",
-  gaming: "oyun",
-  discord: "discord",
-  creator: "icerik-uretici",
-};
-
-const categoryKeys = ["logo", "social", "gaming", "discord", "creator"] as const;
 
 export default function DesignPage() {
   const { t, lang } = useApp();
   const d = data[lang as "EN" | "TR"];
-  const [selectedCategory, setSelectedCategory] = useState<string>("logo");
   const [selectedItems, setSelectedItems] = useState<Record<string, number>>({});
   const [showInvoice, setShowInvoice] = useState(false);
 
-  const toggleItem = (key: string, itemTitle: string) => {
-    const itemKey = `${key}-${itemTitle}`;
+  const allItems = (d.design as any).all?.items || [];
+
+  const toggleItem = (itemTitle: string) => {
+    const itemKey = itemTitle;
     setSelectedItems((prev) => ({
       ...prev,
       [itemKey]: prev[itemKey] ? 0 : 1,
     }));
   };
 
-  const updateQuantity = (key: string, itemTitle: string, qty: number) => {
-    const itemKey = `${key}-${itemTitle}`;
+  const updateQuantity = (itemTitle: string, qty: number) => {
+    const itemKey = itemTitle;
     if (qty <= 0) {
       setSelectedItems((prev) => {
         const next = { ...prev };
@@ -54,40 +44,24 @@ export default function DesignPage() {
 
   const totalPrice = useMemo(() => {
     let total = 0;
-    for (const [key, qty] of selectedEntries) {
-      const [catKey, ...rest] = key.split("-");
-      const itemTitle = rest.join("-");
-      const cat = (d.design as any)[catKey];
-      if (cat) {
-        const item = cat.items.find((i: any) => i.title === itemTitle);
-        if (item) total += item.price * qty;
-      }
+    for (const [itemTitle, qty] of selectedEntries) {
+      const item = allItems.find((i: any) => i.title === itemTitle);
+      if (item) total += item.price * qty;
     }
     return total;
-  }, [selectedEntries, d]);
+  }, [selectedEntries, allItems]);
 
   const getInvoiceItems = () => {
     const items: { title: string; qty: number; price: number }[] = [];
-    for (const [key, qty] of selectedEntries) {
-      const [catKey, ...rest] = key.split("-");
-      const itemTitle = rest.join("-");
-      const cat = (d.design as any)[catKey];
-      if (cat) {
-        const item = cat.items.find((i: any) => i.title === itemTitle);
-        if (item) items.push({ title: item.title, qty, price: item.price });
-      }
+    for (const [itemTitle, qty] of selectedEntries) {
+      const item = allItems.find((i: any) => i.title === itemTitle);
+      if (item) items.push({ title: item.title, qty, price: item.price });
     }
     return items;
   };
 
-  const currentCat = (d.design as any)[selectedCategory];
-
   const getSelectedItemInfo = (itemKey: string) => {
-    const [catKey, ...rest] = itemKey.split("-");
-    const itemTitle = rest.join("-");
-    const cat = (d.design as any)[catKey];
-    if (!cat) return null;
-    return cat.items.find((i: any) => i.title === itemTitle) || null;
+    return allItems.find((i: any) => i.title === itemKey) || null;
   };
 
   return (
@@ -174,82 +148,55 @@ export default function DesignPage() {
           <p className="text-sm text-[var(--text2)] mb-5">{t.createOwnDesc}</p>
 
           <div className="flex flex-col lg:flex-row gap-5">
-            {/* Left: Categories & Items */}
+            {/* Left: Items Grid */}
             <div className="flex-1 min-w-0">
-              {/* Category Tabs */}
-              <div className="flex gap-1 p-1 bg-[var(--bg2)] rounded-xl mb-5 border border-[var(--border)]">
-                {categoryKeys.map((key) => {
-                  const cat = (d.design as any)[key];
-                  if (!cat) return null;
-                  const Icon = subIcons[categoryKeys.indexOf(key)] || subIcons[0];
-                  const isActive = selectedCategory === key;
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                {allItems.map((item: any, ii: number) => {
+                  const itemKey = item.title;
+                  const qty = selectedItems[itemKey] || 0;
+                  const isSelected = qty > 0;
                   return (
-                    <button
-                      key={key}
-                      onClick={() => setSelectedCategory(key)}
-                      className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-semibold transition-all flex-1 cursor-pointer ${
-                        isActive
-                          ? "bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white shadow-md"
-                          : "text-[var(--text2)] hover:text-[var(--text)] hover:bg-[var(--bg)]"
+                    <div
+                      key={ii}
+                      className={`rounded-xl border p-3 flex flex-col items-center text-center transition-all ${
+                        isSelected
+                          ? "border-[#59abfe] bg-[#59abfe]/10"
+                          : "border-[var(--border)] hover:border-[#59abfe]"
                       }`}
                     >
-                      <Icon size={13} />
-                      <span className="hidden sm:inline">{cat.name}</span>
-                    </button>
+                      <button
+                        onClick={() => toggleItem(item.title)}
+                        className="w-full cursor-pointer bg-transparent border-none p-0"
+                      >
+                        <span className="text-sm font-medium text-[var(--text)]">{item.title}</span>
+                        <div className="flex flex-col items-center mt-1">
+                          <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{item.price} TL</span>
+                          {item.unit && (
+                            <span className="text-[9px] text-[var(--text2)]">/ {item.unit}</span>
+                          )}
+                        </div>
+                      </button>
+                      {isSelected && (
+                        <div className="flex items-center gap-2 mt-2">
+                          <button
+                            onClick={() => updateQuantity(item.title, qty - 1)}
+                            className="w-6 h-6 rounded-md bg-[var(--bg2)] border border-[var(--border)] text-[var(--text)] text-xs flex items-center justify-center hover:bg-[#59abfe] hover:text-white hover:border-[#59abfe] transition-all cursor-pointer"
+                          >
+                            −
+                          </button>
+                          <span className="text-sm font-bold text-[#59abfe] min-w-[20px] text-center">{qty}</span>
+                          <button
+                            onClick={() => updateQuantity(item.title, qty + 1)}
+                            className="w-6 h-6 rounded-md bg-[var(--bg2)] border border-[var(--border)] text-[var(--text)] text-xs flex items-center justify-center hover:bg-[#59abfe] hover:text-white hover:border-[#59abfe] transition-all cursor-pointer"
+                          >
+                            +
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
-
-              {/* Items Grid */}
-              {currentCat && (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {currentCat.items.map((item: any, ii: number) => {
-                    const itemKey = `${selectedCategory}-${item.title}`;
-                    const qty = selectedItems[itemKey] || 0;
-                    const isSelected = qty > 0;
-                    return (
-                      <div
-                        key={ii}
-                        className={`rounded-xl border p-3 flex flex-col items-center text-center transition-all ${
-                          isSelected
-                            ? "border-[#59abfe] bg-[#59abfe]/10"
-                            : "border-[var(--border)] hover:border-[#59abfe]"
-                        }`}
-                      >
-                        <button
-                          onClick={() => toggleItem(selectedCategory, item.title)}
-                          className="w-full cursor-pointer bg-transparent border-none p-0"
-                        >
-                          <span className="text-sm font-medium text-[var(--text)]">{item.title}</span>
-                          <div className="flex flex-col items-center mt-1">
-                            <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{item.price} TL</span>
-                            {item.unit && (
-                              <span className="text-[9px] text-[var(--text2)]">/ {item.unit}</span>
-                            )}
-                          </div>
-                        </button>
-                        {isSelected && (
-                          <div className="flex items-center gap-2 mt-2">
-                            <button
-                              onClick={() => updateQuantity(selectedCategory, item.title, qty - 1)}
-                              className="w-6 h-6 rounded-md bg-[var(--bg2)] border border-[var(--border)] text-[var(--text)] text-xs flex items-center justify-center hover:bg-[#59abfe] hover:text-white hover:border-[#59abfe] transition-all cursor-pointer"
-                            >
-                              −
-                            </button>
-                            <span className="text-sm font-bold text-[#59abfe] min-w-[20px] text-center">{qty}</span>
-                            <button
-                              onClick={() => updateQuantity(selectedCategory, item.title, qty + 1)}
-                              className="w-6 h-6 rounded-md bg-[var(--bg2)] border border-[var(--border)] text-[var(--text)] text-xs flex items-center justify-center hover:bg-[#59abfe] hover:text-white hover:border-[#59abfe] transition-all cursor-pointer"
-                            >
-                              +
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
             </div>
 
             {/* Right: Selection Summary */}
@@ -302,53 +249,6 @@ export default function DesignPage() {
           </div>
         </div>
       </Reveal>
-
-      {/* Sub-categories for browsing */}
-      <Reveal delay={120}>
-        <div className="mb-8">
-          <h3 className="text-base font-bold text-[var(--text)] mb-4">{lang === "TR" ? "Tüm Hizmetlerimiz" : "All Our Services"}</h3>
-        </div>
-      </Reveal>
-
-      {Object.entries(subSlugs).map(([key, slug], si) => {
-        const sub = (d.design as any)[key];
-        if (!sub) return null;
-        const Icon = subIcons[si] || subIcons[0];
-        return (
-          <div key={key} className="mb-10">
-            <Reveal delay={140 + si * 30}>
-              <Link href={`/services/design/${slug}`} className="flex items-center gap-2 mb-4 no-underline group">
-                <div className="text-white shrink-0">
-                  <Icon size={24} />
-                </div>
-                <h3 className="text-base font-bold text-[var(--text)] group-hover:text-[#59abfe] transition-colors">{sub.name}</h3>
-                <span className="text-xs text-[#59abfe] opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-              </Link>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {sub.items.slice(0, 4).map((item: any, ii: number) => (
-                  <div key={ii} className="rounded-xl border border-[var(--border)] p-3 flex flex-col items-center text-center hover:border-[#59abfe] transition-all">
-                    <span className="text-sm font-medium text-[var(--text)]">{item.title}</span>
-                    <div className="flex flex-col items-center mt-1">
-                      <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{item.price} TL</span>
-                      {item.unit && (
-                        <span className="text-[9px] text-[var(--text2)]">/ {item.unit}</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {sub.items.length > 4 && (
-                <Link href={`/services/design/${slug}`} className="text-[11px] text-[var(--text2)] mt-2 text-center no-underline block hover:text-[#59abfe] transition-colors">
-                  {lang === "TR" ? `+${sub.items.length - 4} daha fazla hizmet` : `+${sub.items.length - 4} more services`}
-                  <span className="text-[#59abfe] ml-1">
-                    {lang === "TR" ? "Tümünü gör →" : "View all →"}
-                  </span>
-                </Link>
-              )}
-            </Reveal>
-          </div>
-        );
-      })}
 
       <Reveal delay={280}>
         <div className="text-center mt-4">

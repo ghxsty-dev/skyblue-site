@@ -7,36 +7,23 @@
       { "title": "Discord Server Package", "desc": "Server logo, banner, emoji pack, welcome image, and embed visuals.", "basic": 150, "pro": 300, "slug": "discord-server", "basicIncludes": ["Server Logo", "Server Banner", "5 Custom Emojis"], "proIncludes": ["Server Logo", "Server Banner", "10 Custom Emojis", "Welcome Image", "Embed Images Set", "Partner Banner"] }
     ],
     "design": {
-      "logo": {
-        "name": "Logo & Brand",
+      "all": {
+        "name": "All Designs",
         "items": [
           { "title": "Logo", "price": 70 },
-          { "title": "Mascot Logo", "price": 100 }
-        ]
-      },
-      "social": {
-        "name": "Social Media",
-        "items": [
-          { "title": "Banner", "price": 60 }
-        ]
-      },
-      "gaming": {
-        "name": "Gaming Designs",
-        "items": [
+          { "title": "Mascot Logo", "price": 100 },
+          { "title": "Banner", "price": 60 },
+          { "title": "Instagram Post", "price": 50 },
+          { "title": "Instagram Story", "price": 50 },
           { "title": "Minecraft Server Logo", "price": 70 },
           { "title": "Minecraft Rank Icons", "price": 20, "unit": "per icon" },
           { "title": "Minecraft Server Banner", "price": 50 },
           { "title": "Minecraft Store Banner", "price": 50 },
-          { "title": "Minecraft Thread Design", "price": 50 },
+          { "title": "Minecraft Thread Design", "price": 150 },
           { "title": "FiveM Logo", "price": 50 },
           { "title": "FiveM Banner", "price": 50 },
           { "title": "Steam Artwork", "price": 50 },
-          { "title": "Valorant Team Design", "price": 50 }
-        ]
-      },
-      "discord": {
-        "name": "Discord Designs",
-        "items": [
+          { "title": "Valorant Team Design", "price": 50 },
           { "title": "Discord Server Logo", "price": 70 },
           { "title": "Discord Banner", "price": 50 },
           { "title": "Emoji Pack", "price": 5, "unit": "per emoji" },
@@ -44,12 +31,7 @@
           { "title": "Welcome Image", "price": 50 },
           { "title": "Embed Images", "price": 50 },
           { "title": "Partner Banner", "price": 50 },
-          { "title": "Ticket Panel Images", "price": 50 }
-        ]
-      },
-      "creator": {
-        "name": "Creator Designs",
-        "items": [
+          { "title": "Ticket Panel Images", "price": 50 },
           { "title": "OBS Overlay", "price": 50 },
           { "title": "Stream Banner", "price": 50 },
           { "title": "Webcam Frame", "price": 50 },
@@ -78,36 +60,23 @@
       { "title": "Discord Sunucu Paketi", "desc": "Sunucu logosu, banner, emoji paketi, hoş geldin görseli ve embed tasarımları.", "basic": 150, "pro": 300, "slug": "discord-sunucu", "basicIncludes": ["Sunucu Logosu", "Sunucu Bannerı", "5 Özel Emoji"], "proIncludes": ["Sunucu Logosu", "Sunucu Bannerı", "10 Özel Emoji", "Hoş Geldin Görseli", "Embed Görselleri Seti", "Partner Bannerı"] }
     ],
     "design": {
-      "logo": {
-        "name": "Logo & Marka",
+      "all": {
+        "name": "Tüm Tasarımlar",
         "items": [
           { "title": "Logo", "price": 70 },
-          { "title": "Maskot Logo", "price": 100 }
-        ]
-      },
-      "social": {
-        "name": "Sosyal Medya",
-        "items": [
-          { "title": "Banner", "price": 60 }
-        ]
-      },
-      "gaming": {
-        "name": "Oyun Tasarımları",
-        "items": [
+          { "title": "Maskot Logo", "price": 100 },
+          { "title": "Banner", "price": 60 },
+          { "title": "Instagram Gönderisi", "price": 50 },
+          { "title": "Instagram Hikaye", "price": 50 },
           { "title": "Minecraft Sunucu Logosu", "price": 70 },
           { "title": "Minecraft Rank İkonları", "price": 20, "unit": "ikon başına" },
           { "title": "Minecraft Sunucu Bannerı", "price": 50 },
           { "title": "Minecraft Mağaza Bannerı", "price": 50 },
-          { "title": "Minecraft Konu Tasarımı", "price": 100 },
+          { "title": "Minecraft Konu Tasarımı", "price": 150 },
           { "title": "FiveM Logosu", "price": 50 },
           { "title": "FiveM Banner", "price": 50 },
           { "title": "Steam Artwork", "price": 50 },
-          { "title": "Valorant Takım Tasarımı", "price": 50 }
-        ]
-      },
-      "discord": {
-        "name": "Discord Tasarımları",
-        "items": [
+          { "title": "Valorant Takım Tasarımı", "price": 50 },
           { "title": "Discord Sunucu Logosu", "price": 70 },
           { "title": "Discord Banner", "price": 50 },
           { "title": "Emoji Paketi", "price": 5, "unit": "emoji başına" },
@@ -115,12 +84,7 @@
           { "title": "Hoş Geldin Görseli", "price": 50 },
           { "title": "Embed Görselleri", "price": 50 },
           { "title": "Partner Bannerı", "price": 50 },
-          { "title": "Ticket Panel Görselleri", "price": 50 }
-        ]
-      },
-      "creator": {
-        "name": "İçerik Üretici Tasarımları",
-        "items": [
+          { "title": "Ticket Panel Görselleri", "price": 50 },
           { "title": "OBS Overlay", "price": 50 },
           { "title": "Yayın Bannerı", "price": 50 },
           { "title": "Webcam Çerçevesi", "price": 50 },
