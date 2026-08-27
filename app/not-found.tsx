@@ -12,12 +12,12 @@ export default function NotFound() {
           alt="404"
           width={200}
           height={200}
-          className="cursor-pointer hover:scale-105 transition-transform duration-300"
+          className="cursor-pointer hover:scale-105 transition-transform duration-300 rounded-3xl"
         />
       </Link>
       <Link
         href="/"
-        className="text-xl font-bold text-[var(--text)] hover:text-[#59abfe] transition-colors no-underline"
+        className="text-xl font-bold text-[var(--text2)] hover:text-[#59abfe] transition-colors no-underline"
       >
         Ben neden buradayım?
       </Link>
