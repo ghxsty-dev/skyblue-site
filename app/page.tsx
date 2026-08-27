@@ -57,10 +57,12 @@ export default function HomePage() {
     <div>
       <section className="relative h-[calc(100vh-64px)] min-h-[500px] -mt-6 flex items-center justify-center overflow-hidden">
         <div className="absolute top-0 bottom-0 left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-[100vw] overflow-hidden rounded-b-3xl">
-          <img
+          <Image
             src="/background.webp"
             alt=""
+            fill
             className="absolute inset-0 w-full h-full object-cover object-center"
+            priority
           />
         </div>
         <div className="absolute inset-0 bg-black/50" />
@@ -107,7 +109,7 @@ export default function HomePage() {
                   <div className="card group h-full">
                     <div className="flex items-center gap-3 mb-3">
                       {item.avatar ? (
-                        <img src={item.avatar} alt={item.author} className="w-10 h-10 rounded-full object-cover" />
+                        <Image src={item.avatar} alt={item.author} width={40} height={40} className="w-10 h-10 rounded-full object-cover" />
                       ) : (
                         <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white font-bold text-sm shrink-0">
                           {item.author.charAt(0).toUpperCase()}
@@ -184,9 +186,10 @@ export default function HomePage() {
                 rel="noopener noreferrer"
                 className="group relative flex items-center justify-center w-36 h-36 md:w-44 md:h-44 rounded-2xl border border-[var(--border)] bg-[var(--bg2)] opacity-80 hover:opacity-100 hover:border-[#59abfe] transition-all duration-300 overflow-hidden"
               >
-                <img
+                <Image
                   src={`/${brand.slug}.webp`}
                   alt={brand.name}
+                  fill
                   className="absolute inset-0 w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">

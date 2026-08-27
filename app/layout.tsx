@@ -8,8 +8,9 @@ import Footer from "@/components/Footer";
 import LangModal from "@/components/LangModal";
 import SplashScreen from "@/components/SplashScreen";
 import AdSidebar from "@/components/AdSidebar";
-import OfflineGame from "@/components/OfflineGame";
+import OfflineGameWrapper from "@/components/OfflineGameWrapper";
 import SWRegister from "@/components/SWRegister";
+import LangAttr from "@/components/LangAttr";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -85,9 +86,10 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
         <AppProvider>
+          <LangAttr />
           <SWRegister />
           <SplashScreen />
-          <OfflineGame />
+          <OfflineGameWrapper />
           <div className="relative">
             <Nav />
             <AdSidebar />

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useApp } from "@/lib/context";
+import Image from "next/image";
 
 interface DiscordData {
   name: string;
@@ -38,7 +39,7 @@ export default function DiscordWidget() {
           {loading ? (
             <div className="w-16 h-16 rounded-2xl bg-[var(--bg2)] animate-pulse shrink-0" />
           ) : data?.icon ? (
-            <img src={data.icon} alt={data.name} className="w-16 h-16 rounded-2xl object-cover shrink-0" />
+            <Image src={data.icon} alt={data.name} width={64} height={64} className="w-16 h-16 rounded-2xl object-cover shrink-0" />
           ) : (
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white font-bold text-xl shrink-0">
               S

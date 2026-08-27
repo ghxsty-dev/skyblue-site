@@ -1,28 +1,15 @@
-"use client";
-
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useApp } from "@/lib/context";
-
 export default function NotFound() {
-  const router = useRouter();
-  const { lang } = useApp();
-
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center bg-[var(--bg)] z-[1001] gap-6">
-      <button onClick={() => router.push("/")} className="cursor-pointer bg-none border-none p-0">
-        <Image
-          src="/hata.webp"
-          alt="404"
-          width={200}
-          height={200}
-          className="w-full max-w-[200px] h-auto rounded-2xl"
-          priority
-        />
-      </button>
-      <p className="text-lg text-[var(--text2)] font-medium">
-        {lang === "TR" ? "Ben burada ne yapıyorum?" : "What am I doing here?"}
-      </p>
+    <div className="flex flex-col items-center justify-center py-32 gap-6">
+      <div className="text-6xl">🔍</div>
+      <h2 className="text-xl font-bold text-[var(--text)]">Sayfa Bulunamadı</h2>
+      <p className="text-sm text-[var(--text2)]">Aradığınız sayfa mevcut değil.</p>
+      <a
+        href="/"
+        className="px-4 py-2 rounded-lg bg-[#59abfe] text-white text-sm font-medium hover:opacity-80 transition-opacity"
+      >
+        Ana Sayfaya Dön
+      </a>
     </div>
   );
 }

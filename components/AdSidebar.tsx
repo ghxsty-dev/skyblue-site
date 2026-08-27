@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import NextImage from "next/image";
 
 const MAX_ADS = 20;
 
@@ -28,12 +29,29 @@ async function checkImage(src: string): Promise<boolean> {
   });
 }
 
+const CACHE_KEY = "skyblue-ads";
+const CACHE_TTL = 3600_000;
+
 async function getAvailableAds(): Promise<number[]> {
+  try {
+    const cached = sessionStorage.getItem(CACHE_KEY);
+    if (cached) {
+      const { ads, ts } = JSON.parse(cached);
+      if (Date.now() - ts < CACHE_TTL) return ads;
+    }
+  } catch {}
+
   const checks = Array.from({ length: MAX_ADS }, (_, i) =>
     checkImage(`/reklam${i + 1}.webp`).then((ok) => (ok ? i + 1 : 0))
   );
   const results = await Promise.all(checks);
-  return results.filter((n) => n > 0);
+  const ads = results.filter((n) => n > 0);
+
+  try {
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ads, ts: Date.now() }));
+  } catch {}
+
+  return ads;
 }
 
 export default function AdSidebar() {
@@ -59,20 +77,24 @@ export default function AdSidebar() {
     <>
       <div className="absolute left-0 top-32 z-40 hidden xl:block w-[180px]">
         <Link href={leftHref} target="_blank" rel="noopener noreferrer" className="block">
-          <img
+          <NextImage
             src={`/reklam${leftAd}.webp`}
             alt="Reklam"
-            className="w-[160px] mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all cursor-pointer"
+            width={160}
+            height={160}
+            className="mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all cursor-pointer"
           />
         </Link>
       </div>
       {rightAd !== null && rightAd !== leftAd && (
         <div className="absolute right-0 top-32 z-40 hidden xl:block w-[180px]">
           <Link href={rightHref} target="_blank" rel="noopener noreferrer" className="block">
-            <img
+            <NextImage
               src={`/reklam${rightAd}.webp`}
               alt="Reklam"
-              className="w-[160px] mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all cursor-pointer"
+              width={160}
+              height={160}
+              className="mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all cursor-pointer"
             />
           </Link>
         </div>
