@@ -16,8 +16,7 @@ export async function POST(request: NextRequest) {
     const botToken = process.env.DISCORD_BOT_TOKEN;
 
     if (!webhookUrl) {
-      console.error("[chat] DISCORD_WEBHOOK_URL is not set");
-      return NextResponse.json({ error: "Discord webhook not configured", code: "NO_WEBHOOK" }, { status: 503 });
+      return NextResponse.json({ error: "DISCORD_WEBHOOK_URL ayarlı değil", code: "NO_WEBHOOK" }, { status: 503 });
     }
 
     const embed = {
@@ -31,22 +30,21 @@ export async function POST(request: NextRequest) {
     };
 
     if (threadId) {
-      const webhookRes = await fetch(`${webhookUrl}?thread_id=${threadId}`, {
+      const url = `${webhookUrl}?thread_id=${threadId}`;
+      const webhookRes = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: sender, embeds: [embed] }),
       });
 
+      const resText = await webhookRes.text();
       if (!webhookRes.ok) {
-        const err = await webhookRes.text();
-        console.error("[chat] webhook send to thread failed:", webhookRes.status, err);
-        return NextResponse.json({ error: "Failed to send to Discord" }, { status: 502 });
+        console.error("[chat] webhook to thread failed:", webhookRes.status, resText);
+        return NextResponse.json({ error: `Webhook hatası: ${webhookRes.status}`, detail: resText }, { status: 502 });
       }
 
       return NextResponse.json({ ok: true, threadId });
     }
-
-    const threadName = `💬 ${sender} (${sessionId.slice(0, 6)})`;
 
     if (botToken) {
       const threadRes = await fetch(`${DISCORD_API}/channels/${CHAT_CHANNEL_ID}/threads`, {
@@ -56,50 +54,45 @@ export async function POST(request: NextRequest) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: threadName,
+          name: `💬 ${sender} (${sessionId.slice(0, 6)})`,
           auto_archive_duration: 1440,
-          message: {
-            content: `🟢 **${sender}** sohbete katıldı — ${new Date(timestamp).toLocaleString("tr-TR")}`,
-          },
         }),
       });
 
       if (threadRes.ok) {
         const threadData = await threadRes.json();
         const newThreadId = threadData.id;
-        console.log("[chat] thread created:", newThreadId, "for", sender);
 
-        const webhookRes = await fetch(`${webhookUrl}?thread_id=${newThreadId}`, {
+        const url = `${webhookUrl}?thread_id=${newThreadId}`;
+        const webhookRes = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username: sender, embeds: [embed] }),
         });
 
+        const resText = await webhookRes.text();
         if (!webhookRes.ok) {
-          const err = await webhookRes.text();
-          console.error("[chat] webhook to new thread failed:", webhookRes.status, err);
+          console.error("[chat] webhook to new thread failed:", webhookRes.status, resText);
+          return NextResponse.json({ error: `Webhook hatası: ${webhookRes.status}`, detail: resText }, { status: 502 });
         }
 
         return NextResponse.json({ ok: true, threadId: newThreadId });
       }
 
-      const threadErr = await threadRes.text();
-      console.error("[chat] thread creation failed:", threadRes.status, threadErr);
-    } else {
-      console.warn("[chat] DISCORD_BOT_TOKEN not set, cannot create thread");
+      const errText = await threadRes.text();
+      console.error("[chat] thread creation failed:", threadRes.status, errText);
     }
 
-    console.log("[chat] falling back to plain webhook without thread");
     const webhookRes = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: sender, embeds: [embed] }),
     });
 
+    const resText = await webhookRes.text();
     if (!webhookRes.ok) {
-      const err = await webhookRes.text();
-      console.error("[chat] webhook fallback error:", webhookRes.status, err);
-      return NextResponse.json({ error: "Failed to send to Discord" }, { status: 502 });
+      console.error("[chat] webhook fallback failed:", webhookRes.status, resText);
+      return NextResponse.json({ error: `Webhook hatası: ${webhookRes.status}`, detail: resText }, { status: 502 });
     }
 
     return NextResponse.json({ ok: true, threadId: null });

@@ -170,6 +170,7 @@ export default function LiveChat() {
       const data = await res.json();
 
       if (res.ok && data.ok) {
+        setMessages((prev) => prev.filter((m) => m.id !== tempId));
         if (data.threadId && !threadId) {
           setThreadId(data.threadId);
           localStorage.setItem("skyblue-chat-thread", data.threadId);
