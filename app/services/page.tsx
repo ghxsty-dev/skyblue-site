@@ -39,8 +39,8 @@ export default function ServicesOverview() {
                 href={"external" in cat ? cat.external : `/services/${key}`}
                 className="card group flex flex-col items-center text-center py-10 px-6 cursor-pointer no-underline !bg-transparent hover:!shadow-none"
               >
-                <div className="mb-5 text-[#59abfe] transition-transform duration-300 group-hover:scale-110">
-                  <Icon size={30} />
+                <div className="mb-5 text-white transition-transform duration-300 group-hover:scale-110">
+                  <Icon size={40} />
                 </div>
                 <h3 className="text-lg font-bold text-[var(--text)] mb-2">
                   {t[catKey] as string}
@@ -65,8 +65,8 @@ export default function ServicesOverview() {
           className="card flex items-center justify-between max-w-2xl mx-auto mt-10 px-8 py-5 no-underline hover:border-[#59abfe] transition-all !bg-transparent hover:!shadow-none"
         >
           <div className="flex items-center gap-4">
-            <div className="text-[#59abfe] shrink-0">
-              <MessageIcon size={20} />
+            <div className="text-white shrink-0">
+              <MessageIcon size={28} />
             </div>
             <div>
               <p className="text-sm font-semibold text-[var(--text)]">

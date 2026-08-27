@@ -89,10 +89,10 @@ export default function Footer() {
   }, []);
 
   const socials = [
-    { icon: <DiscordIcon size={18} />, href: info.discordUrl, label: "Discord" },
-    { icon: <InstagramIcon size={18} />, href: info.instagramUrl, label: "Instagram" },
-    { icon: <YouTubeIcon size={18} />, href: info.youtubeUrl, label: "YouTube" },
-    { icon: <MailIcon size={18} />, href: `mailto:${info.email}`, label: "Email" },
+    { icon: <DiscordIcon size={22} />, href: info.discordUrl, label: "Discord" },
+    { icon: <InstagramIcon size={22} />, href: info.instagramUrl, label: "Instagram" },
+    { icon: <YouTubeIcon size={22} />, href: info.youtubeUrl, label: "YouTube" },
+    { icon: <MailIcon size={22} />, href: `mailto:${info.email}`, label: "Email" },
   ];
 
   return (

@@ -43,8 +43,8 @@ export default function ContactPage() {
           <p className="text-sm text-[var(--text2)] mb-6">{t.contactInfoDesc}</p>
 
           <div className="flex items-center gap-3 mb-4">
-            <div className="text-[#59abfe] shrink-0">
-              <MessageIcon size={20} />
+            <div className="text-white shrink-0">
+              <MessageIcon size={28} />
             </div>
             <div>
               <strong className="text-sm">{t.discord}</strong><br />
@@ -55,8 +55,8 @@ export default function ContactPage() {
           </div>
 
           <div className="flex items-center gap-3 mb-4">
-            <div className="text-[#59abfe] shrink-0">
-              <CameraIcon size={20} />
+            <div className="text-white shrink-0">
+              <CameraIcon size={28} />
             </div>
             <div>
               <strong className="text-sm">Instagram</strong><br />
@@ -67,8 +67,8 @@ export default function ContactPage() {
           </div>
 
           <div className="flex items-center gap-3 mb-4">
-            <div className="text-[#59abfe] shrink-0">
-              <MailIcon size={20} />
+            <div className="text-white shrink-0">
+              <MailIcon size={28} />
             </div>
             <div>
               <strong className="text-sm">Email</strong><br />

@@ -107,8 +107,8 @@ export default function DesignPage() {
       <Reveal delay={40}>
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-2">
-            <div className="text-[#59abfe]">
-              <StarIcon size={20} />
+            <div className="text-white">
+              <StarIcon size={28} />
             </div>
             <div>
               <h3 className="text-xl font-extrabold text-[var(--text)]">
@@ -127,8 +127,8 @@ export default function DesignPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[#97cdf2]/5 to-[#59abfe]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="text-[#59abfe]">
-                      <StarIcon size={14} />
+                    <div className="text-white">
+                      <StarIcon size={20} />
                     </div>
                     <h4 className="font-bold text-sm text-[var(--text)] group-hover:text-[#59abfe] transition-colors">{pkg.title}</h4>
                   </div>
@@ -143,8 +143,7 @@ export default function DesignPage() {
                       <p className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center text-base">{pkg.pro} TL</p>
                     </div>
                   </div>
-                  <div className="flex items-center justify-center gap-1.5 text-[10px] text-[var(--text2)]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#59abfe]"></span>
+                  <div className="text-center text-[10px] text-[var(--text2)]">
                     {lang === "TR" ? "Sınırsız Revize" : "Unlimited Revisions"}
                   </div>
                 </div>
@@ -165,8 +164,8 @@ export default function DesignPage() {
       <Reveal delay={80}>
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="text-[#59abfe]">
-              <LayersIcon size={16} />
+            <div className="text-white">
+              <LayersIcon size={24} />
             </div>
             <h3 className="text-lg font-bold text-[var(--text)]">
               {t.createOwn}
@@ -319,8 +318,8 @@ export default function DesignPage() {
           <div key={key} className="mb-10">
             <Reveal delay={140 + si * 30}>
               <Link href={`/services/design/${slug}`} className="flex items-center gap-2 mb-4 no-underline group">
-                <div className="text-[#59abfe] shrink-0">
-                  <Icon size={16} />
+                <div className="text-white shrink-0">
+                  <Icon size={24} />
                 </div>
                 <h3 className="text-base font-bold text-[var(--text)] group-hover:text-[#59abfe] transition-colors">{sub.name}</h3>
                 <span className="text-xs text-[#59abfe] opacity-0 group-hover:opacity-100 transition-opacity">→</span>

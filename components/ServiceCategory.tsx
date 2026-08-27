@@ -42,8 +42,8 @@ export default function ServiceCategory({ cat, desc }: Props) {
           return (
             <Reveal key={i} delay={i * 40}>
               <div className="card flex flex-col">
-                <div className="mb-4 text-[#59abfe]">
-                  <Icon size={24} />
+                <div className="mb-4 text-white">
+                  <Icon size={32} />
                 </div>
                 <h4 className="font-bold text-base mb-2">{item.title}</h4>
                 <p className="text-sm text-[var(--text2)] flex-1">{item.desc}</p>

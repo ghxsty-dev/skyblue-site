@@ -231,8 +231,8 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="flex items-center gap-3 cursor-pointer group"
             >
-              <div className="text-[#59abfe] shrink-0">
-                <MessageIcon size={18} />
+              <div className="text-white shrink-0">
+                <MessageIcon size={24} />
               </div>
               <div>
                 <div className="font-semibold text-sm text-[var(--text)] group-hover:text-[#59abfe] transition-colors">{t.discord}</div>
@@ -245,8 +245,8 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="flex items-center gap-3 cursor-pointer group"
             >
-              <div className="text-[#59abfe] shrink-0">
-                <CameraIcon size={18} />
+              <div className="text-white shrink-0">
+                <CameraIcon size={24} />
               </div>
               <div>
                 <div className="font-semibold text-sm text-[var(--text)] group-hover:text-[#59abfe] transition-colors">Instagram</div>
@@ -254,8 +254,8 @@ export default function HomePage() {
               </div>
             </a>
             <div className="flex items-center gap-3">
-              <div className="text-[#59abfe] shrink-0">
-                <MailIcon size={18} />
+              <div className="text-white shrink-0">
+                <MailIcon size={24} />
               </div>
               <div>
                 <div className="font-semibold text-sm text-[var(--text)]">Email</div>
