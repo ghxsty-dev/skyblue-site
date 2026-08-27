@@ -84,6 +84,11 @@ export const TR = {
   liveChatTyping: "yazıyor...",
   liveChatNew: "Yeni Mesaj",
   liveChatSession: "Destek Talebi",
+  chatUsernameTitle: "Canlı Desteğe Hoş Geldiniz",
+  chatUsernameDesc: "Devam etmek için bir kullanıcı adı girin.",
+  chatUsernamePlaceholder: "Kullanıcı adınız",
+  chatUsernameStart: "Sohbete Başla",
+  chatUsernameError: "Lütfen bir kullanıcı adı girin",
 };
 
 export const EN: typeof TR = {
@@ -172,6 +177,11 @@ export const EN: typeof TR = {
   liveChatTyping: "is typing...",
   liveChatNew: "New Message",
   liveChatSession: "Support Request",
+  chatUsernameTitle: "Welcome to Live Support",
+  chatUsernameDesc: "Enter a username to continue.",
+  chatUsernamePlaceholder: "Your username",
+  chatUsernameStart: "Start Chat",
+  chatUsernameError: "Please enter a username",
 };
 
 export type Lang = "TR" | "EN";

@@ -520,6 +520,95 @@ main {
   cursor: not-allowed;
 }
 
+.chat-username-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  gap: 12px;
+  text-align: center;
+}
+
+.chat-username-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.chat-username-screen h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text);
+}
+
+.chat-username-screen p {
+  font-size: 0.82rem;
+  color: var(--text2);
+  margin: 0;
+}
+
+.chat-username-input {
+  width: 100%;
+  max-width: 240px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  text-align: center;
+  outline: none;
+  transition: border-color var(--transition);
+  margin-top: 8px;
+}
+
+.chat-username-input:focus {
+  border-color: var(--c2);
+}
+
+.chat-username-input.error {
+  border-color: #ef4444;
+}
+
+.chat-username-input::placeholder {
+  color: var(--text2);
+  opacity: 0.5;
+}
+
+.chat-username-error {
+  font-size: 0.75rem;
+  color: #ef4444;
+}
+
+.chat-username-btn {
+  padding: 12px 32px;
+  border-radius: 24px;
+  background: var(--gradient);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all var(--transition);
+  margin-top: 4px;
+}
+
+.chat-username-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px var(--card-shadow);
+}
+
 @media (max-width: 480px) {
   .chat-panel {
     bottom: 0;
