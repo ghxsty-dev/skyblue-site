@@ -74,6 +74,16 @@ export const TR = {
   sendToDiscord: "Discord'a Gönder",
   itemSelected: "ürün seçildi",
   selectCategory: "Kategori Seçin",
+  liveChat: "Canlı Destek",
+  liveChatDesc: "Size nasıl yardımcı olabiliriz?",
+  liveChatInput: "Mesajınızı yazın...",
+  liveChatSend: "Gönder",
+  liveChatWaiting: "Yetkili bekleniyor...",
+  liveChatConnected: "Canlı destek aktif",
+  liveChatOffline: "Çevrimdışı",
+  liveChatTyping: "yazıyor...",
+  liveChatNew: "Yeni Mesaj",
+  liveChatSession: "Destek Talebi",
 };
 
 export const EN: typeof TR = {
@@ -152,6 +162,16 @@ export const EN: typeof TR = {
   sendToDiscord: "Send to Discord",
   itemSelected: "items selected",
   selectCategory: "Select Category",
+  liveChat: "Live Support",
+  liveChatDesc: "How can we help you?",
+  liveChatInput: "Type your message...",
+  liveChatSend: "Send",
+  liveChatWaiting: "Waiting for agent...",
+  liveChatConnected: "Live support active",
+  liveChatOffline: "Offline",
+  liveChatTyping: "is typing...",
+  liveChatNew: "New Message",
+  liveChatSession: "Support Request",
 };
 
 export type Lang = "TR" | "EN";

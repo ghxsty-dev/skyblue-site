@@ -11,6 +11,7 @@ import AdSidebar from "@/components/AdSidebar";
 import OfflineGameWrapper from "@/components/OfflineGameWrapper";
 import SWRegister from "@/components/SWRegister";
 import LangAttr from "@/components/LangAttr";
+import LiveChat from "@/components/LiveChat";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -97,6 +98,7 @@ export default function RootLayout({
             <Footer />
           </div>
           <LangModal />
+          <LiveChat />
         </AppProvider>
       </body>
     </html>
