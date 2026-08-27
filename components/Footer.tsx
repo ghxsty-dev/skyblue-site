@@ -151,7 +151,7 @@ export default function Footer() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-lg border border-[var(--footer-border)] bg-[var(--bg2)] flex items-center justify-center text-[var(--footer-text)] transition-all duration-300 hover:bg-[#59abfe] hover:text-white hover:border-[#59abfe]"
+                  className="text-[var(--footer-text)] transition-all duration-300 hover:text-[#59abfe]"
                   aria-label={s.label}
                 >
                   {s.icon}

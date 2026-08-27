@@ -41,7 +41,7 @@ export default function DiscordWidget() {
           ) : data?.icon ? (
             <Image src={data.icon} alt={data.name} width={64} height={64} className="w-16 h-16 rounded-2xl object-cover shrink-0" />
           ) : (
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white font-bold text-xl shrink-0">
+            <div className="text-3xl font-bold text-[#59abfe] shrink-0">
               S
             </div>
           )}

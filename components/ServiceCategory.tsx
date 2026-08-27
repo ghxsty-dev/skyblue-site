@@ -42,7 +42,7 @@ export default function ServiceCategory({ cat, desc }: Props) {
           return (
             <Reveal key={i} delay={i * 40}>
               <div className="card flex flex-col">
-                <div className="w-13 h-13 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white mb-4" style={{ width: 52, height: 52 }}>
+                <div className="mb-4 text-[#59abfe]">
                   <Icon size={24} />
                 </div>
                 <h4 className="font-bold text-base mb-2">{item.title}</h4>

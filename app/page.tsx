@@ -111,9 +111,9 @@ export default function HomePage() {
                       {item.avatar ? (
                         <Image src={item.avatar} alt={item.author} width={40} height={40} className="w-10 h-10 rounded-full object-cover" />
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white font-bold text-sm shrink-0">
-                          {item.author.charAt(0).toUpperCase()}
-                        </div>
+              <div className="w-10 h-10 rounded-full bg-[var(--bg2)] flex items-center justify-center text-[#59abfe] font-bold text-sm shrink-0">
+                {item.author.charAt(0).toUpperCase()}
+              </div>
                       )}
                       <div>
                         <div className="font-semibold text-sm text-[var(--text)]">{item.author}</div>
@@ -231,7 +231,7 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="flex items-center gap-3 cursor-pointer group"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
+              <div className="text-[#59abfe] shrink-0">
                 <MessageIcon size={18} />
               </div>
               <div>
@@ -245,7 +245,7 @@ export default function HomePage() {
               rel="noopener noreferrer"
               className="flex items-center gap-3 cursor-pointer group"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
+              <div className="text-[#59abfe] shrink-0">
                 <CameraIcon size={18} />
               </div>
               <div>
@@ -254,7 +254,7 @@ export default function HomePage() {
               </div>
             </a>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
+              <div className="text-[#59abfe] shrink-0">
                 <MailIcon size={18} />
               </div>
               <div>

@@ -43,7 +43,7 @@ export default function ContactPage() {
           <p className="text-sm text-[var(--text2)] mb-6">{t.contactInfoDesc}</p>
 
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
+            <div className="text-[#59abfe] shrink-0">
               <MessageIcon size={20} />
             </div>
             <div>
@@ -55,7 +55,7 @@ export default function ContactPage() {
           </div>
 
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
+            <div className="text-[#59abfe] shrink-0">
               <CameraIcon size={20} />
             </div>
             <div>
@@ -67,7 +67,7 @@ export default function ContactPage() {
           </div>
 
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
+            <div className="text-[#59abfe] shrink-0">
               <MailIcon size={20} />
             </div>
             <div>

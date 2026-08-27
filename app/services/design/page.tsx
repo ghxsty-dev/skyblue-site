@@ -107,7 +107,7 @@ export default function DesignPage() {
       <Reveal delay={40}>
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white">
+            <div className="text-[#59abfe]">
               <StarIcon size={20} />
             </div>
             <div>
@@ -127,7 +127,7 @@ export default function DesignPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[#97cdf2]/5 to-[#59abfe]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--bg2)] flex items-center justify-center text-[#59abfe]">
+                    <div className="text-[#59abfe]">
                       <StarIcon size={14} />
                     </div>
                     <h4 className="font-bold text-sm text-[var(--text)] group-hover:text-[#59abfe] transition-colors">{pkg.title}</h4>
@@ -165,7 +165,7 @@ export default function DesignPage() {
       <Reveal delay={80}>
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white">
+            <div className="text-[#59abfe]">
               <LayersIcon size={16} />
             </div>
             <h3 className="text-lg font-bold text-[var(--text)]">
@@ -319,7 +319,7 @@ export default function DesignPage() {
           <div key={key} className="mb-10">
             <Reveal delay={140 + si * 30}>
               <Link href={`/services/design/${slug}`} className="flex items-center gap-2 mb-4 no-underline group">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white shrink-0">
+                <div className="text-[#59abfe] shrink-0">
                   <Icon size={16} />
                 </div>
                 <h3 className="text-base font-bold text-[var(--text)] group-hover:text-[#59abfe] transition-colors">{sub.name}</h3>

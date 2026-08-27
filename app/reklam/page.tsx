@@ -23,7 +23,7 @@ export default function ReklamPage() {
         <div className="max-w-2xl mx-auto text-center">
           <div className="card mb-8">
             <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white text-2xl font-bold">
+              <div className="text-[#59abfe] text-2xl font-bold">
                 Ad
               </div>
               <div className="text-left">

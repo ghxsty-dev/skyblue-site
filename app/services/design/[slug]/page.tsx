@@ -56,7 +56,7 @@ export default function SubCategoryDetail() {
         </Link>
 
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] flex items-center justify-center text-white">
+          <div className="text-[#59abfe]">
             <Icon size={22} />
           </div>
           <h2 className="text-xl font-extrabold text-[var(--text)]">{sub.name}</h2>
