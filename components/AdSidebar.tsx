@@ -30,7 +30,7 @@ async function checkImage(src: string): Promise<boolean> {
 
 async function getAvailableAds(): Promise<number[]> {
   const checks = Array.from({ length: MAX_ADS }, (_, i) =>
-    checkImage(`/reklam${i + 1}.png`).then((ok) => (ok ? i + 1 : 0))
+    checkImage(`/reklam${i + 1}.webp`).then((ok) => (ok ? i + 1 : 0))
   );
   const results = await Promise.all(checks);
   return results.filter((n) => n > 0);
@@ -60,7 +60,7 @@ export default function AdSidebar() {
       <div className="absolute left-0 top-32 z-40 hidden xl:block w-[180px]">
         <Link href={leftHref} target="_blank" rel="noopener noreferrer" className="block">
           <img
-            src={`/reklam${leftAd}.png`}
+            src={`/reklam${leftAd}.webp`}
             alt="Reklam"
             className="w-[160px] mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all cursor-pointer"
           />
@@ -70,7 +70,7 @@ export default function AdSidebar() {
         <div className="absolute right-0 top-32 z-40 hidden xl:block w-[180px]">
           <Link href={rightHref} target="_blank" rel="noopener noreferrer" className="block">
             <img
-              src={`/reklam${rightAd}.png`}
+              src={`/reklam${rightAd}.webp`}
               alt="Reklam"
               className="w-[160px] mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all cursor-pointer"
             />

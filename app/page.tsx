@@ -58,7 +58,7 @@ export default function HomePage() {
       <section className="relative h-[calc(100vh-64px)] min-h-[500px] -mt-6 flex items-center justify-center overflow-hidden">
         <div className="absolute top-0 bottom-0 left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-[100vw] overflow-hidden rounded-b-3xl">
           <img
-            src="/background.png"
+            src="/background.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-cover object-center"
           />
@@ -185,7 +185,7 @@ export default function HomePage() {
                 className="group relative flex items-center justify-center w-36 h-36 md:w-44 md:h-44 rounded-2xl border border-[var(--border)] bg-[var(--bg2)] opacity-80 hover:opacity-100 hover:border-[#59abfe] transition-all duration-300 overflow-hidden"
               >
                 <img
-                  src={`/${brand.slug}.png`}
+                  src={`/${brand.slug}.webp`}
                   alt={brand.name}
                   className="absolute inset-0 w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                 />

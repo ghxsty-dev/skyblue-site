@@ -27,7 +27,7 @@ export default function SplashScreen() {
     <div
       className={`fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[var(--bg)] transition-opacity duration-500 ${fade ? "opacity-0" : "opacity-100"}`}
     >
-      <Image src="/logo.png" alt="SkyBlue" width={80} height={80} className="rounded-2xl mb-6" priority />
+      <Image src="/logo.webp" alt="SkyBlue" width={80} height={80} className="rounded-2xl mb-6" priority />
       <div className="w-8 h-8 border-2 border-[#59abfe] border-t-transparent rounded-full animate-spin" />
     </div>
   );

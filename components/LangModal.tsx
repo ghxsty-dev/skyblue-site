@@ -17,7 +17,7 @@ export default function LangModal() {
         className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-10 sm:p-12 max-w-sm w-[90%] text-center shadow-2xl"
         style={{ animation: "slideUp 0.35s ease" }}
       >
-        <Image src={theme === "light" ? "/logo2.png" : "/logo.png"} alt="SkyBlue" width={56} height={56} className="rounded-xl mx-auto mb-4" />
+        <Image src={theme === "light" ? "/logo2.webp" : "/logo.webp"} alt="SkyBlue" width={56} height={56} className="rounded-xl mx-auto mb-4" />
         <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
           {t.selectLang}
         </h2>

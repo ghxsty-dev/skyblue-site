@@ -12,7 +12,7 @@ export default function NotFound() {
     <div className="fixed inset-0 flex flex-col items-center justify-center bg-[var(--bg)] z-[1001] gap-6">
       <button onClick={() => router.push("/")} className="cursor-pointer bg-none border-none p-0">
         <Image
-          src="/hata.jpg"
+          src="/hata.webp"
           alt="404"
           width={200}
           height={200}

@@ -27,7 +27,7 @@ export default function ContactPage() {
         <Reveal>
         <div className="flex justify-center md:justify-start">
           <Image
-            src="/iletisim.png"
+            src="/iletisim.webp"
             alt="SkyBlue"
             width={1024}
             height={1024}
@@ -38,7 +38,7 @@ export default function ContactPage() {
 
         <Reveal delay={150}>
         <div>
-          <Image src={theme === "light" ? "/logo2.png" : "/logo.png"} alt="SkyBlue" width={56} height={56} className="rounded-xl mb-4" />
+          <Image src={theme === "light" ? "/logo2.webp" : "/logo.webp"} alt="SkyBlue" width={56} height={56} className="rounded-xl mb-4" />
           <h3 className="text-xl font-bold mb-4">{t.contactInfo}</h3>
           <p className="text-sm text-[var(--text2)] mb-6">{t.contactInfoDesc}</p>
 

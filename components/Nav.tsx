@@ -58,7 +58,7 @@ export default function Nav() {
     }`}>
       <div className="max-w-[1200px] mx-auto flex items-center justify-between h-16">
         <Link href="/" className="flex items-center gap-2 no-underline">
-          <Image src={theme === "light" ? "/logo2.png" : "/logo.png"} alt="SkyBlue" width={32} height={32} className="rounded-lg" />
+          <Image src={theme === "light" ? "/logo2.webp" : "/logo.webp"} alt="SkyBlue" width={32} height={32} className="rounded-lg" />
         </Link>
         <button
           onClick={() => setOpen(!open)}

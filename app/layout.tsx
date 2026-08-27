@@ -19,7 +19,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "SkyBlue Tasarım Hizmetleri",
   description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
-  icons: { icon: "/logo.png" },
+  icons: { icon: "/logo.webp" },
   metadataBase: new URL("https://skyblue.tr"),
   alternates: {
     canonical: "/",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     siteName: "SkyBlue Tasarım Hizmetleri",
     images: [
       {
-        url: "/skyblue-design.png",
+        url: "/skyblue-design.webp",
         alt: "SkyBlue Tasarım Hizmetleri",
       },
     ],
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SkyBlue Tasarım Hizmetleri",
     description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
-    images: ["/skyblue-design.png"],
+    images: ["/skyblue-design.webp"],
   },
 };
 
@@ -64,7 +64,7 @@ export default function RootLayout({
               "@type": "Organization",
               name: "SkyBlue Tasarım Hizmetleri",
               url: "https://skyblue.tr",
-              logo: "https://skyblue.tr/logo.png",
+              logo: "https://skyblue.tr/logo.webp",
               description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
               sameAs: [
                 "https://www.instagram.com/skyblue",

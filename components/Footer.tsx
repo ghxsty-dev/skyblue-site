@@ -101,7 +101,7 @@ export default function Footer() {
       <div className="max-w-[1100px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div className="flex flex-col gap-3">
-            <Image src="/skyblue.png" alt="SkyBlue" width={180} height={42} className="object-contain" style={{ width: 180, height: "auto", maxHeight: 42 }} />
+            <Image src="/skyblue.webp" alt="SkyBlue" width={180} height={42} className="object-contain" style={{ width: 180, height: "auto", maxHeight: 42 }} />
             <p className="text-xs text-[var(--footer-text)] opacity-50 leading-relaxed">{t.footerCopyright}</p>
           </div>
 
