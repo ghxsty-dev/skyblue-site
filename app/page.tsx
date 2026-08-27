@@ -233,7 +233,7 @@ export default function HomePage() {
               </div>
               <div>
                 <div className="font-semibold text-sm text-[var(--text)] group-hover:text-[#59abfe] transition-colors">{t.discord}</div>
-                <div className="text-[10px] text-[var(--text2)]">discord.gg/DRnxEXCQU</div>
+                <div className="text-[10px] text-[var(--text2)]">discord.gg/F3uQ2fU8RV</div>
               </div>
             </a>
             <a

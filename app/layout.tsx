@@ -68,7 +68,7 @@ export default function RootLayout({
               description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
               sameAs: [
                 "https://www.instagram.com/skyblue",
-                "https://discord.gg/DRnxEXCQU",
+                "https://discord.gg/F3uQ2fU8RV",
               ],
               contactPoint: {
                 "@type": "ContactPoint",

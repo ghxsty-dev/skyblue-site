@@ -49,7 +49,7 @@ export default function DiscordWidget() {
               {loading ? <div className="w-32 h-6 bg-[var(--bg2)] rounded animate-pulse" /> : data?.name}
             </h3>
             <a
-              href="https://discord.gg/DRnxEXCQU"
+              href="https://discord.gg/F3uQ2fU8RV"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-[#59abfe] hover:underline"

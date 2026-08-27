@@ -37,7 +37,7 @@ export default function ReklamPage() {
           </div>
 
           <a
-            href="https://discord.gg/DRnxEXCQU"
+            href="https://discord.gg/F3uQ2fU8RV"
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-primary inline-block"

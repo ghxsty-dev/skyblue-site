@@ -8,7 +8,7 @@ import data from "@/data/services.json";
 import Reveal from "@/components/Reveal";
 import Invoice from "@/components/Invoice";
 
-const DISCORD_URL = "https://discord.gg/DRnxEXCQU";
+const DISCORD_URL = "https://discord.gg/F3uQ2fU8RV";
 const subIcons = [PaletteIcon, SmartphoneIcon, LayersIcon, MessageIcon, CameraIcon];
 
 const subSlugs: Record<string, string> = {

@@ -6,7 +6,7 @@ import { useApp } from "@/lib/context";
 import data from "@/data/services.json";
 import Reveal from "@/components/Reveal";
 
-const DISCORD_URL = "https://discord.gg/DRnxEXCQU";
+const DISCORD_URL = "https://discord.gg/F3uQ2fU8RV";
 
 export default function PackageDetail() {
   const { lang } = useApp();

@@ -59,7 +59,7 @@ export default function ServicesOverview() {
 
       <Reveal delay={180}>
         <a
-          href="https://discord.gg/DRnxEXCQU"
+          href="https://discord.gg/F3uQ2fU8RV"
           target="_blank"
           rel="noopener noreferrer"
           className="card flex items-center justify-between max-w-2xl mx-auto mt-10 px-8 py-5 no-underline hover:border-[#59abfe] transition-all !bg-transparent hover:!shadow-none"

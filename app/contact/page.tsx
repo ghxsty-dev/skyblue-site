@@ -49,7 +49,7 @@ export default function ContactPage() {
             <div>
               <strong className="text-sm">{t.discord}</strong><br />
               <a href={info.discordUrl} target="_blank" rel="noopener noreferrer" className="text-sm">
-                discord.gg/DRnxEXCQU
+                discord.gg/F3uQ2fU8RV
               </a>
             </div>
           </div>

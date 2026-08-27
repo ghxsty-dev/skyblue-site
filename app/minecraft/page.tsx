@@ -40,7 +40,7 @@ export default function MinecraftPage() {
               : "We are preparing to offer custom designs, plugin setups, configuration, and more for your Minecraft server. Coming soon!"}
           </p>
           <Link
-            href="https://discord.gg/DRnxEXCQU"
+            href="https://discord.gg/F3uQ2fU8RV"
             target="_blank"
             className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white font-medium hover:opacity-80 transition-opacity no-underline" style={{ color: "#fff" }}
           >
