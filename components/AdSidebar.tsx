@@ -1,7 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import NextImage from "next/image";
 
@@ -55,20 +54,39 @@ async function getAvailableAds(): Promise<number[]> {
 }
 
 export default function AdSidebar() {
-  const pathname = usePathname();
+  const [ads, setAds] = useState<number[]>([]);
   const [leftAd, setLeftAd] = useState<number | null>(null);
   const [rightAd, setRightAd] = useState<number | null>(null);
+  const [fade, setFade] = useState(true);
 
   useEffect(() => {
-    getAvailableAds().then((ads) => {
-      if (ads.length === 0) return;
-      const shuffled = shuffle(ads);
+    getAvailableAds().then((available) => {
+      setAds(available);
+      if (available.length === 0) return;
+      const shuffled = shuffle(available);
       setLeftAd(shuffled[0]);
       setRightAd(shuffled.length > 1 ? shuffled[1] : shuffled[0]);
     });
-  }, [pathname]);
+  }, []);
 
-  if (pathname === "/" || leftAd === null) return null;
+  const rotate = useCallback(() => {
+    if (ads.length === 0) return;
+    setFade(false);
+    setTimeout(() => {
+      const shuffled = shuffle(ads);
+      setLeftAd(shuffled[0]);
+      setRightAd(shuffled.length > 1 ? shuffled[1] : shuffled[0]);
+      setFade(true);
+    }, 400);
+  }, [ads]);
+
+  useEffect(() => {
+    if (ads.length === 0) return;
+    const interval = setInterval(rotate, 30000);
+    return () => clearInterval(interval);
+  }, [ads, rotate]);
+
+  if (leftAd === null) return null;
 
   const leftHref = adLinks[leftAd] || "/reklam";
   const rightHref = rightAd !== null ? (adLinks[rightAd] || "/reklam") : "/reklam";
@@ -82,7 +100,7 @@ export default function AdSidebar() {
             alt="Reklam"
             width={160}
             height={160}
-            className="mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all cursor-pointer"
+            className={`mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all duration-400 cursor-pointer ${fade ? "opacity-100" : "opacity-0"}`}
           />
         </Link>
       </div>
@@ -94,7 +112,7 @@ export default function AdSidebar() {
               alt="Reklam"
               width={160}
               height={160}
-              className="mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all cursor-pointer"
+              className={`mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all duration-400 cursor-pointer ${fade ? "opacity-100" : "opacity-0"}`}
             />
           </Link>
         </div>

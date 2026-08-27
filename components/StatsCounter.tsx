@@ -27,8 +27,8 @@ function useCount(target: number, duration: number, decimals = 0) {
 
 export default function StatsCounter() {
   const { t } = useApp();
-  const customers = useCount(40, 2000);
-  const products = useCount(120, 2500);
+  const customers = useCount(50, 2000);
+  const products = useCount(180, 2500);
   const rating = useCount(49, 1800);
 
   return (

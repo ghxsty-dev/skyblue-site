@@ -108,6 +108,9 @@ export default function Footer() {
           <div className="flex gap-10">
             <div className="flex flex-col gap-3">
               <h4 className="text-sm font-semibold text-[var(--footer-text)] mb-1">{t.footerLegal}</h4>
+              <Link href="/about" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
+                {t.about}
+              </Link>
               <Link href="/sozlesme" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
                 {t.contract}
               </Link>

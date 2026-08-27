@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { fetchDiscordReviews } from "@/lib/discord";
 import fallback from "@/data/reviews.json";
 
-async function translateText(text: string): Promise<string> {
+async function translateText(text: string, targetLang: "tr" | "en"): Promise<string> {
   try {
     const { translate } = await import("@vitalets/google-translate-api");
-    const res = await translate(text, { from: "tr", to: "en" });
+    const res = await translate(text, { to: targetLang });
     return res.text;
   } catch {
     return text;
@@ -18,14 +18,12 @@ export async function GET(request: NextRequest) {
   try {
     let discordReviews = await fetchDiscordReviews();
     if (discordReviews.length > 0) {
-      if (lang === "EN") {
-        discordReviews = await Promise.all(
-          discordReviews.map(async (r) => ({
-            ...r,
-            text: await translateText(r.text),
-          }))
-        );
-      }
+      discordReviews = await Promise.all(
+        discordReviews.map(async (r) => ({
+          ...r,
+          text: await translateText(r.text, lang === "EN" ? "en" : "tr"),
+        }))
+      );
       return NextResponse.json({ source: "discord", reviews: discordReviews });
     }
   } catch {
