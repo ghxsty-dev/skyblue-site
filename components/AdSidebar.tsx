@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import NextImage from "next/image";
 
@@ -54,6 +55,7 @@ async function getAvailableAds(): Promise<number[]> {
 }
 
 export default function AdSidebar() {
+  const pathname = usePathname();
   const [ads, setAds] = useState<number[]>([]);
   const [leftAd, setLeftAd] = useState<number | null>(null);
   const [rightAd, setRightAd] = useState<number | null>(null);
@@ -86,7 +88,7 @@ export default function AdSidebar() {
     return () => clearInterval(interval);
   }, [ads, rotate]);
 
-  if (leftAd === null) return null;
+  if (pathname === "/" || leftAd === null) return null;
 
   const leftHref = adLinks[leftAd] || "/reklam";
   const rightHref = rightAd !== null ? (adLinks[rightAd] || "/reklam") : "/reklam";
