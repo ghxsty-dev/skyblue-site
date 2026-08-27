@@ -1,34 +1,23 @@
 {
   "EN": {
     "packages": [
-      { "title": "Corporate Package", "desc": "Full corporate identity including logo, stationery, and brand guidelines.", "basic": 125, "pro": 250, "slug": "corporate", "basicIncludes": ["Logo Design", "Banner", "Social Media Kit"], "proIncludes": ["Logo Design", "Banner", "Letterhead", "Envelope", "Brand Guidelines", "Social Media Kit"] },
-      { "title": "Social Media Package", "desc": "Social media posts, banner, and profile design for all platforms.", "basic": 125, "pro": 250, "slug": "social-media", "basicIncludes": ["3 Instagram Posts (4:5)", "3 Instagram Stories", "1 Banner"], "proIncludes": ["10 Instagram Posts", "5 Instagram Stories", "1 Social Media Banner", "Carousel Template"] },
-      { "title": "Minecraft Server Package", "desc": "Server logo, banners, thread design, and rank icons.", "basic": 125, "pro": 250, "slug": "minecraft-server", "basicIncludes": ["Server Logo", "1 Server Banner", "Thread Design"], "proIncludes": ["Server Logo", "3 Server Banners", "Thread Design", "Rank Icons Set", "Store Banner"] },
-      { "title": "Discord Server Package", "desc": "Server logo, banner, emoji pack, welcome image, and embed visuals.", "basic": 125, "pro": 250, "slug": "discord-server", "basicIncludes": ["Server Logo", "Server Banner", "5 Custom Emojis"], "proIncludes": ["Server Logo", "Server Banner", "10 Custom Emojis", "Welcome Image", "Embed Images Set", "Partner Banner"] }
+      { "title": "Corporate Package", "desc": "Full corporate identity including logo, stationery, and brand guidelines.", "basic": 150, "pro": 300, "slug": "corporate", "basicIncludes": ["Logo Design", "Banner", "Social Media Kit"], "proIncludes": ["Logo Design", "Banner", "Letterhead", "Envelope", "Brand Guidelines", "Social Media Kit"] },
+      { "title": "Social Media Package", "desc": "Social media posts, banner, and profile design for all platforms.", "basic": 150, "pro": 300, "slug": "social-media", "basicIncludes": ["3 Instagram Posts (4:5)", "3 Instagram Stories", "1 Banner"], "proIncludes": ["10 Instagram Posts", "5 Instagram Stories", "1 Social Media Banner", "Carousel Template"] },
+      { "title": "Minecraft Server Package", "desc": "Server logo, banners, thread design, and rank icons.", "basic": 150, "pro": 300, "slug": "minecraft-server", "basicIncludes": ["Server Logo", "1 Server Banner", "Thread Design"], "proIncludes": ["Server Logo", "3 Server Banners", "Thread Design", "Rank Icons Set", "Store Banner"] },
+      { "title": "Discord Server Package", "desc": "Server logo, banner, emoji pack, welcome image, and embed visuals.", "basic": 150, "pro": 300, "slug": "discord-server", "basicIncludes": ["Server Logo", "Server Banner", "5 Custom Emojis"], "proIncludes": ["Server Logo", "Server Banner", "10 Custom Emojis", "Welcome Image", "Embed Images Set", "Partner Banner"] }
     ],
     "design": {
       "logo": {
         "name": "Logo & Brand",
         "items": [
-          { "title": "Logo Design", "price": 70 },
-          { "title": "Mascot Logo", "price": 70 },
-          { "title": "Minimal Logo", "price": 70 },
-          { "title": "Premium Logo", "price": 70 },
-          { "title": "Brand Identity", "price": 70 },
-          { "title": "Business Card", "price": 50 }
+          { "title": "Logo", "price": 70 },
+          { "title": "Mascot Logo", "price": 100 }
         ]
       },
       "social": {
         "name": "Social Media",
         "items": [
-          { "title": "Instagram Post", "price": 50 },
-          { "title": "Instagram Story", "price": 50 },
-          { "title": "Carousel Design", "price": 50 },
-          { "title": "Social Media Banner", "price": 50 },
-          { "title": "YouTube Thumbnail", "price": 50 },
-          { "title": "YouTube Banner", "price": 50 },
-          { "title": "X (Twitter) Banner", "price": 50 },
-          { "title": "LinkedIn Banner", "price": 50 }
+          { "title": "Banner", "price": 60 }
         ]
       },
       "gaming": {
@@ -83,34 +72,23 @@
   },
   "TR": {
     "packages": [
-      { "title": "Kurumsal Paket", "desc": "Logo, kırtasiye ve marka kılavuzunu içeren komple kurumsal kimlik paketi.", "basic": 125, "pro": 250, "slug": "kurumsal", "basicIncludes": ["Logo Tasarımı", "Banner", "Sosyal Medya Kiti"], "proIncludes": ["Logo Tasarımı", "Banner", "Antetli Kağıt", "Zarf", "Marka Kılavuzu", "Sosyal Medya Kiti"] },
-      { "title": "Sosyal Medya Paketi", "desc": "Tüm platformlar için sosyal medya gönderileri, banner ve profil tasarımı.", "basic": 125, "pro": 250, "slug": "sosyal-medya", "basicIncludes": ["3 Instagram Gönderisi (4:5)", "3 Instagram Hikaye", "1 Banner"], "proIncludes": ["10 Instagram Gönderisi", "5 Instagram Hikaye", "1 Sosyal Medya Bannerı", "Carousel Şablonu"] },
-      { "title": "Minecraft Sunucu Paketi", "desc": "Sunucu logosu, bannerlar, konu tasarımı ve rank ikonları.", "basic": 125, "pro": 250, "slug": "minecraft-sunucu", "basicIncludes": ["Sunucu Logosu", "1 Sunucu Bannerı", "Konu Tasarımı"], "proIncludes": ["Sunucu Logosu", "3 Sunucu Bannerı", "Konu Tasarımı", "Rank İkonları Seti", "Mağaza Bannerı"] },
-      { "title": "Discord Sunucu Paketi", "desc": "Sunucu logosu, banner, emoji paketi, hoş geldin görseli ve embed tasarımları.", "basic": 125, "pro": 250, "slug": "discord-sunucu", "basicIncludes": ["Sunucu Logosu", "Sunucu Bannerı", "5 Özel Emoji"], "proIncludes": ["Sunucu Logosu", "Sunucu Bannerı", "10 Özel Emoji", "Hoş Geldin Görseli", "Embed Görselleri Seti", "Partner Bannerı"] }
+      { "title": "Kurumsal Paket", "desc": "Logo, kırtasiye ve marka kılavuzunu içeren komple kurumsal kimlik paketi.", "basic": 150, "pro": 300, "slug": "kurumsal", "basicIncludes": ["Logo Tasarımı", "Banner", "Sosyal Medya Kiti"], "proIncludes": ["Logo Tasarımı", "Banner", "Antetli Kağıt", "Zarf", "Marka Kılavuzu", "Sosyal Medya Kiti"] },
+      { "title": "Sosyal Medya Paketi", "desc": "Tüm platformlar için sosyal medya gönderileri, banner ve profil tasarımı.", "basic": 150, "pro": 300, "slug": "sosyal-medya", "basicIncludes": ["3 Instagram Gönderisi (4:5)", "3 Instagram Hikaye", "1 Banner"], "proIncludes": ["10 Instagram Gönderisi", "5 Instagram Hikaye", "1 Sosyal Medya Bannerı", "Carousel Şablonu"] },
+      { "title": "Minecraft Sunucu Paketi", "desc": "Sunucu logosu, bannerlar, konu tasarımı ve rank ikonları.", "basic": 150, "pro": 300, "slug": "minecraft-sunucu", "basicIncludes": ["Sunucu Logosu", "1 Sunucu Bannerı", "Konu Tasarımı"], "proIncludes": ["Sunucu Logosu", "3 Sunucu Bannerı", "Konu Tasarımı", "Rank İkonları Seti", "Mağaza Bannerı"] },
+      { "title": "Discord Sunucu Paketi", "desc": "Sunucu logosu, banner, emoji paketi, hoş geldin görseli ve embed tasarımları.", "basic": 150, "pro": 300, "slug": "discord-sunucu", "basicIncludes": ["Sunucu Logosu", "Sunucu Bannerı", "5 Özel Emoji"], "proIncludes": ["Sunucu Logosu", "Sunucu Bannerı", "10 Özel Emoji", "Hoş Geldin Görseli", "Embed Görselleri Seti", "Partner Bannerı"] }
     ],
     "design": {
       "logo": {
         "name": "Logo & Marka",
         "items": [
-          { "title": "Logo Tasarımı", "price": 70 },
-          { "title": "Maskot Logo", "price": 70 },
-          { "title": "Minimal Logo", "price": 70 },
-          { "title": "Premium Logo", "price": 70 },
-          { "title": "Kurumsal Kimlik", "price": 70 },
-          { "title": "Kartvizit Tasarımı", "price": 50 }
+          { "title": "Logo", "price": 70 },
+          { "title": "Maskot Logo", "price": 100 }
         ]
       },
       "social": {
         "name": "Sosyal Medya",
         "items": [
-          { "title": "Instagram Gönderisi", "price": 50 },
-          { "title": "Instagram Hikaye", "price": 50 },
-          { "title": "Carousel Tasarımı", "price": 80 },
-          { "title": "Sosyal Medya Bannerı", "price": 50 },
-          { "title": "YouTube Thumbnail", "price": 50 },
-          { "title": "YouTube Banner", "price": 50 },
-          { "title": "X (Twitter) Banner", "price": 50 },
-          { "title": "LinkedIn Banner", "price": 50 }
+          { "title": "Banner", "price": 60 }
         ]
       },
       "gaming": {
