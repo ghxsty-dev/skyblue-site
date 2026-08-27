@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const DISCORD_API = "https://discord.com/api/v10";
+const CHAT_CHANNEL_ID = "1542672573320396820";
 
 interface DiscordUser {
   id: string;
@@ -45,7 +46,7 @@ export async function GET(request: NextRequest) {
   const after = request.nextUrl.searchParams.get("after");
   const limit = 100;
 
-  const channelId = threadId || "1542672573320396820";
+  const channelId = threadId || CHAT_CHANNEL_ID;
 
   let url = `${DISCORD_API}/channels/${channelId}/messages?limit=${limit}`;
   if (after) {
@@ -58,6 +59,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!res.ok) {
+      console.error(`[chat] messages fetch failed: ${res.status} for channel ${channelId}`);
       return NextResponse.json({ messages: [], error: `Discord API error: ${res.status}` });
     }
 
@@ -95,7 +97,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ messages: chatMessages });
   } catch (error) {
-    console.error("Chat messages fetch error:", error);
+    console.error("[chat] messages fetch error:", error);
     return NextResponse.json({ messages: [], error: "Failed to fetch messages" });
   }
 }

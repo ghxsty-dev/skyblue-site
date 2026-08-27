@@ -30,7 +30,7 @@ export default function LiveChat() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [unread, setUnread] = useState(0);
-  const [isOnline, setIsOnline] = useState(true);
+  const [statusMsg, setStatusMsg] = useState<string | null>(null);
   const [username, setUsername] = useState(() => {
     if (typeof window === "undefined") return "";
     return localStorage.getItem("skyblue-chat-username") || "";
@@ -82,10 +82,11 @@ export default function LiveChat() {
   }, [messages, scrollToBottom]);
 
   const fetchMessages = useCallback(async () => {
-    if (!threadId) return;
     try {
-      const params = new URLSearchParams({ threadId });
+      const params = new URLSearchParams();
+      if (threadId) params.set("threadId", threadId);
       if (lastMessageId.current) params.set("after", lastMessageId.current);
+
       const res = await fetch(`/api/chat/messages?${params}`);
       const data = await res.json();
 
@@ -110,13 +111,12 @@ export default function LiveChat() {
   }, [threadId]);
 
   useEffect(() => {
-    if (!threadId) return;
     fetchMessages();
     pollRef.current = setInterval(fetchMessages, 3000);
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
-  }, [fetchMessages, threadId]);
+  }, [fetchMessages]);
 
   const handleUsernameSubmit = useCallback(() => {
     const name = usernameInput.trim();
@@ -142,6 +142,7 @@ export default function LiveChat() {
 
     setSending(true);
     setInput("");
+    setStatusMsg(null);
 
     const tempId = `temp-${Date.now()}`;
     const tempMsg: ChatMessage = {
@@ -166,19 +167,25 @@ export default function LiveChat() {
         }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
+      const data = await res.json();
+
+      if (res.ok && data.ok) {
         if (data.threadId && !threadId) {
           setThreadId(data.threadId);
           localStorage.setItem("skyblue-chat-thread", data.threadId);
         }
       } else {
         setMessages((prev) => prev.filter((m) => m.id !== tempId));
-        setIsOnline(false);
-        setTimeout(() => setIsOnline(true), 5000);
+        const errMsg = data.code === "NO_WEBHOOK"
+          ? "Webhook yapılandırılmamış"
+          : data.error || "Mesaj gönderilemedi";
+        setStatusMsg(errMsg);
+        setTimeout(() => setStatusMsg(null), 5000);
       }
     } catch {
       setMessages((prev) => prev.filter((m) => m.id !== tempId));
+      setStatusMsg("Bağlantı hatası");
+      setTimeout(() => setStatusMsg(null), 5000);
     } finally {
       setSending(false);
     }
@@ -288,10 +295,9 @@ export default function LiveChat() {
               </div>
 
               <div className="chat-footer">
-                <div className="chat-status">
-                  <span className={`chat-status-dot ${isOnline ? "online" : "offline"}`} />
-                  {isOnline ? t.liveChatConnected : t.liveChatOffline}
-                </div>
+                {statusMsg && (
+                  <div className="chat-status chat-status-error">{statusMsg}</div>
+                )}
                 <div className="chat-input-row">
                   <input
                     ref={inputRef}
