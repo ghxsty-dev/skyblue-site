@@ -58,9 +58,11 @@ export async function GET() {
 
   if (webhookUrl) {
     try {
-      const parsed = new URL(webhookUrl);
+      const fixedUrl = webhookUrl.replace("ptb.discord.com", "discord.com");
+      const parsed = new URL(fixedUrl);
       results.webhookHost = parsed.hostname;
       results.webhookPathParts = parsed.pathname.split("/").filter(Boolean);
+      if (webhookUrl !== fixedUrl) results.ptbFixApplied = true;
     } catch {
       results.webhookUrl = "invalid URL format";
     }

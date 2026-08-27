@@ -12,12 +12,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    const rawWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
     const botToken = process.env.DISCORD_BOT_TOKEN;
 
-    if (!webhookUrl) {
+    if (!rawWebhookUrl) {
       return NextResponse.json({ error: "DISCORD_WEBHOOK_URL ayarlı değil", code: "NO_WEBHOOK" }, { status: 503 });
     }
+
+    const webhookUrl = rawWebhookUrl.replace("ptb.discord.com", "discord.com");
 
     const embed = {
       title: `💬 ${sender}`,
