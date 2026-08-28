@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const DISCORD_API = "https://discord.com/api/v10";
-const CHAT_CHANNEL_ID = "1542672573320396820";
 
 interface DiscordUser {
   id: string;
@@ -23,7 +22,6 @@ interface DiscordMessage {
   author: DiscordUser;
   content: string;
   embeds: DiscordEmbed[];
-  webhook_id?: string;
   timestamp: string;
 }
 
@@ -42,13 +40,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ messages: [], error: "DISCORD_BOT_TOKEN not set" });
   }
 
-  const threadId = request.nextUrl.searchParams.get("threadId");
+  const channelId = request.nextUrl.searchParams.get("channelId");
   const after = request.nextUrl.searchParams.get("after");
-  const limit = 100;
 
-  const channelId = threadId || CHAT_CHANNEL_ID;
+  if (!channelId) {
+    return NextResponse.json({ messages: [] });
+  }
 
-  let url = `${DISCORD_API}/channels/${channelId}/messages?limit=${limit}`;
+  let url = `${DISCORD_API}/channels/${channelId}/messages?limit=50`;
   if (after) {
     url += `&after=${after}`;
   }
@@ -70,7 +69,7 @@ export async function GET(request: NextRequest) {
       .map((msg) => {
         let content = msg.content;
         let sender = msg.author.global_name || msg.author.username;
-        const isStaff = !msg.webhook_id && !msg.author.bot;
+        const isStaff = !msg.author.bot;
 
         if (msg.embeds && msg.embeds.length > 0) {
           const embed = msg.embeds[0];

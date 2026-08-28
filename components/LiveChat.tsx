@@ -37,9 +37,9 @@ export default function LiveChat() {
   });
   const [usernameInput, setUsernameInput] = useState("");
   const [usernameError, setUsernameError] = useState(false);
-  const [threadId, setThreadId] = useState<string | null>(() => {
+  const [channelId, setChannelId] = useState<string | null>(() => {
     if (typeof window === "undefined") return null;
-    return localStorage.getItem("skyblue-chat-thread") || null;
+    return localStorage.getItem("skyblue-chat-channel") || null;
   });
   const sessionIdRef = useRef("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -64,11 +64,8 @@ export default function LiveChat() {
     isOpenRef.current = isOpen;
     if (isOpen) {
       setTimeout(() => {
-        if (username) {
-          inputRef.current?.focus();
-        } else {
-          usernameInputRef.current?.focus();
-        }
+        if (username) inputRef.current?.focus();
+        else usernameInputRef.current?.focus();
       }, 50);
     }
   }, [isOpen, username]);
@@ -82,11 +79,10 @@ export default function LiveChat() {
   }, [messages, scrollToBottom]);
 
   const fetchMessages = useCallback(async () => {
+    if (!channelId) return;
     try {
-      const params = new URLSearchParams();
-      if (threadId) params.set("threadId", threadId);
+      const params = new URLSearchParams({ channelId });
       if (lastMessageId.current) params.set("after", lastMessageId.current);
-
       const res = await fetch(`/api/chat/messages?${params}`);
       const data = await res.json();
 
@@ -106,17 +102,18 @@ export default function LiveChat() {
         });
       }
     } catch {
-      // silent fail
+      // silent
     }
-  }, [threadId]);
+  }, [channelId]);
 
   useEffect(() => {
+    if (!channelId) return;
     fetchMessages();
     pollRef.current = setInterval(fetchMessages, 3000);
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
-  }, [fetchMessages]);
+  }, [fetchMessages, channelId]);
 
   const handleUsernameSubmit = useCallback(() => {
     const name = usernameInput.trim();
@@ -163,7 +160,7 @@ export default function LiveChat() {
           sender: username,
           content: text,
           timestamp: new Date().toISOString(),
-          threadId: threadId,
+          channelId: channelId,
         }),
       });
 
@@ -171,16 +168,13 @@ export default function LiveChat() {
 
       if (res.ok && data.ok) {
         setMessages((prev) => prev.filter((m) => m.id !== tempId));
-        if (data.threadId && !threadId) {
-          setThreadId(data.threadId);
-          localStorage.setItem("skyblue-chat-thread", data.threadId);
+        if (data.channelId && !channelId) {
+          setChannelId(data.channelId);
+          localStorage.setItem("skyblue-chat-channel", data.channelId);
         }
       } else {
         setMessages((prev) => prev.filter((m) => m.id !== tempId));
-        const errMsg = data.code === "NO_WEBHOOK"
-          ? "Webhook yapılandırılmamış"
-          : data.error || "Mesaj gönderilemedi";
-        setStatusMsg(errMsg);
+        setStatusMsg(data.error || "Mesaj gönderilemedi");
         setTimeout(() => setStatusMsg(null), 5000);
       }
     } catch {
@@ -201,11 +195,7 @@ export default function LiveChat() {
 
   return (
     <>
-      <button
-        onClick={handleToggle}
-        className="chat-fab"
-        aria-label={t.liveChat}
-      >
+      <button onClick={handleToggle} className="chat-fab" aria-label={t.liveChat}>
         <MessageIcon size={24} />
         {unread > 0 && <span className="chat-fab-badge">{unread}</span>}
       </button>
@@ -220,9 +210,7 @@ export default function LiveChat() {
                 <span>{username ? `@${username}` : t.liveChatDesc}</span>
               </div>
             </div>
-            <button onClick={() => setIsOpen(false)} className="chat-close" aria-label="Kapat">
-              ✕
-            </button>
+            <button onClick={() => setIsOpen(false)} className="chat-close" aria-label="Kapat">✕</button>
           </div>
 
           {!username ? (
@@ -245,9 +233,7 @@ export default function LiveChat() {
                 className={`chat-username-input ${usernameError ? "error" : ""}`}
                 maxLength={20}
               />
-              {usernameError && (
-                <span className="chat-username-error">{t.chatUsernameError}</span>
-              )}
+              {usernameError && <span className="chat-username-error">{t.chatUsernameError}</span>}
               <button onClick={handleUsernameSubmit} className="chat-username-btn">
                 {t.chatUsernameStart}
               </button>
@@ -296,9 +282,7 @@ export default function LiveChat() {
               </div>
 
               <div className="chat-footer">
-                {statusMsg && (
-                  <div className="chat-status chat-status-error">{statusMsg}</div>
-                )}
+                {statusMsg && <div className="chat-status chat-status-error">{statusMsg}</div>}
                 <div className="chat-input-row">
                   <input
                     ref={inputRef}
@@ -310,11 +294,7 @@ export default function LiveChat() {
                     className="chat-input"
                     disabled={sending}
                   />
-                  <button
-                    onClick={sendMessage}
-                    disabled={!input.trim() || sending}
-                    className="chat-send"
-                  >
+                  <button onClick={sendMessage} disabled={!input.trim() || sending} className="chat-send">
                     {sending ? "..." : "→"}
                   </button>
                 </div>

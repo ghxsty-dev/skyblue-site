@@ -1,16 +1,13 @@
 import { NextResponse } from "next/server";
 
 const DISCORD_API = "https://discord.com/api/v10";
-const CHAT_CHANNEL_ID = "1542672573320396820";
+const GUILD_ID = "1366027066293620957";
 
 export async function GET() {
   const results: Record<string, unknown> = {};
-
   const botToken = process.env.DISCORD_BOT_TOKEN;
-  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
   results.botTokenSet = !!botToken;
-  results.webhookUrlSet = !!webhookUrl;
 
   if (botToken) {
     try {
@@ -21,52 +18,60 @@ export async function GET() {
         const me = await meRes.json();
         results.botUser = { id: me.id, username: me.username, bot: me.bot };
       } else {
-        results.botUser = { error: meRes.status, body: await meRes.text() };
+        results.botUser = { error: meRes.status };
       }
     } catch (e) {
-      results.botUser = { error: "fetch failed", message: String(e) };
+      results.botUser = { error: String(e) };
     }
 
     try {
-      const chRes = await fetch(`${DISCORD_API}/channels/${CHAT_CHANNEL_ID}`, {
+      const guildRes = await fetch(`${DISCORD_API}/guilds/${GUILD_ID}?with_counts=true`, {
         headers: { Authorization: `Bot ${botToken}` },
       });
-      if (chRes.ok) {
-        const ch = await chRes.json();
-        results.channel = { id: ch.id, name: ch.name, type: ch.type, guild_id: ch.guild_id };
+      if (guildRes.ok) {
+        const g = await guildRes.json();
+        results.guild = { id: g.id, name: g.name, owner: g.owner_id };
       } else {
-        results.channel = { error: chRes.status, body: await chRes.text() };
+        results.guild = { error: guildRes.status };
       }
     } catch (e) {
-      results.channel = { error: "fetch failed", message: String(e) };
+      results.guild = { error: String(e) };
     }
 
     try {
-      const threadsRes = await fetch(`${DISCORD_API}/channels/${CHAT_CHANNEL_ID}/threads`, {
+      const permsRes = await fetch(`${DISCORD_API}/guilds/${GUILD_ID}/members/${results.botUser && typeof results.botUser === "object" && "id" in results.botUser ? (results.botUser as { id: string }).id : "unknown"}`, {
         headers: { Authorization: `Bot ${botToken}` },
       });
-      if (threadsRes.ok) {
-        const threads = await threadsRes.json();
-        results.activeThreads = threads.threads?.length ?? 0;
+      if (permsRes.ok) {
+        const member = await permsRes.json();
+        results.botPermissions = member.roles;
       } else {
-        results.activeThreads = { error: threadsRes.status };
+        results.botPermissions = { error: permsRes.status };
       }
     } catch (e) {
-      results.activeThreads = { error: "fetch failed", message: String(e) };
+      results.botPermissions = { error: String(e) };
+    }
+
+    try {
+      const channelsRes = await fetch(`${DISCORD_API}/guilds/${GUILD_ID}/channels`, {
+        headers: { Authorization: `Bot ${botToken}` },
+      });
+      if (channelsRes.ok) {
+        const channels = await channelsRes.json();
+        results.guildChannels = channels.length;
+        const textChannels = channels.filter((c: { type: number }) => c.type === 0);
+        results.textChannelCount = textChannels.length;
+        const supportChannel = channels.find((c: { id: string }) => c.id === "1542672573320396820");
+        if (supportChannel) {
+          results.supportChannel = { id: supportChannel.id, name: supportChannel.name, parent_id: supportChannel.parent_id };
+        }
+      } else {
+        results.guildChannels = { error: channelsRes.status };
+      }
+    } catch (e) {
+      results.guildChannels = { error: String(e) };
     }
   }
 
-  if (webhookUrl) {
-    try {
-      const fixedUrl = webhookUrl.replace("ptb.discord.com", "discord.com");
-      const parsed = new URL(fixedUrl);
-      results.webhookHost = parsed.hostname;
-      results.webhookPathParts = parsed.pathname.split("/").filter(Boolean);
-      if (webhookUrl !== fixedUrl) results.ptbFixApplied = true;
-    } catch {
-      results.webhookUrl = "invalid URL format";
-    }
-  }
-
-  return NextResponse.json(results, { status: 200 });
+  return NextResponse.json(results);
 }
