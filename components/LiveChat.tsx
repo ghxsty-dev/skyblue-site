@@ -248,12 +248,13 @@ export default function LiveChat() {
       setChannelId(null);
       setMessages([]);
       setRating(0);
+      setHoverRating(0);
       setReviewText("");
       lastMessageId.current = "";
       localStorage.removeItem("skyblue-chat-username");
       localStorage.removeItem("skyblue-chat-channel");
       localStorage.removeItem("skyblue-chat-session");
-      sessionIdRef.current = "";
+      sessionIdRef.current = getOrCreateSessionId();
       setPhase("chat");
     }, 2000);
   };
