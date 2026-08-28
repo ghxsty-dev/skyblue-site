@@ -62,10 +62,9 @@ export default function LiveChat() {
   }, []);
 
   const hasUsername = !!username;
-  const hasChannel = !!channelId;
   const view: View = phase === "review" || phase === "thanks"
     ? phase
-    : hasUsername && hasChannel
+    : hasUsername
       ? "chat"
       : "username";
 
