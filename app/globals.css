@@ -614,6 +614,135 @@ main {
   box-shadow: 0 4px 16px var(--card-shadow);
 }
 
+.chat-end-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 10px;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all var(--transition);
+}
+
+.chat-end-btn:hover {
+  background: #dc2626;
+}
+
+.chat-review-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  gap: 10px;
+  text-align: center;
+}
+
+.chat-review-screen h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text);
+}
+
+.chat-review-screen p {
+  font-size: 0.82rem;
+  color: var(--text2);
+  margin: 0;
+}
+
+.chat-stars {
+  display: flex;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.chat-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--border);
+  transition: color 0.15s, transform 0.15s;
+  padding: 0;
+}
+
+.chat-star.active {
+  color: #fbbf24;
+}
+
+.chat-star:hover {
+  transform: scale(1.15);
+}
+
+.chat-review-textarea {
+  width: 100%;
+  max-width: 280px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.chat-review-textarea:focus {
+  border-color: var(--c2);
+}
+
+.chat-review-textarea::placeholder {
+  color: var(--text2);
+  opacity: 0.5;
+}
+
+.chat-review-btn {
+  padding: 10px 32px;
+  border-radius: 24px;
+  background: var(--gradient);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all var(--transition);
+  margin-top: 8px;
+}
+
+.chat-review-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px var(--card-shadow);
+}
+
+.chat-review-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chat-thanks-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #22c55e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  animation: slideUp 0.3s ease;
+}
+
 @media (max-width: 480px) {
   .chat-panel {
     bottom: 0;

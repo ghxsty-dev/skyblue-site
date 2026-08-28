@@ -89,6 +89,12 @@ export const TR = {
   chatUsernamePlaceholder: "Kullanıcı adınız",
   chatUsernameStart: "Sohbete Başla",
   chatUsernameError: "Lütfen bir kullanıcı adı girin",
+  chatEndChat: "Sohbeti Bitir",
+  chatRateTitle: "Deneyiminizi Değerlendirin",
+  chatRateDesc: "Hizmetimiz nasıldı?",
+  chatReviewPlaceholder: "Yorumunuz (isteğe bağlı)...",
+  chatReviewSubmit: "Gönder",
+  chatReviewThanks: "Teşekkürler!",
 };
 
 export const EN: typeof TR = {
@@ -182,6 +188,12 @@ export const EN: typeof TR = {
   chatUsernamePlaceholder: "Your username",
   chatUsernameStart: "Start Chat",
   chatUsernameError: "Please enter a username",
+  chatEndChat: "End Chat",
+  chatRateTitle: "Rate Your Experience",
+  chatRateDesc: "How was our service?",
+  chatReviewPlaceholder: "Your review (optional)...",
+  chatReviewSubmit: "Submit",
+  chatReviewThanks: "Thank you!",
 };
 
 export type Lang = "TR" | "EN";
