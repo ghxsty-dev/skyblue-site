@@ -253,7 +253,7 @@ main {
   width: 380px;
   max-width: calc(100vw - 48px);
   height: 520px;
-  max-height: calc(100vh - 140px);
+  max-height: calc(100vh - 120px);
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -743,20 +743,101 @@ main {
   animation: slideUp 0.3s ease;
 }
 
+@media (max-width: 768px) {
+  .chat-panel {
+    width: calc(100vw - 32px);
+    max-width: 400px;
+    right: 16px;
+    bottom: 80px;
+    height: 460px;
+  }
+}
+
 @media (max-width: 480px) {
   .chat-panel {
     bottom: 0;
     right: 0;
     width: 100%;
     max-width: 100%;
-    height: 100%;
-    max-height: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
     border-radius: 0;
+    border: none;
+    z-index: 9999;
   }
+
+  .chat-header {
+    padding: 14px 16px;
+    padding-top: max(14px, env(safe-area-inset-top));
+  }
+
+  .chat-messages {
+    padding: 12px 14px;
+    padding-bottom: 8px;
+  }
+
+  .chat-msg {
+    max-width: 88%;
+  }
+
+  .chat-msg-bubble {
+    padding: 9px 12px;
+  }
+
+  .chat-footer {
+    padding: 10px 14px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .chat-username-screen {
+    padding: 24px 20px;
+    padding-top: max(24px, env(safe-area-inset-top));
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+
+  .chat-username-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .chat-username-screen h4 {
+    font-size: 1rem;
+  }
+
+  .chat-username-input {
+    max-width: 260px;
+    font-size: 16px;
+  }
+
+  .chat-review-screen {
+    padding: 24px 20px;
+    padding-top: max(24px, env(safe-area-inset-top));
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+
+  .chat-review-textarea {
+    max-width: 100%;
+    font-size: 16px;
+  }
+
   .chat-fab {
-    bottom: 16px;
+    bottom: 20px;
     right: 16px;
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
+  }
+
+  .chat-fab svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .chat-input {
+    font-size: 16px;
+  }
+
+  .chat-send {
+    width: 38px;
+    height: 38px;
   }
 }
