@@ -30,33 +30,42 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     ctx.scale(scale, scale);
 
     // Background
-    const grad = ctx.createLinearGradient(0, 0, w, h);
-    grad.addColorStop(0, "#0f1729");
-    grad.addColorStop(1, "#162040");
-    ctx.fillStyle = grad;
+    ctx.fillStyle = "#ffffff";
     ctx.beginPath();
     ctx.roundRect(0, 0, w, h, 20);
+    ctx.fill();
+
+    // Top accent bar
+    const accentGrad = ctx.createLinearGradient(0, 0, w, 0);
+    accentGrad.addColorStop(0, "#97cdf2");
+    accentGrad.addColorStop(1, "#59abfe");
+    ctx.fillStyle = accentGrad;
+    ctx.beginPath();
+    ctx.roundRect(0, 0, w, 6, [20, 20, 0, 0]);
     ctx.fill();
 
     const px = 40;
     let y = 48;
 
     // Header
-    ctx.fillStyle = "#ffffff";
+    const headerGrad = ctx.createLinearGradient(px, 0, px + 120, 0);
+    headerGrad.addColorStop(0, "#97cdf2");
+    headerGrad.addColorStop(1, "#59abfe");
+    ctx.fillStyle = headerGrad;
     ctx.font = `bold 32px ${FONT}`;
     ctx.fillText("SkyBlue", px, y);
-    ctx.fillStyle = "rgba(147,205,242,0.6)";
+    ctx.fillStyle = "#8b949e";
     ctx.font = `14px ${FONT}`;
     ctx.fillText("Tasar\u0131m Hizmetleri", px, y + 22);
 
     // Invoice no
     const now = new Date();
     const invoiceNo = `SB-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
-    ctx.fillStyle = "rgba(147,205,242,0.6)";
+    ctx.fillStyle = "#8b949e";
     ctx.font = `13px ${FONT}`;
     ctx.textAlign = "right";
     ctx.fillText("Sipari\u015f No", w - px, y - 6);
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = "#1a1a2e";
     ctx.font = `bold 16px ${FONT}`;
     ctx.fillText(invoiceNo, w - px, y + 18);
     ctx.textAlign = "left";
@@ -64,7 +73,7 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     y += 52;
 
     // Divider
-    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+    ctx.strokeStyle = "#e0e8f0";
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(px, y);
@@ -77,18 +86,18 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     const dateStr = now.toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
     const timeStr = now.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
 
-    ctx.fillStyle = "rgba(147,205,242,0.5)";
+    ctx.fillStyle = "#8b949e";
     ctx.font = `12px ${FONT}`;
     ctx.fillText("Tarih", px, y);
-    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    ctx.fillStyle = "#1a1a2e";
     ctx.font = `14px ${FONT}`;
     ctx.fillText(`${dateStr}  ${timeStr}`, px, y + 18);
 
-    ctx.fillStyle = "rgba(147,205,242,0.5)";
+    ctx.fillStyle = "#8b949e";
     ctx.font = `12px ${FONT}`;
     ctx.textAlign = "right";
     ctx.fillText("Durum", w - px, y);
-    ctx.fillStyle = "#4ade80";
+    ctx.fillStyle = "#22c55e";
     ctx.font = `bold 14px ${FONT}`;
     ctx.fillText("Beklemede", w - px, y + 18);
     ctx.textAlign = "left";
@@ -96,7 +105,8 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     y += 42;
 
     // Divider
-    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+    ctx.strokeStyle = "#e0e8f0";
+    ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(px, y);
     ctx.lineTo(w - px, y);
@@ -105,7 +115,7 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     y += 26;
 
     // Section title
-    ctx.fillStyle = "rgba(147,205,242,0.5)";
+    ctx.fillStyle = "#8b949e";
     ctx.font = `bold 11px ${FONT}`;
     ctx.fillText("S\u0130PAR\u0130\u015e DETAYI", px, y);
 
@@ -113,24 +123,24 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
 
     // Items
     items.forEach((item, i) => {
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = "#1a1a2e";
       ctx.font = `14px ${FONT}`;
       ctx.fillText(item.title, px, y);
 
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = "#1a1a2e";
       ctx.font = `bold 14px ${FONT}`;
       ctx.textAlign = "right";
       ctx.fillText(`${item.price * item.qty} TL`, w - px, y);
       ctx.textAlign = "left";
 
-      ctx.fillStyle = "rgba(147,205,242,0.5)";
+      ctx.fillStyle = "#8b949e";
       ctx.font = `11px ${FONT}`;
       ctx.fillText(`x${item.qty}  \u00d7  ${item.price} TL`, px, y + 16);
 
       y += 38;
 
       if (i < items.length - 1) {
-        ctx.strokeStyle = "rgba(255,255,255,0.06)";
+        ctx.strokeStyle = "#f0f4f8";
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(px, y - 8);
@@ -142,7 +152,7 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     y += 12;
 
     // Total divider
-    ctx.strokeStyle = "rgba(255,255,255,0.15)";
+    ctx.strokeStyle = "#e0e8f0";
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(px, y);
@@ -152,11 +162,14 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     y += 30;
 
     // Total
-    ctx.fillStyle = "rgba(147,205,242,0.7)";
+    ctx.fillStyle = "#8b949e";
     ctx.font = `14px ${FONT}`;
     ctx.fillText("Toplam", px, y);
 
-    ctx.fillStyle = "#59abfe";
+    const totalGrad = ctx.createLinearGradient(px, 0, px + 100, 0);
+    totalGrad.addColorStop(0, "#97cdf2");
+    totalGrad.addColorStop(1, "#59abfe");
+    ctx.fillStyle = totalGrad;
     ctx.font = `bold 26px ${FONT}`;
     ctx.textAlign = "right";
     ctx.fillText(`${totalPrice} TL`, w - px, y + 4);
@@ -165,7 +178,7 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     y += 40;
 
     // Footer divider
-    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.strokeStyle = "#f0f4f8";
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(px, y);
@@ -175,7 +188,7 @@ function drawInvoice(items: InvoiceItem[], totalPrice: number): Promise<Blob | n
     y += 22;
 
     // Footer note
-    ctx.fillStyle = "rgba(147,205,242,0.35)";
+    ctx.fillStyle = "#8b949e";
     ctx.font = `11px ${FONT}`;
     ctx.textAlign = "center";
     ctx.fillText("Bu g\u00f6rseli Discord'a yap\u0131\u015ft\u0131rarak sipari\u015f verebilirsiniz.", w / 2, y);
@@ -228,60 +241,65 @@ export default function Invoice({ items, totalPrice, onClose }: InvoiceProps) {
 
   return (
     <div className="fixed inset-0 z-[9999] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn" style={{ animation: "fadeIn 0.2s ease" }}>
-      <div className="bg-[#1a1f2e] rounded-2xl border border-[var(--border)] max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="rounded-2xl border border-[var(--border)] max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col" style={{ background: "var(--card-bg)" }}>
         <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
           <h3 className="text-sm font-bold text-[var(--text)]">Sipariş Özeti</h3>
           <button onClick={onClose} className="w-8 h-8 rounded-lg bg-[var(--bg2)] flex items-center justify-center text-[var(--text2)] hover:text-[var(--text)] cursor-pointer border-none transition-colors">✕</button>
         </div>
 
         <div className="p-4 overflow-y-auto flex-1">
-          <div className="rounded-xl p-5" style={{ background: "linear-gradient(135deg, #0f1729 0%, #162040 100%)" }}>
-            <div className="flex items-center justify-between mb-5">
-              <div>
-                <h2 className="text-lg font-extrabold text-white tracking-tight">SkyBlue</h2>
-                <p className="text-[10px] text-blue-300/60">Tasarım Hizmetleri</p>
-              </div>
-              <div className="text-right">
-                <p className="text-[10px] text-blue-300/60">Sipariş No</p>
-                <p className="text-xs font-bold text-white">{invoiceNo}</p>
-              </div>
-            </div>
+          <div className="rounded-xl overflow-hidden" style={{ background: "#ffffff", border: "1px solid #e0e8f0" }}>
+            {/* Accent bar */}
+            <div className="h-1.5" style={{ background: "linear-gradient(90deg, #97cdf2, #59abfe)" }} />
 
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
-              <div>
-                <p className="text-[9px] text-blue-300/50">Tarih</p>
-                <p className="text-[11px] text-white/80">{dateStr} {timeStr}</p>
+            <div className="p-5">
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <h2 className="text-lg font-extrabold tracking-tight" style={{ background: "linear-gradient(135deg, #97cdf2, #59abfe)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>SkyBlue</h2>
+                  <p className="text-[10px]" style={{ color: "#8b949e" }}>Tasarım Hizmetleri</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px]" style={{ color: "#8b949e" }}>Sipariş No</p>
+                  <p className="text-xs font-bold" style={{ color: "#1a1a2e" }}>{invoiceNo}</p>
+                </div>
               </div>
-              <div className="text-right">
-                <p className="text-[9px] text-blue-300/50">Durum</p>
-                <p className="text-[11px] text-green-400 font-medium">Beklemede</p>
-              </div>
-            </div>
 
-            <div className="mb-4">
-              <p className="text-[9px] text-blue-300/50 mb-2 uppercase tracking-wider">Sipariş Detayı</p>
-              <div className="flex flex-col gap-1.5">
-                {items.map((item, i) => (
-                  <div key={i} className="flex items-center justify-between py-1.5 border-b border-white/5 last:border-0">
-                    <div className="flex-1">
-                      <p className="text-[11px] text-white font-medium">{item.title}</p>
-                      <p className="text-[9px] text-blue-300/50">x{item.qty} × {item.price} TL</p>
+              <div className="flex items-center justify-between mb-4 pb-3" style={{ borderBottom: "1px solid #e0e8f0" }}>
+                <div>
+                  <p className="text-[9px]" style={{ color: "#8b949e" }}>Tarih</p>
+                  <p className="text-[11px]" style={{ color: "#1a1a2e" }}>{dateStr} {timeStr}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[9px]" style={{ color: "#8b949e" }}>Durum</p>
+                  <p className="text-[11px] font-medium" style={{ color: "#22c55e" }}>Beklemede</p>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <p className="text-[9px] mb-2 uppercase tracking-wider" style={{ color: "#8b949e" }}>Sipariş Detayı</p>
+                <div className="flex flex-col gap-1.5">
+                  {items.map((item, i) => (
+                    <div key={i} className="flex items-center justify-between py-1.5 last:border-0" style={{ borderBottom: i < items.length - 1 ? "1px solid #f0f4f8" : "none" }}>
+                      <div className="flex-1">
+                        <p className="text-[11px] font-medium" style={{ color: "#1a1a2e" }}>{item.title}</p>
+                        <p className="text-[9px]" style={{ color: "#8b949e" }}>x{item.qty} × {item.price} TL</p>
+                      </div>
+                      <p className="text-[11px] font-bold" style={{ color: "#1a1a2e" }}>{item.price * item.qty} TL</p>
                     </div>
-                    <p className="text-[11px] text-white font-bold">{item.price * item.qty} TL</p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            <div className="border-t border-white/10 pt-3">
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-blue-300/60 font-medium">Toplam</p>
-                <p className="text-xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{totalPrice} TL</p>
+              <div style={{ borderTop: "1px solid #e0e8f0" }} className="pt-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-medium" style={{ color: "#8b949e" }}>Toplam</p>
+                  <p className="text-xl font-extrabold" style={{ background: "linear-gradient(135deg, #97cdf2, #59abfe)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{totalPrice} TL</p>
+                </div>
               </div>
-            </div>
 
-            <div className="mt-4 pt-3 border-t border-white/10 text-center">
-              <p className="text-[9px] text-blue-300/40">Bu görseli Discord&apos;a yapıştırarak sipariş verebilirsiniz.</p>
+              <div className="mt-4 pt-3 text-center" style={{ borderTop: "1px solid #f0f4f8" }}>
+                <p className="text-[9px]" style={{ color: "#8b949e" }}>Bu görseli Discord&apos;a yapıştırarak sipariş verebilirsiniz.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -289,7 +307,8 @@ export default function Invoice({ items, totalPrice, onClose }: InvoiceProps) {
         <div className="p-4 border-t border-[var(--border)] flex gap-2">
           <button
             onClick={handleCopy}
-            className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
+            className="flex-1 py-2.5 rounded-xl text-white text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
+            style={{ background: "linear-gradient(135deg, #97cdf2, #59abfe)" }}
           >
             {copied ? "Kopyalandı!" : "Görseli Kopyala"}
           </button>
