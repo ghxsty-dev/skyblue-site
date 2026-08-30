@@ -201,7 +201,7 @@ main {
 /* Live Chat */
 .chat-fab {
   position: fixed;
-  bottom: 24px;
+  bottom: 84px;
   right: 24px;
   width: 56px;
   height: 56px;
@@ -821,7 +821,7 @@ main {
   }
 
   .chat-fab {
-    bottom: 20px;
+    bottom: 80px;
     right: 16px;
     width: 52px;
     height: 52px;
