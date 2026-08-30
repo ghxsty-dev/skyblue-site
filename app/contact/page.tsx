@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { useApp } from "@/lib/context";
 import { MessageIcon, CameraIcon, MailIcon } from "@/lib/icons";
@@ -10,19 +9,6 @@ import Reveal from "@/components/Reveal";
 export default function ContactPage() {
   const { t, lang, theme } = useApp();
   const info = data[lang];
-  const [sent, setSent] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const name = fd.get("name") as string;
-    const email = fd.get("email") as string;
-    const message = fd.get("message") as string;
-    const subject = encodeURIComponent("SkyBlue İletişim - " + name);
-    const body = encodeURIComponent("Ad: " + name + "\nE-posta: " + email + "\n\n" + message);
-    window.location.href = `mailto:${info.email}?subject=${subject}&body=${body}`;
-    setSent(true);
-  };
 
   return (
     <div className="page-inner">
@@ -80,7 +66,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 mb-8">
+          <div className="flex items-center gap-3 mb-4">
             <div className="text-white shrink-0">
               <MailIcon size={28} />
             </div>
@@ -92,39 +78,6 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-            <input
-              name="name"
-              type="text"
-              placeholder={t.formName}
-              required
-              className="px-4 py-2.5 rounded-xl bg-[var(--bg)] border border-[var(--border)] text-sm text-[var(--text)] placeholder:text-[var(--text2)] outline-none focus:border-[#59abfe] transition-colors"
-            />
-            <input
-              name="email"
-              type="email"
-              placeholder={t.formEmail}
-              required
-              className="px-4 py-2.5 rounded-xl bg-[var(--bg)] border border-[var(--border)] text-sm text-[var(--text)] placeholder:text-[var(--text2)] outline-none focus:border-[#59abfe] transition-colors"
-            />
-            <textarea
-              name="message"
-              placeholder={t.formMessage}
-              required
-              rows={4}
-              className="px-4 py-2.5 rounded-xl bg-[var(--bg)] border border-[var(--border)] text-sm text-[var(--text)] placeholder:text-[var(--text2)] outline-none focus:border-[#59abfe] transition-colors resize-none"
-            />
-            {sent ? (
-              <p className="text-sm text-green-500 font-medium">{t.formSent}</p>
-            ) : (
-              <button
-                type="submit"
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
-              >
-                {t.formSend}
-              </button>
-            )}
-          </form>
         </div>
         </Reveal>
       </div>
