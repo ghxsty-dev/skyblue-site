@@ -96,7 +96,7 @@ export default function DesignPage() {
               <Link
                 key={i}
                 href={`/services/design/packages/${pkg.slug}`}
-                className="group relative rounded-2xl border border-[var(--border)] p-5 flex flex-col hover:border-[#59abfe] hover:shadow-[0_0_30px_rgba(89,171,254,0.15)] transition-all duration-300 no-underline cursor-pointer overflow-hidden"
+                className="group relative rounded-2xl border border-[var(--border)] p-5 flex flex-col hover:border-[#59abfe] transition-all duration-300 no-underline cursor-pointer overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-[#97cdf2]/5 to-[#59abfe]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10">
