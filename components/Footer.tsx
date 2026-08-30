@@ -57,10 +57,16 @@ export default function Footer() {
   const ref = useRef<HTMLDivElement>(null);
   const info = contactData[lang as "EN" | "TR"];
   const [statuses, setStatuses] = useState<ApiStatus[]>([
-    { key: "designs", label: lang === "TR" ? "Tasarımlar" : "Designs", status: "checking" },
-    { key: "reviews", label: lang === "TR" ? "Yorumlar" : "Reviews", status: "checking" },
-    { key: "status", label: lang === "TR" ? "Durum" : "Status", status: "checking" },
+    { key: "designs", label: "", status: "checking" },
+    { key: "reviews", label: "", status: "checking" },
+    { key: "status", label: "", status: "checking" },
   ]);
+
+  const statusLabels: Record<string, string> = {
+    designs: lang === "TR" ? "Tasarımlar" : "Designs",
+    reviews: lang === "TR" ? "Yorumlar" : "Reviews",
+    status: lang === "TR" ? "Durum" : "Status",
+  };
 
   const current = langs.find((l) => l.code === lang) ?? langs[0];
 
@@ -136,7 +142,7 @@ export default function Footer() {
                 <div key={s.key} className="flex items-center gap-2">
                   <span className="text-xs" style={{ color: s.status === "up" ? "#22c55e" : s.status === "down" ? "#ef4444" : "#6b7280" }}>●</span>
                   <Link href="/status" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
-                    {s.label}
+                    {statusLabels[s.key]}
                   </Link>
                 </div>
               ))}
