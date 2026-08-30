@@ -3,13 +3,22 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
+const SPLASH_KEY = "skyblue-splash-seen";
+
 export default function SplashScreen() {
   const [fade, setFade] = useState(false);
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
+    const seen = sessionStorage.getItem(SPLASH_KEY);
+    if (seen) {
+      setHidden(true);
+      return;
+    }
+
     const onReady = () => {
       setFade(true);
+      sessionStorage.setItem(SPLASH_KEY, "1");
       setTimeout(() => setHidden(true), 500);
     };
     const fallback = setTimeout(onReady, 1000);

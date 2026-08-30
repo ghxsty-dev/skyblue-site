@@ -95,6 +95,10 @@ export const TR = {
   chatReviewPlaceholder: "Yorumunuz (isteğe bağlı)...",
   chatReviewSubmit: "Gönder",
   chatReviewThanks: "Teşekkürler!",
+  cookieTitle: "Çerez Tercihleri",
+  cookieDesc: "Bu site deneyimi geliştirmek ve reklam sunmak için çerezler kullanır. KVKK gereği reklam çerezleri için onayınız gerekmektedir.",
+  cookieAccept: "Kabul Et",
+  cookieDecline: "Reddet",
 };
 
 export const EN: typeof TR = {
@@ -194,6 +198,10 @@ export const EN: typeof TR = {
   chatReviewPlaceholder: "Your review (optional)...",
   chatReviewSubmit: "Submit",
   chatReviewThanks: "Thank you!",
+  cookieTitle: "Cookie Preferences",
+  cookieDesc: "This site uses cookies to improve experience and serve ads. Under GDPR, your consent is required for advertising cookies.",
+  cookieAccept: "Accept",
+  cookieDecline: "Decline",
 };
 
 export type Lang = "TR" | "EN";

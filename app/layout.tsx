@@ -12,6 +12,8 @@ import OfflineGameWrapper from "@/components/OfflineGameWrapper";
 import SWRegister from "@/components/SWRegister";
 import LangAttr from "@/components/LangAttr";
 import LiveChat from "@/components/LiveChat";
+import CookieConsent from "@/components/CookieConsent";
+import BackToTop from "@/components/BackToTop";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -19,7 +21,10 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "SkyBlue Tasarım Hizmetleri",
+  title: {
+    default: "SkyBlue Tasarım Hizmetleri",
+    template: "%s | SkyBlue Tasarım Hizmetleri",
+  },
   description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
   icons: { icon: "/logo.webp" },
   metadataBase: new URL("https://skyblue.tr"),
@@ -99,6 +104,8 @@ export default function RootLayout({
           </div>
           <LangModal />
           <LiveChat />
+          <CookieConsent />
+          <BackToTop />
         </AppProvider>
       </body>
     </html>

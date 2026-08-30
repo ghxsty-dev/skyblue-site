@@ -57,9 +57,9 @@ export default function Footer() {
   const ref = useRef<HTMLDivElement>(null);
   const info = contactData[lang as "EN" | "TR"];
   const [statuses, setStatuses] = useState<ApiStatus[]>([
-    { key: "designs", label: "Tasarımlar", status: "checking" },
-    { key: "reviews", label: "Yorumlar", status: "checking" },
-    { key: "status", label: "Sistem", status: "checking" },
+    { key: "designs", label: lang === "TR" ? "Tasarımlar" : "Designs", status: "checking" },
+    { key: "reviews", label: lang === "TR" ? "Yorumlar" : "Reviews", status: "checking" },
+    { key: "status", label: lang === "TR" ? "Durum" : "Status", status: "checking" },
   ]);
 
   const current = langs.find((l) => l.code === lang) ?? langs[0];
@@ -126,7 +126,7 @@ export default function Footer() {
               <Link href="/services/discord" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
                 Discord
               </Link>
-              <Link href="/minecraft" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
+              <Link href="/services/minecraft" className="text-xs text-[var(--footer-text)] opacity-70 hover:text-[#59abfe] hover:opacity-100 transition-all no-underline">
                 Minecraft
               </Link>
             </div>

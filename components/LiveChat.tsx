@@ -124,7 +124,7 @@ export default function LiveChat() {
   useEffect(() => {
     if (!channelId || view !== "chat") return;
     fetchMessages();
-    pollRef.current = setInterval(fetchMessages, 3000);
+    pollRef.current = setInterval(fetchMessages, 5000);
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };

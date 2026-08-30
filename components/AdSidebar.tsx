@@ -4,12 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import NextImage from "next/image";
-
-const MAX_ADS = 20;
-
-const adLinks: Record<number, string> = {
-  3: "https://discore.app",
-};
+import adData from "@/data/ads.json";
 
 function shuffle(arr: number[]) {
   const a = [...arr];
@@ -41,8 +36,9 @@ async function getAvailableAds(): Promise<number[]> {
     }
   } catch {}
 
-  const checks = Array.from({ length: MAX_ADS }, (_, i) =>
-    checkImage(`/reklam${i + 1}.webp`).then((ok) => (ok ? i + 1 : 0))
+  const ids = adData.map((a) => a.id);
+  const checks = ids.map((id) =>
+    checkImage(`/reklam${id}.webp`).then((ok) => (ok ? id : 0))
   );
   const results = await Promise.all(checks);
   const ads = results.filter((n) => n > 0);
@@ -90,8 +86,8 @@ export default function AdSidebar() {
 
   if (pathname === "/" || leftAd === null) return null;
 
-  const leftHref = adLinks[leftAd] || "/reklam";
-  const rightHref = rightAd !== null ? (adLinks[rightAd] || "/reklam") : "/reklam";
+  const leftHref = adData.find((a) => a.id === leftAd)?.url || "/reklam";
+  const rightHref = rightAd !== null ? (adData.find((a) => a.id === rightAd)?.url || "/reklam") : "/reklam";
 
   return (
     <>
