@@ -55,7 +55,7 @@ export default function HomePage() {
 
   return (
     <div>
-      <section className="relative h-screen min-h-[500px] -mt-16 ml-[calc(-50vw+50%)] mr-[calc(-50vw+50%)] w-[100vw] flex items-center justify-center overflow-hidden">
+      <section className="relative h-screen min-h-[500px] -mt-[88px] ml-[calc(-50vw+50%)] mr-[calc(-50vw+50%)] w-[100vw] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <Image
             src="/background.webp"
