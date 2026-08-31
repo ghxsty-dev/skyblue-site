@@ -45,6 +45,14 @@ function MailIcon({ size = 24 }: { size?: number }) {
   );
 }
 
+function TikTokIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1 0-5.78 2.92 2.92 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.57 6.33 6.33 0 0 0 9.37 22a6.33 6.33 0 0 0 6.38-6.22V9.4a8.16 8.16 0 0 0 4.84 1.58V7.53a4.85 4.85 0 0 1-1-.84z" />
+    </svg>
+  );
+}
+
 interface ApiStatus {
   key: string;
   label: string;
@@ -97,6 +105,7 @@ export default function Footer() {
   const socials = [
     { icon: <DiscordIcon size={22} />, href: info.discordUrl, label: "Discord" },
     { icon: <InstagramIcon size={22} />, href: info.instagramUrl, label: "Instagram" },
+    { icon: <TikTokIcon size={22} />, href: info.tiktokUrl, label: "TikTok" },
     { icon: <YouTubeIcon size={22} />, href: info.youtubeUrl, label: "YouTube" },
     { icon: <MailIcon size={22} />, href: `mailto:${info.email}`, label: "Email" },
   ];
