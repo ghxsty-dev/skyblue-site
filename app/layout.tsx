@@ -33,21 +33,37 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "SkyBlue Tasarım Hizmetleri",
-    description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
+    description: "Profesyonel tasarım hizmetleri: logo, banner, Discord bot geliştirme, Minecraft tasarımları.",
     url: "https://skyblue.tr",
     siteName: "SkyBlue Tasarım Hizmetleri",
+    locale: "tr_TR",
+    type: "website",
     images: [
       {
-        url: "/skyblue-design.webp",
+        url: "https://skyblue.tr/skyblue-design.webp",
         alt: "SkyBlue Tasarım Hizmetleri",
+        width: 1200,
+        height: 630,
+        type: "image/webp",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "SkyBlue Tasarım Hizmetleri",
-    description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
-    images: ["/skyblue-design.webp"],
+    description: "Profesyonel tasarım hizmetleri: logo, banner, Discord bot geliştirme, Minecraft tasarımları.",
+    images: ["https://skyblue.tr/skyblue-design.webp"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -66,23 +82,72 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "SkyBlue Tasarım Hizmetleri",
-              url: "https://skyblue.tr",
-              logo: "https://skyblue.tr/logo.webp",
-              description: "SkyBlue Tasarım Hizmetleri resmi sitesi, Fiyat bilgisi ve iletişim için buraya bakabilirsiniz.",
-              sameAs: [
-                "https://www.instagram.com/skyblue",
-                "https://discord.gg/F3uQ2fU8RV",
-              ],
-              contactPoint: {
-                "@type": "ContactPoint",
-                contactType: "customer service",
-                availableLanguage: ["Turkish", "English"],
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: "SkyBlue Tasarım Hizmetleri",
+                url: "https://skyblue.tr",
+                logo: "https://skyblue.tr/logo.webp",
+                description: "Profesyonel tasarım hizmetleri: logo, banner, Discord bot geliştirme, Minecraft tasarımları.",
+                sameAs: [
+                  "https://www.instagram.com/skyblue.designer",
+                  "https://discord.gg/F3uQ2fU8RV",
+                  "https://youtube.com/@skyblue",
+                ],
+                contactPoint: {
+                  "@type": "ContactPoint",
+                  contactType: "customer service",
+                  email: "kivancghxsty@gmail.com",
+                  availableLanguage: ["Turkish", "English"],
+                },
               },
-            }),
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "SkyBlue Tasarım Hizmetleri",
+                url: "https://skyblue.tr",
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target: "https://skyblue.tr/designs?q={search_term_string}",
+                  "query-input": "required name=search_term_string",
+                },
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "Service",
+                name: "Discord Bot Geliştirme",
+                provider: {
+                  "@type": "Organization",
+                  name: "SkyBlue Tasarım Hizmetleri",
+                },
+                description: "Profesyonel Discord bot geliştirme hizmetleri. Moderasyon, otomasyon ve özel sistemler.",
+                areaProvided: "TR",
+                offers: {
+                  "@type": "AggregateOffer",
+                  lowPrice: "120",
+                  highPrice: "200",
+                  priceCurrency: "TRY",
+                },
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "Service",
+                name: "Tasarım Hizmetleri",
+                provider: {
+                  "@type": "Organization",
+                  name: "SkyBlue Tasarım Hizmetleri",
+                },
+                description: "Logo, banner, kurumsal kimlik ve özel tasarım çözümleri.",
+                areaProvided: "TR",
+                offers: {
+                  "@type": "AggregateOffer",
+                  lowPrice: "7.5",
+                  highPrice: "300",
+                  priceCurrency: "TRY",
+                },
+              },
+            ]),
           }}
         />
         <Script
