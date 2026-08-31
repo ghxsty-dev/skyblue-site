@@ -70,7 +70,7 @@ export default function Nav() {
         <div className="hidden md:flex items-center relative">
           {indicator.measured && (
             <div
-              className="absolute bottom-[-2px] h-[2px] bg-gradient-to-r from-[#97cdf2] to-[#59abfe] rounded-full transition-all duration-300 ease-in-out pointer-events-none"
+              className="absolute bottom-[-2px] h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out pointer-events-none"
               style={{ left: indicator.left, width: indicator.width }}
             />
           )}
@@ -85,8 +85,8 @@ export default function Nav() {
                   onClick={() => setOpen(false)}
                   className={`block px-3.5 py-2.5 rounded-none text-sm font-medium transition-all duration-300 no-underline ${
                     current === link || (link === "home" && current === "home")
-                      ? "text-[#59abfe] active-link"
-                      : "text-[var(--text2)] hover:text-[#59abfe]"
+                      ? "text-white active-link"
+                      : "text-white/70 hover:text-white"
                   }`}
                 >
                   {t[link]}
@@ -105,8 +105,8 @@ export default function Nav() {
                 onClick={() => setOpen(false)}
                 className={`block px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 no-underline ${
                   current === link || (link === "home" && current === "home")
-                    ? "text-[#59abfe]"
-                    : "text-[var(--text2)] hover:text-[#59abfe]"
+                    ? "text-white"
+                    : "text-white/70 hover:text-white"
                 }`}
               >
                 {t[link]}
