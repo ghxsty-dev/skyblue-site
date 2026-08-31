@@ -10,18 +10,21 @@ interface DiscordUser {
   bot?: boolean;
 }
 
-interface DiscordEmbed {
-  title?: string;
-  description?: string;
-  footer?: { text: string };
-  color?: number;
+interface ComponentV2Content {
+  type: 10;
+  content: string;
+}
+
+interface ComponentV2Container {
+  type: 17;
+  components: ComponentV2Content[];
 }
 
 interface DiscordMessage {
   id: string;
   author: DiscordUser;
   content: string;
-  embeds: DiscordEmbed[];
+  components?: ComponentV2Container[];
   timestamp: string;
 }
 
@@ -71,11 +74,19 @@ export async function GET(request: NextRequest) {
         let sender = msg.author.global_name || msg.author.username;
         const isStaff = !msg.author.bot;
 
-        if (msg.embeds && msg.embeds.length > 0) {
-          const embed = msg.embeds[0];
-          if (embed.description) content = embed.description;
-          if (embed.title) {
-            sender = embed.title.replace(/^💬\s*/, "");
+        if (msg.components && msg.components.length > 0) {
+          const container = msg.components[0];
+          if (container.type === 17 && container.components && container.components.length > 0) {
+            const textParts = container.components.map((c) => c.content);
+            content = textParts.join("\n");
+
+            const firstLine = textParts[0] || "";
+            const boldMatch = firstLine.match(/^\*\*(.+?)\*\*$/);
+            if (boldMatch) {
+              sender = boldMatch[1];
+            } else if (firstLine && !firstLine.startsWith("🔴") && !firstLine.startsWith("⭐")) {
+              sender = firstLine;
+            }
           }
         }
 

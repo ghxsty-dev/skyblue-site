@@ -9,13 +9,6 @@ export interface DiscordReview {
   avatar?: string;
 }
 
-interface DiscordEmbed {
-  title?: string;
-  description?: string;
-  fields?: { name: string; value: string; inline?: boolean }[];
-  footer?: { text: string };
-}
-
 interface DiscordUser {
   id: string;
   username: string;
@@ -23,32 +16,75 @@ interface DiscordUser {
   avatar?: string;
 }
 
+interface ComponentV2Content {
+  type: 10;
+  content: string;
+}
+
+interface ComponentV2Container {
+  type: 17;
+  components: ComponentV2Content[];
+  color?: number;
+}
+
 interface DiscordMessage {
   id: string;
   author: DiscordUser;
-  embeds: DiscordEmbed[];
+  content: string;
+  components?: ComponentV2Container[];
+  timestamp: string;
 }
 
 function countStars(text: string): number {
-  const matches = text.match(/[\u2B50\u2605\u2606\u272D\u2728\uD83C\uDF1F]/g);
-  if (matches) return Math.min(matches.length, 5);
+  const customStar = /<:[^:]+:\d+>/g;
+  const customMatches = text.match(customStar);
+  if (customMatches) return Math.min(customMatches.length, 5);
+
+  const unicodeStars = text.match(/[\u2B50\u2605\u2606\u272D\u2728\uD83C\uDF1F]/g);
+  if (unicodeStars) return Math.min(unicodeStars.length, 5);
+
   const num = parseInt(text.replace(/[^0-9]/g, ""), 10);
   if (num >= 1 && num <= 5) return num;
   return 5;
 }
 
 function cleanText(text: string): string {
-  return text.replace(/[\u2B50\u2605\u2606\u272D\u2728\uD83C\uDF1F]/g, "").replace(/\*\*/g, "").replace(/[()/\d]/g, "").replace(/\s+/g, " ").trim();
+  return text
+    .replace(/<:[^:]+:\d+>/g, "")
+    .replace(/[\u2B50\u2605\u2606\u272D\u2728\uD83C\uDF1F]/g, "")
+    .replace(/\*\*/g, "")
+    .replace(/[()/\d]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-function parseFooter(text: string): { author: string; date?: string } {
-  const parts = text.split("•").map((s) => s.trim());
-  if (parts.length >= 2) {
-    const author = parts[1];
-    const date = parts[2] || undefined;
-    return { author, date };
+function extractFromComponents(msg: DiscordMessage): { text: string; author: string; date?: string } | null {
+  if (!msg.components || msg.components.length === 0) return null;
+
+  const container = msg.components[0];
+  if (container.type !== 17 || !container.components || container.components.length === 0) return null;
+
+  const content = container.components.map((c) => c.content).join("\n");
+  if (!content) return null;
+
+  let author = "";
+  let date: string | undefined;
+
+  const lines = content.split("\n").map((l) => l.trim()).filter(Boolean);
+  if (lines.length > 0) {
+    const lastLine = lines[lines.length - 1];
+    if (lastLine.includes("•")) {
+      const parts = lastLine.split("•").map((s) => s.trim());
+      if (parts.length >= 2) {
+        author = parts[0];
+        date = parts[1] || undefined;
+      }
+    }
   }
-  return { author: text };
+
+  const text = cleanText(content);
+
+  return { text, author, date };
 }
 
 export async function fetchDiscordReviews(): Promise<DiscordReview[]> {
@@ -68,42 +104,32 @@ export async function fetchDiscordReviews(): Promise<DiscordReview[]> {
   const reviews: DiscordReview[] = [];
 
   for (const msg of messages) {
-    if (!msg.embeds || msg.embeds.length === 0) continue;
+    let text = "";
+    let author = "";
+    let stars = 5;
+    let date: string | undefined;
 
-    for (const embed of msg.embeds) {
-      let author = "";
-      let text = "";
-      let stars = 5;
-      let date: string | undefined;
-
-      if (embed.footer?.text) {
-        const parsed = parseFooter(embed.footer.text);
-        author = parsed.author;
-        date = parsed.date;
-      }
-
-      if (embed.fields) {
-        for (const f of embed.fields) {
-          const ln = f.name.toLowerCase().trim();
-          if (ln.includes("puan") || ln.includes("rating") || ln.includes("skor") || ln.includes("star")) {
-            stars = countStars(f.value);
-          }
-        }
-      }
-
-      if (!text && embed.description) {
-        text = cleanText(embed.description);
-      }
-
-      if (!text) continue;
-      if (!author) author = msg.author.global_name || msg.author.username;
-
-      const avatarUrl = msg.author.avatar
-        ? `https://cdn.discordapp.com/avatars/${msg.author.id}/${msg.author.avatar}.png?size=64`
-        : undefined;
-
-      reviews.push({ text, author, stars: Math.max(1, Math.min(5, stars)), date, avatar: avatarUrl });
+    const extracted = extractFromComponents(msg);
+    if (extracted) {
+      text = extracted.text;
+      author = extracted.author;
+      date = extracted.date;
     }
+
+    if (!text && msg.content) {
+      text = cleanText(msg.content);
+    }
+
+    if (!text) continue;
+    if (!author) author = msg.author.global_name || msg.author.username;
+
+    stars = countStars(text);
+
+    const avatarUrl = msg.author.avatar
+      ? `https://cdn.discordapp.com/avatars/${msg.author.id}/${msg.author.avatar}.png?size=64`
+      : undefined;
+
+    reviews.push({ text, author, stars: Math.max(1, Math.min(5, stars)), date, avatar: avatarUrl });
   }
 
   return reviews.slice(0, 30);

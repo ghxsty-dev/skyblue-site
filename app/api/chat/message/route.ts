@@ -14,6 +14,16 @@ interface ChannelCreateResponse {
   type: number;
 }
 
+function buildContainer(content: string, color: number): object {
+  return {
+    type: 17,
+    components: [
+      { type: 10, content },
+    ],
+    color,
+  };
+}
+
 async function createTempChannel(botToken: string, sender: string, sessionId: string): Promise<string | null> {
   const channelName = `💬・${sender.toLowerCase().replace(/[^a-z0-9ğüşıöç0-9]/g, "-").slice(0, 20)}・${sessionId.slice(0, 6)}`;
 
@@ -80,15 +90,10 @@ async function sendMessageToChannel(
   sessionId: string,
   timestamp: string
 ): Promise<boolean> {
-  const embed = {
-    title: `💬 ${sender}`,
-    description: content,
-    color: 0x59abfe,
-    footer: {
-      text: `Session: ${sessionId.slice(0, 8)} • ${new Date(timestamp).toLocaleString("tr-TR")}`,
-    },
-    timestamp: new Date(timestamp).toISOString(),
-  };
+  const container = buildContainer(
+    `**${sender}**\n${content}\n\n*Session: ${sessionId.slice(0, 8)} • ${new Date(timestamp).toLocaleString("tr-TR")}*`,
+    0x59abfe
+  );
 
   const res = await fetch(`${DISCORD_API}/channels/${channelId}/messages`, {
     method: "POST",
@@ -97,7 +102,7 @@ async function sendMessageToChannel(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      embeds: [embed],
+      components: [container],
     }),
   });
 
@@ -129,12 +134,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "No channel to close" }, { status: 400 });
       }
 
-      const embed = {
-        title: "🔴 Sohbet Sonlandırıldı",
-        description: `**${sender}** sohbeti sonlandırdı.`,
-        color: 0xef4444,
-        timestamp: new Date().toISOString(),
-      };
+      const container = buildContainer(
+        `🔴 **Sohbet Sonlandırıldı**\n**${sender}** sohbeti sonlandırdı.`,
+        0xef4444
+      );
 
       await fetch(`${DISCORD_API}/channels/${channelId}/messages`, {
         method: "POST",
@@ -142,7 +145,7 @@ export async function POST(request: NextRequest) {
           Authorization: `Bot ${botToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ embeds: [embed] }),
+        body: JSON.stringify({ components: [container] }),
       });
 
       return NextResponse.json({ ok: true });
@@ -157,15 +160,10 @@ export async function POST(request: NextRequest) {
 
       const starsText = "⭐".repeat(stars);
 
-      const embed = {
-        title: `${starsText} Değerlendirme`,
-        description: review || "Yorum bırakılmadı.",
-        color: 0xfbbf24,
-        footer: {
-          text: `${sender} • ${new Date().toLocaleString("tr-TR")}`,
-        },
-        timestamp: new Date().toISOString(),
-      };
+      const container = buildContainer(
+        `${starsText} **Değerlendirme**\n${review || "Yorum bırakılmadı."}\n\n*${sender} • ${new Date().toLocaleString("tr-TR")}*`,
+        0xfbbf24
+      );
 
       await fetch(`${DISCORD_API}/channels/${channelId}/messages`, {
         method: "POST",
@@ -173,7 +171,7 @@ export async function POST(request: NextRequest) {
           Authorization: `Bot ${botToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ embeds: [embed] }),
+        body: JSON.stringify({ components: [container] }),
       });
 
       await fetch(`${DISCORD_API}/channels/${channelId}`, {
