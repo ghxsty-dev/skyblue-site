@@ -83,7 +83,7 @@ export default function Nav() {
                 <Link
                   href={link === "home" ? "/" : `/${link}`}
                   onClick={() => setOpen(false)}
-                  className={`block px-3.5 py-2.5 rounded-none text-sm font-medium transition-all duration-300 no-underline ${
+                  className={`block px-3.5 py-2.5 rounded-none text-[15px] font-semibold transition-all duration-300 no-underline ${
                     current === link || (link === "home" && current === "home")
                       ? "text-white active-link"
                       : "text-white/70 hover:text-white"
@@ -103,7 +103,7 @@ export default function Nav() {
               <Link
                 href={link === "home" ? "/" : `/${link}`}
                 onClick={() => setOpen(false)}
-                className={`block px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 no-underline ${
+                className={`block px-3.5 py-2.5 rounded-lg text-[15px] font-semibold transition-all duration-300 no-underline ${
                   current === link || (link === "home" && current === "home")
                     ? "text-white"
                     : "text-white/70 hover:text-white"
