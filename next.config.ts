@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "flagcdn.com" },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/discord",
+        destination: "https://discord.gg/F3uQ2fU8RV",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
