@@ -7,9 +7,31 @@ import { useApp } from "@/lib/context";
 import { StarIcon, MessageIcon, CameraIcon, MailIcon } from "@/lib/icons";
 import contactData from "@/data/contact.json";
 import Reveal from "@/components/Reveal";
-import StatsCounter from "@/components/StatsCounter";
 import DiscordWidget from "@/components/DiscordWidget";
 import ColourfulText from "@/components/ui/colourful-text";
+
+function useCount(target: number, duration: number, decimals = 0) {
+  const [val, setVal] = useState(target);
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    setVal(0);
+    const startTime = performance.now();
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - (1 - progress) * (1 - progress);
+      const current = target * eased;
+      setVal(decimals > 0 ? Math.round(current * 10 ** decimals) / 10 ** decimals : Math.round(current));
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  }, [target, duration, decimals]);
+
+  return val;
+}
 
 interface Review {
   text: string;
@@ -89,18 +111,46 @@ export default function HomePage() {
       </section>
       </article>
 
-      <article className="page-inner py-12">
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-sm text-[var(--text2)] leading-relaxed">
-            {lang === "TR"
-              ? "SkyBlue, profesyonel tasarım hizmetleri sunan bir dijital ajansdır. Discord bot geliştirme, Minecraft sunucu tasarımları, logo ve banner tasarımı, kurumsal kimlik oluşturma alanlarında hizmet veriyoruz. Müşterilerimize özel, estetik ve işlevsel çözümler üreterek markalarını dijital dünyada öne çıkarıyoruz."
-              : "SkyBlue is a digital agency offering professional design services. We provide Discord bot development, Minecraft server design, logo and banner design, and brand identity creation. We produce custom, aesthetic, and functional solutions to help brands stand out in the digital world."}
-          </p>
+      <article className="page-inner py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+                {lang === "TR" ? "Hakkımızda" : "About Us"}
+              </span>
+            </h2>
+            <p className="text-base md:text-lg text-[var(--text2)] leading-relaxed">
+              {lang === "TR"
+                ? "SkyBlue, profesyonel tasarım hizmetleri sunan bir dijital ajansdır. Discord bot geliştirme, Minecraft sunucu tasarımları, logo ve banner tasarımı, kurumsal kimlik oluşturma alanlarında hizmet veriyoruz. Müşterilerimize özel, estetik ve işlevsel çözümler üreterek markalarını dijital dünyada öne çıkarıyoruz."
+                : "SkyBlue is a digital agency offering professional design services. We provide Discord bot development, Minecraft server design, logo and banner design, and brand identity creation. We produce custom, aesthetic, and functional solutions to help brands stand out in the digital world."}
+            </p>
+          </div>
+          <div className="flex flex-col items-center gap-8">
+            <div className="text-center">
+              <span className="text-6xl md:text-7xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+                {useCount(50, 2000)}+
+              </span>
+              <span className="block text-sm text-[var(--text2)] mt-2 font-medium">{t.statsCustomers}</span>
+            </div>
+            <div className="flex gap-12">
+              <div className="text-center">
+                <span className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+                  {useCount(180, 2500)}+
+                </span>
+                <span className="block text-sm text-[var(--text2)] mt-2 font-medium">{t.statsProducts}</span>
+              </div>
+              <div className="text-center">
+                <span className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
+                  {(useCount(49, 1800) / 10).toFixed(1)}
+                </span>
+                <span className="block text-sm text-[var(--text2)] mt-2 font-medium">{t.statsRating}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </article>
 
       <article className="page-inner py-16">
-        <StatsCounter />
         <Reveal>
           <div className="section-header">
             <h2>
