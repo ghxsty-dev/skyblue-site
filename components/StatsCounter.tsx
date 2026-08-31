@@ -4,12 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { useApp } from "@/lib/context";
 
 function useCount(target: number, duration: number, decimals = 0) {
-  const [val, setVal] = useState(0);
+  const [val, setVal] = useState(target);
   const started = useRef(false);
 
   useEffect(() => {
     if (started.current) return;
     started.current = true;
+    setVal(0);
     const startTime = performance.now();
     const animate = (now: number) => {
       const elapsed = now - startTime;
