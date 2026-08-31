@@ -55,6 +55,7 @@ export default function HomePage() {
 
   return (
     <div>
+      <article>
       <section className="relative h-screen min-h-[500px] -mt-[88px] ml-[calc(-50vw+50%)] mr-[calc(-50vw+50%)] w-[100vw] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <Image
@@ -86,8 +87,19 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </article>
 
-      <section className="page-inner py-16">
+      <article className="page-inner py-12">
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-sm text-[var(--text2)] leading-relaxed">
+            {lang === "TR"
+              ? "SkyBlue, profesyonel tasarım hizmetleri sunan bir dijital ajansdır. Discord bot geliştirme, Minecraft sunucu tasarımları, logo ve banner tasarımı, kurumsal kimlik oluşturma alanlarında hizmet veriyoruz. Müşterilerimize özel, estetik ve işlevsel çözümler üreterek markalarını dijital dünyada öne çıkarıyoruz."
+              : "SkyBlue is a digital agency offering professional design services. We provide Discord bot development, Minecraft server design, logo and banner design, and brand identity creation. We produce custom, aesthetic, and functional solutions to help brands stand out in the digital world."}
+          </p>
+        </div>
+      </article>
+
+      <article className="page-inner py-16">
         <StatsCounter />
         <Reveal>
           <div className="section-header">
@@ -160,9 +172,9 @@ export default function HomePage() {
           </Link>
         </div>
         </Reveal>
-      </section>
+      </article>
 
-      <section className="page-inner py-16 border-t border-[var(--border)]">
+      <article className="page-inner py-16 border-t border-[var(--border)]">
         <Reveal>
           <div className="section-header">
             <h2>
@@ -200,9 +212,9 @@ export default function HomePage() {
             ))}
           </div>
         </Reveal>
-      </section>
+      </article>
 
-      <section className="page-inner py-16 border-t border-[var(--border)]">
+      <article className="page-inner py-16 border-t border-[var(--border)]">
         <Reveal>
           <div className="section-header">
             <h2>
@@ -213,9 +225,9 @@ export default function HomePage() {
           </div>
           <DiscordWidget />
         </Reveal>
-      </section>
+      </article>
 
-      <section className="page-inner py-16 border-t border-[var(--border)]">
+      <article className="page-inner py-16 border-t border-[var(--border)]">
         <Reveal>
           <div className="section-header">
             <h2>
@@ -265,7 +277,7 @@ export default function HomePage() {
             </div>
           </div>
         </Reveal>
-      </section>
+      </article>
     </div>
   );
 }
