@@ -70,7 +70,7 @@ body {
   overflow-x: hidden;
 }
 
-a { color: var(--c2); text-decoration: none; }
+a { text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 main {
