@@ -18,8 +18,8 @@
           { "title": "Minecraft Rank Icons", "price": 20, "unit": "per icon" },
           { "title": "Minecraft Thread Design", "price": 150 },
           { "title": "Valorant Team Design", "price": 120 },
-          { "title": "Emoji Pack", "price": 5, "unit": "per emoji" },
-          { "title": "Sticker Pack", "price": 7.5, "unit": "per sticker" },
+          { "title": "Emoji Pack", "price": 7.5, "unit": "per emoji" },
+          { "title": "Sticker Pack", "price": 10, "unit": "per sticker" },
           { "title": "Stream Banner", "price": 50 },
           { "title": "Offline Screen", "price": 50 }
         ]
@@ -56,8 +56,8 @@
           { "title": "Minecraft Rank İkonları", "price": 20, "unit": "ikon başına" },
           { "title": "Minecraft Konu Tasarımı", "price": 150 },
           { "title": "Valorant Takım Tasarımı", "price": 120 },
-          { "title": "Emoji Paketi", "price": 5, "unit": "emoji başına" },
-          { "title": "Sticker Paketi", "price": 7.5, "unit": "sticker başına" },
+          { "title": "Emoji Paketi", "price": 7.5, "unit": "emoji başına" },
+          { "title": "Sticker Paketi", "price": 10, "unit": "sticker başına" },
           { "title": "Yayın Bannerı", "price": 50 },
           { "title": "Offline Ekranı", "price": 50 }
         ]
