@@ -20,11 +20,18 @@ interface ComponentV2Container {
   components: ComponentV2Content[];
 }
 
+interface DiscordEmbed {
+  title?: string;
+  description?: string;
+  footer?: { text: string };
+}
+
 interface DiscordMessage {
   id: string;
   author: DiscordUser;
   content: string;
   components?: ComponentV2Container[];
+  embeds?: DiscordEmbed[];
   timestamp: string;
 }
 
@@ -35,6 +42,12 @@ export interface ChatMessage {
   timestamp: string;
   isStaff: boolean;
   avatar?: string;
+}
+
+function extractSenderFromText(text: string): string | null {
+  const mentionMatch = text.match(/<@(\d+)>/);
+  if (mentionMatch) return mentionMatch[1];
+  return null;
 }
 
 export async function GET(request: NextRequest) {
@@ -80,13 +93,31 @@ export async function GET(request: NextRequest) {
             const textParts = container.components.map((c) => c.content);
             content = textParts.join("\n");
 
-            const firstLine = textParts[0] || "";
-            const boldMatch = firstLine.match(/^\*\*(.+?)\*\*$/);
-            if (boldMatch) {
-              sender = boldMatch[1];
-            } else if (firstLine && !firstLine.startsWith("🔴") && !firstLine.startsWith("⭐")) {
-              sender = firstLine;
+            for (const line of textParts) {
+              const mentionId = extractSenderFromText(line);
+              if (mentionId) {
+                sender = mentionId;
+                break;
+              }
             }
+
+            if (sender === (msg.author.global_name || msg.author.username)) {
+              const firstLine = textParts[0] || "";
+              const boldMatch = firstLine.match(/^\*\*(.+?)\*\*$/);
+              if (boldMatch) {
+                sender = boldMatch[1];
+              } else if (firstLine && !firstLine.startsWith("🔴") && !firstLine.startsWith("⭐")) {
+                sender = firstLine;
+              }
+            }
+          }
+        }
+
+        if (msg.embeds && msg.embeds.length > 0) {
+          const embed = msg.embeds[0];
+          if (embed.description) content = embed.description;
+          if (embed.title) {
+            sender = embed.title.replace(/^💬\s*/, "");
           }
         }
 

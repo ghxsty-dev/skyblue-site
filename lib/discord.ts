@@ -27,11 +27,19 @@ interface ComponentV2Container {
   color?: number;
 }
 
+interface DiscordEmbed {
+  title?: string;
+  description?: string;
+  fields?: { name: string; value: string; inline?: boolean }[];
+  footer?: { text: string };
+}
+
 interface DiscordMessage {
   id: string;
   author: DiscordUser;
   content: string;
   components?: ComponentV2Container[];
+  embeds?: DiscordEmbed[];
   timestamp: string;
 }
 
@@ -51,11 +59,24 @@ function countStars(text: string): number {
 function cleanText(text: string): string {
   return text
     .replace(/<:[^:]+:\d+>/g, "")
+    .replace(/<@\d+>/g, "")
+    .replace(/Müşteri:\s*/i, "")
+    .replace(/Customer:\s*/i, "")
     .replace(/[\u2B50\u2605\u2606\u272D\u2728\uD83C\uDF1F]/g, "")
     .replace(/\*\*/g, "")
     .replace(/[()/\d]/g, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function extractMentionName(text: string): string {
+  const mentionMatch = text.match(/<@(\d+)>/);
+  if (mentionMatch) return mentionMatch[1];
+
+  const customerMatch = text.match(/Müşteri:\s*<@(\d+)>/i) || text.match(/Customer:\s*<@(\d+)>/i);
+  if (customerMatch) return customerMatch[1];
+
+  return "";
 }
 
 function extractFromComponents(msg: DiscordMessage): { text: string; author: string; date?: string } | null {
@@ -71,18 +92,61 @@ function extractFromComponents(msg: DiscordMessage): { text: string; author: str
   let date: string | undefined;
 
   const lines = content.split("\n").map((l) => l.trim()).filter(Boolean);
-  if (lines.length > 0) {
-    const lastLine = lines[lines.length - 1];
-    if (lastLine.includes("•")) {
-      const parts = lastLine.split("•").map((s) => s.trim());
-      if (parts.length >= 2) {
-        author = parts[0];
-        date = parts[1] || undefined;
-      }
+
+  for (const line of lines) {
+    const mentionId = extractMentionName(line);
+    if (mentionId) {
+      author = mentionId;
+      break;
+    }
+  }
+
+  const lastLine = lines[lines.length - 1];
+  if (lastLine && lastLine.includes("•")) {
+    const parts = lastLine.split("•").map((s) => s.trim());
+    if (parts.length >= 2 && !author) {
+      author = parts[0];
+    }
+    if (parts.length >= 2) {
+      date = parts[1] || undefined;
     }
   }
 
   const text = cleanText(content);
+
+  return { text, author, date };
+}
+
+function extractFromEmbed(embed: DiscordEmbed): { text: string; author: string; date?: string } | null {
+  let author = "";
+  let text = "";
+  let date: string | undefined;
+
+  if (embed.footer?.text) {
+    const parts = embed.footer.text.split("•").map((s) => s.trim());
+    if (parts.length >= 2) {
+      author = parts[1];
+      date = parts[2] || undefined;
+    } else {
+      author = parts[0];
+    }
+  }
+
+  if (embed.fields) {
+    for (const f of embed.fields) {
+      const ln = f.name.toLowerCase().trim();
+      if (ln.includes("puan") || ln.includes("rating") || ln.includes("skor") || ln.includes("star")) {
+        // keep as is, stars counted from text
+      }
+    }
+  }
+
+  if (embed.description) {
+    text = cleanText(embed.description);
+  }
+
+  if (!text) return null;
+  if (!author && embed.title) author = embed.title.replace(/^[⭐✨💫🌟]\s*/, "");
 
   return { text, author, date };
 }
@@ -116,12 +180,22 @@ export async function fetchDiscordReviews(): Promise<DiscordReview[]> {
       date = extracted.date;
     }
 
+    if (!text && msg.embeds && msg.embeds.length > 0) {
+      const embedExtracted = extractFromEmbed(msg.embeds[0]);
+      if (embedExtracted) {
+        text = embedExtracted.text;
+        author = embedExtracted.author;
+        date = embedExtracted.date;
+      }
+    }
+
     if (!text && msg.content) {
       text = cleanText(msg.content);
+      const mentionId = extractMentionName(msg.content);
+      if (mentionId) author = mentionId;
     }
 
     if (!text) continue;
-    if (!author) author = msg.author.global_name || msg.author.username;
 
     stars = countStars(text);
 
@@ -129,7 +203,7 @@ export async function fetchDiscordReviews(): Promise<DiscordReview[]> {
       ? `https://cdn.discordapp.com/avatars/${msg.author.id}/${msg.author.avatar}.png?size=64`
       : undefined;
 
-    reviews.push({ text, author, stars: Math.max(1, Math.min(5, stars)), date, avatar: avatarUrl });
+    reviews.push({ text, author: author || msg.author.global_name || msg.author.username, stars: Math.max(1, Math.min(5, stars)), date, avatar: avatarUrl });
   }
 
   return reviews.slice(0, 30);
