@@ -178,6 +178,7 @@ export default function HomePage() {
               { slug: "modique", name: "Modique", url: "https://modiqueps.com" },
               { slug: "armea", name: "Armea", url: "https://armea.xyz" },
               { slug: "mangitto", name: "Mangitto", url: "https://mangtto.com" },
+              { slug: "marthex", name: "Marthex", url: "https://marthex.dev" },
             ].map((brand) => (
               <a
                 key={brand.slug}
