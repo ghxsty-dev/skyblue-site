@@ -52,12 +52,12 @@ export default function OfflineGame() {
     const ctx = c.getContext("2d");
     if (!ctx) return;
     ctx.clearRect(0, 0, 300, 300);
-    ctx.fillStyle = "#1a1a2e";
+    ctx.fillStyle = "#0b0d10";
     ctx.fillRect(0, 0, 300, 300);
     for (let x = 0; x < cols; x++) {
       for (let y = 0; y < rows; y++) {
         if ((x + y) % 2 === 0) {
-          ctx.fillStyle = "#16213e";
+          ctx.fillStyle = "#080a0d";
           ctx.fillRect(x * CELL, y * CELL, CELL, CELL);
         }
       }
@@ -65,7 +65,7 @@ export default function OfflineGame() {
     const snake = snakeRef.current;
     for (let i = 0; i < snake.length; i++) {
       const ratio = i / snake.length;
-      ctx.fillStyle = `rgb(${Math.round(89 + ratio * 30)},${Math.round(205 + ratio * 20)},${Math.round(242 - ratio * 30)})`;
+      ctx.fillStyle = `rgb(${Math.round(151 + ratio * 30)},${Math.round(205 + ratio * 20)},${Math.round(242 - ratio * 30)})`;
       ctx.shadowBlur = 8;
       ctx.shadowColor = "#59abfe";
       ctx.beginPath();
@@ -73,9 +73,9 @@ export default function OfflineGame() {
       ctx.fill();
     }
     ctx.shadowBlur = 0;
-    ctx.fillStyle = "#ff6b6b";
+    ctx.fillStyle = "#59abfe";
     ctx.shadowBlur = 10;
-    ctx.shadowColor = "#ff6b6b";
+    ctx.shadowColor = "#59abfe";
     ctx.beginPath();
     ctx.arc(appleRef.current.x * CELL + CELL / 2, appleRef.current.y * CELL + CELL / 2, CELL / 2 - 2, 0, Math.PI * 2);
     ctx.fill();
