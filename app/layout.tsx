@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import {
+  pressStart2P,
+  vt323,
+  silkscreen,
+  pixelifySans,
+  monocraft,
+} from "./fonts";
 import "./globals.css";
 import Script from "next/script";
 import { AppProvider } from "@/lib/context";
@@ -76,7 +83,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme="dark"
-      className={`${plusJakarta.variable} h-full antialiased`}
+      className={`${plusJakarta.variable} ${pressStart2P.variable} ${vt323.variable} ${silkscreen.variable} ${pixelifySans.variable} ${monocraft.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <script
