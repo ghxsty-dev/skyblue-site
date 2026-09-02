@@ -16,9 +16,10 @@ export async function GET() {
   try {
     const transactions = await getTransactions();
     return NextResponse.json(transactions);
-  } catch (e) {
-    console.error("GET /api/admin/transactions:", e);
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("GET /api/admin/transactions:", msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 
@@ -43,9 +44,10 @@ export async function POST(request: NextRequest) {
       date,
     });
     return NextResponse.json(tx, { status: 201 });
-  } catch (e) {
-    console.error("POST /api/admin/transactions:", e);
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("POST /api/admin/transactions:", msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 
@@ -55,17 +57,14 @@ export async function PUT(request: NextRequest) {
   }
   try {
     const { id, ...updates } = await request.json();
-    if (!id) {
-      return NextResponse.json({ error: "ID gerekli" }, { status: 400 });
-    }
+    if (!id) return NextResponse.json({ error: "ID gerekli" }, { status: 400 });
     const tx = await updateTransaction(id, updates);
-    if (!tx) {
-      return NextResponse.json({ error: "İşlem bulunamadı" }, { status: 404 });
-    }
+    if (!tx) return NextResponse.json({ error: "Bulunamadı" }, { status: 404 });
     return NextResponse.json(tx);
-  } catch (e) {
-    console.error("PUT /api/admin/transactions:", e);
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("PUT /api/admin/transactions:", msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 
@@ -75,16 +74,13 @@ export async function DELETE(request: NextRequest) {
   }
   try {
     const { id } = await request.json();
-    if (!id) {
-      return NextResponse.json({ error: "ID gerekli" }, { status: 400 });
-    }
+    if (!id) return NextResponse.json({ error: "ID gerekli" }, { status: 400 });
     const deleted = await deleteTransaction(id);
-    if (!deleted) {
-      return NextResponse.json({ error: "İşlem bulunamadı" }, { status: 404 });
-    }
+    if (!deleted) return NextResponse.json({ error: "Bulunamadı" }, { status: 404 });
     return NextResponse.json({ success: true });
-  } catch (e) {
-    console.error("DELETE /api/admin/transactions:", e);
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("DELETE /api/admin/transactions:", msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
