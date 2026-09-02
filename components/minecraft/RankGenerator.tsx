@@ -2,6 +2,7 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import { MINECRAFT_FONTS } from "@/app/fonts";
+import type { MinecraftFontId } from "@/app/fonts";
 import FontSelector from "./FontSelector";
 import ColorPicker from "./ColorPicker";
 import ShapeSelector from "./ShapeSelector";
@@ -42,7 +43,7 @@ interface RankGeneratorProps {
 export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [text, setText] = useState("VIP");
-  const [fontId, setFontId] = useState<string>(MINECRAFT_FONTS[0].id);
+  const [fontId, setFontId] = useState<MinecraftFontId>("monocraft");
   const [textColor, setTextColor] = useState("#ffffff");
   const [bgColor, setBgColor] = useState("#0a1628");
   const [shape, setShape] = useState<Shape>("rectangle");
@@ -50,9 +51,35 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [glow, setGlow] = useState(false);
   const [customTextColor, setCustomTextColor] = useState("");
   const [customBgColor, setCustomBgColor] = useState("");
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   const activeTextColor = customTextColor || textColor;
   const activeBgColor = customBgColor || bgColor;
+
+  // Load fonts for canvas use
+  useEffect(() => {
+    const loadFonts = async () => {
+      try {
+        const fontPromises = MINECRAFT_FONTS.map(async (f) => {
+          try {
+            await document.fonts.load(`48px "${f.fontFamily}"`);
+          } catch {
+            // Font might not be loaded yet, try with CSS
+          }
+        });
+        await Promise.allSettled(fontPromises);
+        setFontsLoaded(true);
+      } catch {
+        setFontsLoaded(true);
+      }
+    };
+    loadFonts();
+  }, []);
+
+  const getFontFamily = useCallback((id: MinecraftFontId): string => {
+    const font = MINECRAFT_FONTS.find((f) => f.id === id);
+    return font ? font.fontFamily : "Minecraft";
+  }, []);
 
   const draw = useCallback(() => {
     const c = canvasRef.current;
@@ -97,31 +124,31 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
       ctx.shadowColor = activeTextColor;
     }
 
-    // Find font
-    const font = MINECRAFT_FONTS.find((f) => f.id === fontId) || MINECRAFT_FONTS[0];
-
     // Text
     ctx.fillStyle = activeTextColor;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
     const displayText = text || "VIP";
+    const fontFamily = getFontFamily(fontId);
     let fontSize = 48;
 
     // Auto-size: shrink if text is too wide
-    ctx.font = `${fontSize}px ${font.cssVar}, monospace`;
+    ctx.font = `${fontSize}px "${fontFamily}", monospace`;
     while (ctx.measureText(displayText).width > CANVAS_W - 60 && fontSize > 16) {
       fontSize -= 2;
-      ctx.font = `${fontSize}px ${font.cssVar}, monospace`;
+      ctx.font = `${fontSize}px "${fontFamily}", monospace`;
     }
 
     ctx.fillText(displayText, CANVAS_W / 2, CANVAS_H / 2);
     ctx.shadowBlur = 0;
-  }, [text, fontId, activeTextColor, activeBgColor, shape, outline, glow]);
+  }, [text, fontId, activeTextColor, activeBgColor, shape, outline, glow, getFontFamily]);
 
   useEffect(() => {
-    draw();
-  }, [draw]);
+    if (fontsLoaded) {
+      draw();
+    }
+  }, [draw, fontsLoaded]);
 
   const handleDownload = useCallback(() => {
     const c = canvasRef.current;
@@ -167,7 +194,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         <FontSelector
           fonts={MINECRAFT_FONTS}
           selected={fontId}
-          onChange={setFontId}
+          onChange={(id) => setFontId(id as MinecraftFontId)}
           lang={lang}
         />
 

@@ -31,7 +31,7 @@ export default function MinecraftRankPage() {
       <section className="section-header">
         <h1
           style={{
-            fontFamily: "var(--font-pixel-heading), monospace",
+            fontFamily: "var(--font-monocraft), monospace",
             fontSize: "clamp(1.2rem, 3vw, 1.8rem)",
             background: "linear-gradient(135deg, var(--c1), var(--c2))",
             WebkitBackgroundClip: "text",

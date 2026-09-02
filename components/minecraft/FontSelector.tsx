@@ -4,7 +4,6 @@ interface FontOption {
   readonly id: string;
   readonly name: string;
   readonly cssVar: string;
-  readonly style: string;
 }
 
 interface FontSelectorProps {
@@ -29,7 +28,6 @@ export default function FontSelector({
             key={f.id}
             onClick={() => onChange(f.id)}
             className={`rank-font-btn ${selected === f.id ? "active" : ""}`}
-            title={f.style}
           >
             <span style={{ fontFamily: `${f.cssVar}, monospace` }}>Aa</span>
             <span className="rank-font-name">{f.name}</span>

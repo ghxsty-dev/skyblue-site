@@ -43,10 +43,13 @@ export {
   monocraft,
 };
 
+// Canvas font family names (must match what document.fonts.load() uses)
 export const MINECRAFT_FONTS = [
-  { id: "press-start", name: "Press Start 2P", cssVar: "var(--font-pixel-heading)", style: "8-bit arcade" },
-  { id: "vt323", name: "VT323", cssVar: "var(--font-pixel-body)", style: "CRT terminal" },
-  { id: "silkscreen", name: "Silkscreen", cssVar: "var(--font-pixel-ui)", style: "compact pixel" },
-  { id: "pixelify", name: "Pixelify Sans", cssVar: "var(--font-pixelify)", style: "modern pixel" },
-  { id: "monocraft", name: "Monocraft", cssVar: "var(--font-monocraft)", style: "Minecraft native" },
+  { id: "monocraft", name: "Monocraft", fontFamily: "Monocraft", cssVar: "var(--font-monocraft)" },
+  { id: "press-start", name: "Press Start 2P", fontFamily: "Press Start 2P", cssVar: "var(--font-pixel-heading)" },
+  { id: "vt323", name: "VT323", fontFamily: "VT323", cssVar: "var(--font-pixel-body)" },
+  { id: "silkscreen", name: "Silkscreen", fontFamily: "Silkscreen", cssVar: "var(--font-pixel-ui)" },
+  { id: "pixelify", name: "Pixelify Sans", fontFamily: "Pixelify Sans", cssVar: "var(--font-pixelify)" },
 ] as const;
+
+export type MinecraftFontId = (typeof MINECRAFT_FONTS)[number]["id"];
