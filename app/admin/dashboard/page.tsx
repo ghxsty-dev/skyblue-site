@@ -151,22 +151,16 @@ export default function AdminDashboard() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div
+          <img
+            src="/logo.webp"
+            alt="SkyBlue"
+            width={36}
+            height={36}
             style={{
-              width: "36px",
-              height: "36px",
               borderRadius: "50%",
-              background: "linear-gradient(135deg, #97cdf2, #59abfe)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "16px",
-              color: "#fff",
-              fontWeight: 700,
+              objectFit: "cover",
             }}
-          >
-            S
-          </div>
+          />
           <div>
             <h1 style={{ fontSize: "1rem", fontWeight: 700, margin: 0 }}>Admin Panel</h1>
             <p style={{ fontSize: "0.7rem", color: "#8b949e", margin: 0 }}>SkyBlue Yönetim</p>

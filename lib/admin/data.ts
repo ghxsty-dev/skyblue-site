@@ -14,7 +14,7 @@ const BLOB_FILE = "admin/transactions.json";
 
 async function readData(): Promise<Transaction[]> {
   try {
-    const result = await get(BLOB_FILE, { access: "private" });
+    const result = await get(BLOB_FILE, { access: "private", useCache: false });
     if (!result) return [];
     const text = await new Response(result.stream).text();
     return JSON.parse(text);
