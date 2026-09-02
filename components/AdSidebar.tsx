@@ -84,7 +84,7 @@ export default function AdSidebar() {
     return () => clearInterval(interval);
   }, [ads, rotate]);
 
-  if (pathname === "/" || leftAd === null) return null;
+  if (pathname.startsWith("/admin") || pathname === "/" || leftAd === null) return null;
 
   const leftHref = adData.find((a) => a.id === leftAd)?.url || "/reklam";
   const rightHref = rightAd !== null ? (adData.find((a) => a.id === rightAd)?.url || "/reklam") : "/reklam";

@@ -20,12 +20,6 @@ export default function AdminLayout({
 }>) {
   return (
     <html lang="tr" data-theme="dark" className={`${plusJakarta.variable} h-full antialiased`}>
-      <head>
-        <style>{`
-          .ad-sidebar { display: none !important; }
-          [class*="ad-sidebar"] { display: none !important; }
-        `}</style>
-      </head>
       <body className="min-h-full flex flex-col" style={{ fontFamily: "var(--font-sans), sans-serif" }}>
         {children}
       </body>
