@@ -1,4 +1,4 @@
-import { put, list } from "@vercel/blob";
+import { put, get } from "@vercel/blob";
 
 export interface Transaction {
   id: string;
@@ -14,12 +14,10 @@ const BLOB_FILE = "admin/transactions.json";
 
 async function readData(): Promise<Transaction[]> {
   try {
-    const { blobs } = await list();
-    const txBlob = blobs.find((b) => b.pathname === BLOB_FILE);
-    if (!txBlob) return [];
-    const res = await fetch(txBlob.url);
-    if (!res.ok) return [];
-    return await res.json();
+    const result = await get(BLOB_FILE, { access: "private" });
+    if (!result) return [];
+    const text = await new Response(result.stream).text();
+    return JSON.parse(text);
   } catch {
     return [];
   }
