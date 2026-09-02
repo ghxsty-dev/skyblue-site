@@ -1,13 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [capsLock, setCapsLock] = useState(false);
   const router = useRouter();
+
+  const handleCapsLock = useCallback((e: React.KeyboardEvent) => {
+    setCapsLock(e.getModifierState("CapsLock"));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,23 +61,18 @@ export default function AdminLoginPage() {
         }}
       >
         <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <div
+          <img
+            src="/logo.webp"
+            alt="SkyBlue"
+            width={64}
+            height={64}
             style={{
-              width: "64px",
-              height: "64px",
               borderRadius: "50%",
-              background: "linear-gradient(135deg, #97cdf2, #59abfe)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
               margin: "0 auto 16px",
-              fontSize: "28px",
-              color: "#fff",
-              fontWeight: 700,
+              display: "block",
+              objectFit: "cover",
             }}
-          >
-            S
-          </div>
+          />
           <h1 style={{ fontSize: "1.4rem", fontWeight: 700, color: "#e6edf3", margin: 0 }}>
             Admin Panel
           </h1>
@@ -100,6 +100,8 @@ export default function AdminLoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleCapsLock}
+              onKeyUp={handleCapsLock}
               placeholder="••••••••"
               autoFocus
               style={{
@@ -118,6 +120,25 @@ export default function AdminLoginPage() {
               onFocus={(e) => (e.target.style.borderColor = "#59abfe")}
               onBlur={(e) => (e.target.style.borderColor = "#1c2128")}
             />
+            {capsLock && (
+              <div
+                style={{
+                  marginTop: "6px",
+                  fontSize: "0.75rem",
+                  color: "#fbbf24",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                  <path d="M12 8v4"/>
+                  <path d="M12 16h.01"/>
+                </svg>
+                Caps Lock açık
+              </div>
+            )}
           </div>
 
           {error && (
