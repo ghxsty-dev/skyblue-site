@@ -9,6 +9,7 @@ import {
 } from "./fonts";
 import "./globals.css";
 import Script from "next/script";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppProvider } from "@/lib/context";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -178,6 +179,7 @@ export default function RootLayout({
           <CookieConsent />
           <BackToTop />
         </AppProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
