@@ -13,7 +13,6 @@ export async function GET() {
     const stats = await getStats();
     return NextResponse.json(stats);
   } catch (error) {
-    console.error("Stats error:", error);
-    return NextResponse.json({ error: "Stats hatası", details: String(error) }, { status: 500 });
+    return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }

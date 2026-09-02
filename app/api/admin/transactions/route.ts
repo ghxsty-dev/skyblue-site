@@ -14,8 +14,12 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const transactions = await getTransactions();
-  return NextResponse.json(transactions);
+  try {
+    const transactions = await getTransactions();
+    return NextResponse.json(transactions);
+  } catch (error) {
+    return NextResponse.json({ error: String(error) }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest) {

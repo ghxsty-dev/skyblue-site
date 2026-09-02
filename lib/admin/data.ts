@@ -1,4 +1,4 @@
-import { put, list, del } from "@vercel/blob";
+import { put, list } from "@vercel/blob";
 
 export interface Transaction {
   id: string;
@@ -13,35 +13,30 @@ export interface Transaction {
 const BLOB_FILE = "admin/transactions.json";
 
 async function readData(): Promise<Transaction[]> {
-  try {
-    const { blobs } = await list({ prefix: "admin/" });
-    const txBlob = blobs.find((b) => b.pathname === BLOB_FILE);
-    if (!txBlob) return [];
-    const res = await fetch(txBlob.url);
-    if (!res.ok) return [];
-    return await res.json();
-  } catch {
-    return [];
-  }
+  const { blobs } = await list({ prefix: "admin/" });
+  const txBlob = blobs.find((b) => b.pathname === BLOB_FILE);
+  if (!txBlob) return [];
+  const res = await fetch(txBlob.url);
+  if (!res.ok) return [];
+  return await res.json();
 }
 
 async function writeData(transactions: Transaction[]) {
-  const { blobs } = await list({ prefix: "admin/" });
-  const existing = blobs.find((b) => b.pathname === BLOB_FILE);
-  if (existing) {
-    await del(existing.url);
-  }
-  await put(BLOB_FILE, JSON.stringify(transactions, null, 2), {
+  await put(BLOB_FILE, JSON.stringify(transactions), {
     contentType: "application/json",
-    access: "public",
   });
 }
 
 export async function getTransactions(): Promise<Transaction[]> {
-  const transactions = await readData();
-  return transactions.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+  try {
+    const transactions = await readData();
+    return transactions.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+  } catch (e) {
+    console.error("getTransactions error:", e);
+    return [];
+  }
 }
 
 export async function addTransaction(
