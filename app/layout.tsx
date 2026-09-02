@@ -21,6 +21,7 @@ import LangAttr from "@/components/LangAttr";
 import LiveChat from "@/components/LiveChat";
 import CookieConsent from "@/components/CookieConsent";
 import BackToTop from "@/components/BackToTop";
+import { Analytics } from "@vercel/analytics/next";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -178,6 +179,7 @@ export default function RootLayout({
           <CookieConsent />
           <BackToTop />
         </AppProvider>
+        <Analytics />
       </body>
     </html>
   );
