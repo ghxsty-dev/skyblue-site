@@ -1,4 +1,4 @@
-import { kv } from "@vercel/kv";
+import { put, list } from "@vercel/blob";
 
 export interface Transaction {
   id: string;
@@ -10,11 +10,32 @@ export interface Transaction {
   createdAt: string;
 }
 
-const TX_KEY = "admin:transactions";
+const BLOB_PATH = "admin/transactions.json";
+
+async function readData(): Promise<Transaction[]> {
+  try {
+    const blobs = await list({ prefix: BLOB_PATH });
+    if (blobs.blobs.length === 0) return [];
+    const blob = blobs.blobs[0];
+    const res = await fetch(blob.url);
+    const text = await res.text();
+    return JSON.parse(text);
+  } catch {
+    return [];
+  }
+}
+
+async function writeData(transactions: Transaction[]) {
+  await put(BLOB_PATH, JSON.stringify(transactions, null, 2), {
+    contentType: "application/json",
+    access: "private",
+    allowOverwrite: true,
+  });
+}
 
 export async function getTransactions(): Promise<Transaction[]> {
-  const transactions = await kv.get<Transaction[]>(TX_KEY);
-  return (transactions || []).sort(
+  const transactions = await readData();
+  return transactions.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 }
@@ -22,23 +43,23 @@ export async function getTransactions(): Promise<Transaction[]> {
 export async function addTransaction(
   tx: Omit<Transaction, "id" | "createdAt">
 ): Promise<Transaction> {
-  const existing = (await kv.get<Transaction[]>(TX_KEY)) || [];
+  const existing = await readData();
   const newTx: Transaction = {
     ...tx,
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
   };
   existing.push(newTx);
-  await kv.set(TX_KEY, existing);
+  await writeData(existing);
   return newTx;
 }
 
 export async function deleteTransaction(id: string): Promise<boolean> {
-  const existing = (await kv.get<Transaction[]>(TX_KEY)) || [];
+  const existing = await readData();
   const idx = existing.findIndex((t) => t.id === id);
   if (idx === -1) return false;
   existing.splice(idx, 1);
-  await kv.set(TX_KEY, existing);
+  await writeData(existing);
   return true;
 }
 
@@ -46,11 +67,11 @@ export async function updateTransaction(
   id: string,
   updates: Partial<Omit<Transaction, "id" | "createdAt">>
 ): Promise<Transaction | null> {
-  const existing = (await kv.get<Transaction[]>(TX_KEY)) || [];
+  const existing = await readData();
   const tx = existing.find((t) => t.id === id);
   if (!tx) return null;
   Object.assign(tx, updates);
-  await kv.set(TX_KEY, existing);
+  await writeData(existing);
   return tx;
 }
 
