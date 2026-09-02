@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import {
+  pressStart2P,
+  vt323,
+  silkscreen,
+  pixelifySans,
+  monocraft,
+} from "../fonts";
 import "../globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -19,8 +26,12 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" data-theme="dark" className={`${plusJakarta.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col" style={{ fontFamily: "var(--font-sans), sans-serif" }}>
+    <html
+      lang="tr"
+      data-theme="dark"
+      className={`${plusJakarta.variable} ${pressStart2P.variable} ${vt323.variable} ${silkscreen.variable} ${pixelifySans.variable} ${monocraft.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">
         {children}
       </body>
     </html>
