@@ -13,12 +13,16 @@ export interface Transaction {
 const BLOB_FILE = "admin/transactions.json";
 
 async function readData(): Promise<Transaction[]> {
-  const { blobs } = await list({ prefix: "admin/" });
-  const txBlob = blobs.find((b) => b.pathname === BLOB_FILE);
-  if (!txBlob) return [];
-  const res = await fetch(txBlob.url);
-  if (!res.ok) return [];
-  return await res.json();
+  try {
+    const { blobs } = await list();
+    const txBlob = blobs.find((b) => b.pathname === BLOB_FILE);
+    if (!txBlob) return [];
+    const res = await fetch(txBlob.url);
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
 }
 
 async function writeData(transactions: Transaction[]) {
@@ -28,15 +32,10 @@ async function writeData(transactions: Transaction[]) {
 }
 
 export async function getTransactions(): Promise<Transaction[]> {
-  try {
-    const transactions = await readData();
-    return transactions.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
-  } catch (e) {
-    console.error("getTransactions error:", e);
-    return [];
-  }
+  const transactions = await readData();
+  return transactions.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 }
 
 export async function addTransaction(
