@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/admin/auth";
+
+export const runtime = "nodejs";
 import { getStats } from "@/lib/admin/data";
 
 export async function GET() {

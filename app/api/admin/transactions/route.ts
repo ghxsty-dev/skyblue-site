@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/admin/auth";
+
+export const runtime = "nodejs";
 import {
   getTransactions,
   addTransaction,
