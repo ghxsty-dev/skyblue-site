@@ -27,6 +27,7 @@ async function writeData(transactions: Transaction[]) {
   await put(BLOB_FILE, JSON.stringify(transactions), {
     contentType: "application/json",
     access: "private",
+    allowOverwrite: true,
   });
 }
 
