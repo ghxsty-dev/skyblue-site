@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "@vitalets/google-translate-api": "^9.2.1",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.10",
