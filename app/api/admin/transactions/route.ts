@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     const { type, amount, description, category, date } = body;
 
     if (!type || !amount || !description || !category || !date) {
-      return NextResponse.json({ error: "Eksik alanlar" }, { status: 400 });
+      return NextResponse.json({ error: "Eksik alanlar", received: body }, { status: 400 });
     }
 
     if (!["income", "expense"].includes(type)) {
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(tx, { status: 201 });
   } catch (error) {
     console.error("Add transaction error:", error);
-    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası", details: String(error) }, { status: 500 });
   }
 }
 

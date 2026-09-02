@@ -1,4 +1,4 @@
-import { put, list } from "@vercel/blob";
+import { put, list, del } from "@vercel/blob";
 
 export interface Transaction {
   id: string;
@@ -10,26 +10,30 @@ export interface Transaction {
   createdAt: string;
 }
 
-const BLOB_PATH = "admin/transactions.json";
+const BLOB_FILE = "admin/transactions.json";
 
 async function readData(): Promise<Transaction[]> {
   try {
-    const blobs = await list({ prefix: BLOB_PATH });
-    if (blobs.blobs.length === 0) return [];
-    const blob = blobs.blobs[0];
-    const res = await fetch(blob.url);
-    const text = await res.text();
-    return JSON.parse(text);
+    const { blobs } = await list({ prefix: "admin/" });
+    const txBlob = blobs.find((b) => b.pathname === BLOB_FILE);
+    if (!txBlob) return [];
+    const res = await fetch(txBlob.url);
+    if (!res.ok) return [];
+    return await res.json();
   } catch {
     return [];
   }
 }
 
 async function writeData(transactions: Transaction[]) {
-  await put(BLOB_PATH, JSON.stringify(transactions, null, 2), {
+  const { blobs } = await list({ prefix: "admin/" });
+  const existing = blobs.find((b) => b.pathname === BLOB_FILE);
+  if (existing) {
+    await del(existing.url);
+  }
+  await put(BLOB_FILE, JSON.stringify(transactions, null, 2), {
     contentType: "application/json",
-    access: "private",
-    allowOverwrite: true,
+    access: "public",
   });
 }
 

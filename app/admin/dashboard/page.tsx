@@ -100,7 +100,12 @@ export default function AdminDashboard() {
           date: new Date().toISOString().split("T")[0],
         });
         fetchData();
+      } else {
+        const err = await res.json();
+        alert("Hata: " + (err.error || err.details || "Bilinmeyen hata"));
       }
+    } catch (e) {
+      alert("Bağlantı hatası: " + String(e));
     } finally {
       setSubmitting(false);
     }
