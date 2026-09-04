@@ -29,7 +29,7 @@ const sections = [
   {
     title: { tr: "4. Teslimat ve Boyutlar", en: "4. Delivery and Sizes" },
     items: [
-      { tr: "SkyBlue proje başlangıcından itibaren 72 saat içerisinde projeyi teslim etmek zorundadır. (Mücbir sebepler durumunda 120 saate (5 gün) uzayabilir.)", en: "SkyBlue must deliver the project within 72 hours from the start. (May extend to 120 hours (5 days) in case of force majeure.)" },
+      { tr: "SkyBlue proje başlangıcından itibaren 120 saat içerisinde projeyi teslim etmek zorundadır. (Mücbir sebepler durumunda 7 güne (168 saat) uzayabilir.)", en: "SkyBlue must deliver the project within 120 hours from the start. (May extend to 7 days (168 hours) in case of force majeure.)" },
       { tr: "Tüm görsel tasarımlar PNG olarak teslim edilecektir.", en: "All visual designs will be delivered in PNG format." },
       { tr: "Tasarımlarda logolar 1024x1024, 2048x2048 ve 4096x4096 boyutlarında teslim edilebilir.", en: "Logos can be delivered in 1024x1024, 2048x2048, and 4096x4096 sizes." },
       { tr: "Tasarımlarda bannerlar 1920x1080, 3840x2160 boyutlarında teslim edilebilir.", en: "Banners can be delivered in 1920x1080 and 3840x2160 sizes." },
