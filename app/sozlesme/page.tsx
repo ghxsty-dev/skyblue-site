@@ -8,7 +8,7 @@ const sections = [
     title: { tr: "1. Ödeme ve Başlangıç", en: "1. Payment and Start" },
     items: [
       { tr: "Ödeme alındıktan sonra projeye başlanır.", en: "The project begins after payment is received." },
-      { tr: "Proje başladıktan sonra müşteri tarafından iptal edilmesi halinde ödeme iade edilmez.", en: "If the customer cancels after the project has started, the payment will not be refunded." },
+      { tr: "Ödeme alındıktan sonra geri iade edilmez.", en: "Once payment is received, no refund will be issued." },
       { tr: "SkyBlue istediği zaman fiyatları değiştirme hakkına sahiptir.", en: "SkyBlue reserves the right to change prices at any time." },
     ],
   },

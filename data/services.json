@@ -11,6 +11,7 @@
         "name": "All Designs",
         "items": [
           { "title": "Logo", "price": 70 },
+          { "title": "Animation Logo", "price": 120 },
           { "title": "Mascot Logo", "price": 100 },
           { "title": "Banner", "price": 60 },
           { "title": "Instagram Post", "price": 50 },
@@ -49,6 +50,7 @@
         "name": "Tüm Tasarımlar",
         "items": [
           { "title": "Logo", "price": 70 },
+          { "title": "Animasyon Logo", "price": 120 },
           { "title": "Maskot Logo", "price": 100 },
           { "title": "Banner", "price": 60 },
           { "title": "Instagram Gönderisi", "price": 50 },
