@@ -45,15 +45,22 @@ interface Review {
 export default function HomePage() {
   const { t, lang } = useApp();
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviewsLang, setReviewsLang] = useState<typeof lang | null>(null);
   const [index, setIndex] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const info = contactData[lang as "EN" | "TR"];
 
   useEffect(() => {
-    fetch(`/api/reviews?lang=${lang}`)
+    fetch(`/api/reviews?lang=${lang}`, { cache: "no-store" })
       .then((res) => res.json())
-      .then((data: { reviews: Review[] }) => setReviews(data.reviews))
-      .catch(() => setReviews([]));
+      .then((data: { reviews: Review[] }) => {
+        setReviews(data.reviews);
+        setReviewsLang(lang);
+      })
+      .catch(() => {
+        setReviews([]);
+        setReviewsLang(lang);
+      });
   }, [lang]);
 
   const [isMobile, setIsMobile] = useState(false);
@@ -65,16 +72,17 @@ export default function HomePage() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  const visibleReviews = reviewsLang === lang ? reviews : [];
   const perPage = isMobile ? 1 : 3;
-  const maxIndex = Math.max(0, reviews.length - perPage);
+  const maxIndex = Math.max(0, visibleReviews.length - perPage);
 
   useEffect(() => {
-    if (reviews.length === 0) return;
+    if (visibleReviews.length === 0) return;
     timerRef.current = setInterval(() => {
       setIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
     }, 10000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [reviews.length, maxIndex]);
+  }, [visibleReviews.length, maxIndex]);
 
   return (
     <div>
@@ -163,13 +171,13 @@ export default function HomePage() {
             </h2>
             <p>{t.reviewsDesc}</p>
           </div>
-        {reviews.length > 0 ? (
+        {visibleReviews.length > 0 ? (
           <div className="overflow-hidden">
             <div
               className="flex transition-transform duration-700 ease-in-out"
               style={{ transform: `translateX(-${(index * 100) / perPage}%)` }}
             >
-              {reviews.map((item, i) => (
+              {visibleReviews.map((item, i) => (
                 <div key={i} className="min-w-0 w-full md:w-1/3 shrink-0 px-4">
                   <div className="card group h-full">
                     <div className="flex items-center gap-3 mb-3">

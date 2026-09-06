@@ -2,6 +2,7 @@ const DISCORD_API = "https://discord.com/api/v10";
 const CHANNEL_ID = "1516801166627831949";
 const MESSAGE_PAGE_SIZE = 100;
 const MAX_MESSAGE_PAGES = 100;
+const discordUserCache = new Map<string, DiscordUser>();
 
 export interface DiscordReview {
   text: string;
@@ -100,19 +101,41 @@ function extractMentionId(text: string): string {
   return text.match(MENTION_RE)?.[1] || "";
 }
 
-function resolveMentionName(message: DiscordMessage, id: string): string {
+function extractMentionIds(text: string): string[] {
+  return [...text.matchAll(/<@!?(\d+)>/g)].map((match) => match[1]);
+}
+
+function resolveMentionUser(
+  message: DiscordMessage,
+  id: string,
+  resolvedUsers: Map<string, DiscordUser>,
+): DiscordUser | undefined {
   const mentionedUser = message.mentions?.find((user) => user.id === id);
+  if (mentionedUser) return mentionedUser;
+  return resolvedUsers.get(id);
+}
+
+function resolveMentionName(
+  message: DiscordMessage,
+  id: string,
+  resolvedUsers: Map<string, DiscordUser>,
+): string {
+  const mentionedUser = message.mentions?.find((user) => user.id === id) || resolvedUsers.get(id);
   if (mentionedUser) return mentionedUser.global_name || mentionedUser.username;
   return `@${id}`;
 }
 
-function extractCustomerAuthor(text: string, message: DiscordMessage): string {
+function extractCustomerAuthor(
+  text: string,
+  message: DiscordMessage,
+  resolvedUsers: Map<string, DiscordUser>,
+): string {
   const match = text.match(/(?:m[üu]şteri|customer)\s*:\s*([^\n]+)/i);
   if (!match) return "";
 
   const value = match[1].trim();
   const mentionId = extractMentionId(value);
-  if (mentionId) return resolveMentionName(message, mentionId);
+  if (mentionId) return resolveMentionName(message, mentionId, resolvedUsers);
 
   return stripMarkup(value).replace(/[\u2B50\u2605\u2606\u272D\u2728\uD83C\uDF1F]/gu, "").trim();
 }
@@ -181,6 +204,14 @@ function extractEmbedText(embeds: DiscordEmbed[] = []): string[] {
   return text;
 }
 
+function extractMessageSources(message: DiscordMessage): string[] {
+  return [
+    message.content || "",
+    ...extractComponentText(message.components),
+    ...extractEmbedText(message.embeds),
+  ].filter(Boolean);
+}
+
 function countStars(sources: string[]): number {
   for (const source of sources) {
     for (const line of source.split(/\r?\n/)) {
@@ -210,10 +241,11 @@ function formatMessageDate(timestamp: string): string {
   return date.toLocaleDateString("tr-TR");
 }
 
-function parseReviewMessage(message: DiscordMessage): DiscordReview | null {
-  const componentText = extractComponentText(message.components);
-  const embedText = extractEmbedText(message.embeds);
-  const sources = [message.content || "", ...componentText, ...embedText].filter(Boolean);
+function parseReviewMessage(
+  message: DiscordMessage,
+  resolvedUsers: Map<string, DiscordUser>,
+): DiscordReview | null {
+  const sources = extractMessageSources(message);
   if (sources.length === 0) return null;
 
   const rawText = sources.join("\n");
@@ -222,15 +254,15 @@ function parseReviewMessage(message: DiscordMessage): DiscordReview | null {
 
   const bulletAuthor = extractBulletAuthor(rawText);
   const mentionId = extractMentionId(rawText);
-  const author = extractCustomerAuthor(rawText, message)
-    || (mentionId ? resolveMentionName(message, mentionId) : "")
+  const author = extractCustomerAuthor(rawText, message, resolvedUsers)
+    || (mentionId ? resolveMentionName(message, mentionId, resolvedUsers) : "")
     || bulletAuthor.author
     || extractEmbedAuthor(message.embeds)
     || message.author.global_name
     || message.author.username;
 
   const avatarUser = mentionId
-    ? message.mentions?.find((user) => user.id === mentionId) || message.author
+    ? resolveMentionUser(message, mentionId, resolvedUsers) || message.author
     : message.author;
   const avatar = avatarUser.avatar
     ? `https://cdn.discordapp.com/avatars/${avatarUser.id}/${avatarUser.avatar}.png?size=64`
@@ -243,6 +275,45 @@ function parseReviewMessage(message: DiscordMessage): DiscordReview | null {
     date: bulletAuthor.date || formatMessageDate(message.timestamp),
     avatar,
   };
+}
+
+async function resolveMentionedUsers(
+  token: string,
+  messages: DiscordMessage[],
+): Promise<Map<string, DiscordUser>> {
+  const resolvedUsers = new Map(discordUserCache);
+  const missingIds = new Set<string>();
+
+  for (const message of messages) {
+    for (const user of message.mentions || []) {
+      resolvedUsers.set(user.id, user);
+      discordUserCache.set(user.id, user);
+    }
+
+    for (const id of extractMentionIds(extractMessageSources(message).join("\n"))) {
+      if (!resolvedUsers.has(id)) missingIds.add(id);
+    }
+  }
+
+  await Promise.all(
+    [...missingIds].map(async (id) => {
+      try {
+        const res = await fetch(`${DISCORD_API}/users/${id}`, {
+          headers: { Authorization: `Bot ${token}` },
+          next: { revalidate: 3600 },
+        });
+
+        if (!res.ok) return;
+        const user: DiscordUser = await res.json();
+        resolvedUsers.set(id, user);
+        discordUserCache.set(id, user);
+      } catch {
+        // Keep the mention ID fallback when Discord cannot resolve the user.
+      }
+    }),
+  );
+
+  return resolvedUsers;
 }
 
 async function fetchAllDiscordMessages(token: string): Promise<DiscordMessage[]> {
@@ -280,8 +351,9 @@ export async function fetchDiscordReviews(): Promise<DiscordReview[]> {
 
   try {
     const messages = await fetchAllDiscordMessages(token);
+    const resolvedUsers = await resolveMentionedUsers(token, messages);
     return messages
-      .map(parseReviewMessage)
+      .map((message) => parseReviewMessage(message, resolvedUsers))
       .filter((review): review is DiscordReview => review !== null);
   } catch (error) {
     console.error("[reviews] Discord fetch error:", error);

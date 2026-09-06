@@ -17,15 +17,28 @@ interface Review {
 export default function ReviewsPage() {
   const { t, lang } = useApp();
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadedLang, setLoadedLang] = useState<typeof lang | null>(null);
+  const loading = loadedLang !== lang;
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`/api/reviews?lang=${lang}`)
+    let active = true;
+
+    fetch(`/api/reviews?lang=${lang}`, { cache: "no-store" })
       .then((res) => res.json())
-      .then((data: { reviews: Review[] }) => setReviews(data.reviews))
-      .catch(() => setReviews([]))
-      .finally(() => setLoading(false));
+      .then((data: { reviews: Review[] }) => {
+        if (!active) return;
+        setReviews(data.reviews);
+        setLoadedLang(lang);
+      })
+      .catch(() => {
+        if (!active) return;
+        setReviews([]);
+        setLoadedLang(lang);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [lang]);
 
   return (
