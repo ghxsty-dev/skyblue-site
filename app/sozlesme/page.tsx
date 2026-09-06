@@ -7,15 +7,17 @@ const sections = [
   {
     title: { tr: "1. Ödeme ve Başlangıç", en: "1. Payment and Start" },
     items: [
-      { tr: "Ödeme alındıktan sonra projeye başlanır.", en: "The project begins after payment is received." },
-      { tr: "Ödeme alındıktan sonra geri iade edilmez.", en: "Once payment is received, no refund will be issued." },
-      { tr: "SkyBlue istediği zaman fiyatları değiştirme hakkına sahiptir.", en: "SkyBlue reserves the right to change prices at any time." },
+      { tr: "Ödeme anı, sözleşmesel proje başlangıcı olarak kabul edilir.", en: "The time of payment is considered the contractual start of the project." },
+      { tr: "Müşterinin sipariş iletişim kanalında 'sözleşmeyi kabul ediyorum.' yazması, bu sözleşmenin müşteri tarafından kabul edildiği anlamına gelir.", en: "The contract is deemed accepted by the customer when they write 'I accept the contract.' in the order communication channel." },
+      { tr: "SkyBlue, fiyat değişikliklerini yürürlük tarihiyle birlikte duyurur. Yeni fiyatlar yalnızca belirtilen tarihten sonra verilen siparişlerde geçerli olur; daha önce ödemesi alınmış siparişler fiyat değişikliğinden etkilenmez.", en: "SkyBlue announces price changes together with their effective date. New prices apply only to orders placed after that date; previously paid orders are not affected." },
     ],
   },
   {
     title: { tr: "2. İptal Koşulları", en: "2. Cancellation Terms" },
     items: [
-      { tr: "SkyBlue siparişi iptal etme hakkına sahiptir. (Ücretsiz paketlerde)", en: "SkyBlue reserves the right to cancel orders. (Free packages)" },
+      { tr: "Fiilî çalışmaya başlanmış ve müşteriye ilk taslak veya örnek gönderilmişse ödeme iade edilmez. Ayıplı veya eksik hizmetten doğan yasal haklar saklıdır.", en: "No refund is issued once work has commenced and the first draft or sample has been sent to the customer. Statutory rights arising from defective or incomplete service remain reserved." },
+      { tr: "Ödeme tarihinden itibaren 7 takvim günü içinde fiilî çalışmaya başlanmaz ve müşteriye ilk taslak veya örnek gönderilmezse müşteri ücret iadesi talep edebilir.", en: "The customer may request a refund if work has not commenced and no first draft or sample has been sent within 7 calendar days of payment." },
+      { tr: "SkyBlue ücretli bir siparişi iptal ederse müşterinin ödediği tutarın tamamı iade edilir. SkyBlue ücretsiz siparişleri iptal etme hakkına sahiptir.", en: "If SkyBlue cancels a paid order, the full amount paid by the customer is refunded. SkyBlue reserves the right to cancel free orders." },
       { tr: "SkyBlue nakit ödeme hariç Çekiliş, Ödül vb. tasarımları iptal etme hakkına sahiptir.", en: "SkyBlue reserves the right to cancel giveaway, prize, etc. designs except cash payments." },
       { tr: "SkyBlue istediği zaman sponsorluğu iptal edebilir.", en: "SkyBlue may cancel sponsorship at any time." },
     ],
@@ -23,31 +25,34 @@ const sections = [
   {
     title: { tr: "3. Revizyon Hakları", en: "3. Revision Rights" },
     items: [
-      { tr: "Müşteriler her tasarımda sınırsız revizyon hakkına sahiptir.", en: "Customers have unlimited revision rights on every design." },
+      { tr: "Müşteri, ilk taslak veya örneğin gönderildiği tarihten itibaren 14 takvim günü içinde sınırsız revizyon talep edebilir.", en: "The customer may request unlimited revisions within 14 calendar days from the date the first draft or sample is sent." },
+      { tr: "Revizyonlar, sipariş sırasında kararlaştırılan tasarım kapsamı ve brief ile sınırlıdır. Farklı bir konsept, yeni bir tasarım veya sipariş kapsamını genişleten talepler revizyon sayılmaz ve ayrıca ücretlendirilebilir.", en: "Revisions are limited to the design scope and brief agreed at the time of order. Requests for a different concept, a new design, or an expanded scope are not considered revisions and may incur an additional fee." },
+      { tr: "14 günlük sürenin sonunda kullanılmayan revizyon hakkı sona erer.", en: "Any unused revision right expires at the end of the 14-day period." },
     ],
   },
   {
     title: { tr: "4. Teslimat ve Boyutlar", en: "4. Delivery and Sizes" },
     items: [
-      { tr: "SkyBlue proje başlangıcından itibaren 120 saat içerisinde projeyi teslim etmek zorundadır. (Mücbir sebepler durumunda 7 güne (168 saat) uzayabilir.)", en: "SkyBlue must deliver the project within 120 hours from the start. (May extend to 7 days (168 hours) in case of force majeure.)" },
-      { tr: "Tüm görsel tasarımlar PNG olarak teslim edilecektir.", en: "All visual designs will be delivered in PNG format." },
-      { tr: "Tasarımlarda logolar 1024x1024, 2048x2048 ve 4096x4096 boyutlarında teslim edilebilir.", en: "Logos can be delivered in 1024x1024, 2048x2048, and 4096x4096 sizes." },
-      { tr: "Tasarımlarda bannerlar 1920x1080, 3840x2160 boyutlarında teslim edilebilir.", en: "Banners can be delivered in 1920x1080 and 3840x2160 sizes." },
-      { tr: "Duyuru görseli, afiş vb. boyutları değiştirilemez ve sabittir.", en: "Announcement images, posters, etc. have fixed dimensions and cannot be changed." },
+      { tr: "SkyBlue, ödeme anından itibaren 120 saat içinde sipariş kapsamındaki ilk teslimi yapmakla yükümlüdür. Müşterinin revizyon talepleri için geçen süre bu teslim süresine dahil değildir.", en: "SkyBlue must provide the first delivery included in the order within 120 hours of payment. Time spent on customer revision requests is not included in this delivery period." },
+      { tr: "Mücbir sebep halinde teslim süresi ödeme tarihinden itibaren en fazla 7 takvim gününe uzayabilir. SkyBlue, gecikmeyi ve nedenini müşteriye bildirir.", en: "In the event of force majeure, the delivery period may be extended to a maximum of 7 calendar days from the payment date. SkyBlue will notify the customer of the delay and its reason." },
+      { tr: "Teslim formatı ve ölçüleri, sipariş sırasında kararlaştırılan hizmet kapsamına göre belirlenir.", en: "The delivery format and dimensions are determined by the service scope agreed at the time of order." },
     ],
   },
   {
     title: { tr: "5. Telif Hakları", en: "5. Copyright" },
     items: [
       { tr: "Müşteri tarafından sağlanan içeriklerin telif haklarından müşteri sorumludur.", en: "The customer is responsible for the copyright of content they provide." },
-      { tr: "Tasarımın tüm mali hakları ödemenin tamamlanmasının ardından müşteriye devredilir.", en: "All financial rights to the design are transferred to the customer upon full payment." },
-      { tr: "SkyBlue, tamamlanan projeyi portfolyo, sosyal medya ve tanıtım çalışmalarında referans olarak kullanabilir.", en: "SkyBlue may use the completed project as a reference in portfolio, social media, and promotional work." },
+      { tr: "Ödemenin tamamlanması ve nihai tasarımın teslim edilmesiyle birlikte müşteriye; tasarımı kullanma, çoğaltma, yayımlama, dağıtma, dijital veya ticari ortamlarda sergileme ve uyarlama hakları devredilir. Devredilmesi hukuken mümkün olmayan manevi haklar bu kapsamın dışındadır.", en: "Upon full payment and final delivery, the rights to use, reproduce, publish, distribute, display in digital or commercial media, and adapt the design are transferred to the customer. Moral rights that cannot legally be transferred are excluded." },
+      { tr: "Tasarımda kullanılan üçüncü taraf font, stok görsel, şablon veya diğer lisanslı materyaller kendi lisans koşullarına tabidir ve bu materyallerin mülkiyeti müşteriye devredilmez.", en: "Third-party fonts, stock images, templates, and other licensed materials used in the design remain subject to their respective license terms and are not transferred to the customer." },
+      { tr: "Düzenlenebilir kaynak dosyaları yalnızca sipariş kapsamına açıkça dahil edilmişse teslim edilir.", en: "Editable source files are delivered only when explicitly included in the order scope." },
+      { tr: "SkyBlue, tamamlanan ve kamuya açıklanmış projeyi portfolyo, sosyal medya ve tanıtım çalışmalarında referans olarak kullanabilir. Müşteri proje başlamadan önce yazılı gizlilik talebinde bulunmuş ve SkyBlue bu talebi kabul etmişse proje yayımlanmaz.", en: "SkyBlue may use completed projects that have been made public as references in its portfolio, social media, and promotional work. The project will not be published if the customer submitted a written confidentiality request before the project began and SkyBlue accepted it." },
     ],
   },
   {
     title: { tr: "6. Gizlilik", en: "6. Privacy" },
     items: [
-      { tr: "Discord sunucusundan açılan bilet ve içerikleri üçüncü kişilerle paylaşılmaz.", en: "Tickets and their contents opened on the Discord server are not shared with third parties." },
+      { tr: "Discord sunucusunda açılan destek biletleri, sipariş içerikleri ve müşteri iletişim bilgileri; müşterinin açık izni, hizmetin yerine getirilmesi için zorunlu hâller veya yasal yükümlülükler dışında üçüncü kişilerle paylaşılmaz.", en: "Discord support tickets, order contents, and customer contact details are not shared with third parties except with the customer's explicit consent, where necessary to provide the service, or where legally required." },
+      { tr: "Portfolyo kullanımına ilişkin 5. bölüm hükümleri saklıdır; gizli yazışmalar ve kişisel bilgiler portfolyo içeriğine dahil edilmez.", en: "The portfolio provisions in Section 5 remain applicable; confidential correspondence and personal information are not included in portfolio content." },
     ],
   },
 ];
@@ -93,8 +98,8 @@ export default function SozlesmePage() {
             </p>
             <p>
               {lang === "TR"
-                ? "SkyBlue sonradan sözleşmede değişiklik yapma hakkına sahiptir. SkyBlue Tasarım Hizmetleri | tasarımlarımız kısmından tasarımlarımıza ulaşabilirsiniz."
-                : "SkyBlue reserves the right to make changes to the contract at a later date. SkyBlue Design Services | You can view our designs in the designs section."}
+                ? "SkyBlue sözleşmede değişiklik yapabilir. Değişiklikler, yayımlandıkları tarihten sonra verilen siparişlerde geçerlidir; mevcut siparişlere, müşteri tarafından kabul edilen sözleşme sürümü uygulanır. SkyBlue Tasarım Hizmetleri | tasarımlarımız kısmından tasarımlarımıza ulaşabilirsiniz."
+                : "SkyBlue may amend this contract. Amendments apply to orders placed after their publication date; existing orders remain subject to the contract version accepted by the customer. SkyBlue Design Services | You can view our designs in the designs section."}
             </p>
           </div>
         </div>
