@@ -8,6 +8,7 @@ import { StarIcon, MessageIcon, CameraIcon, MailIcon } from "@/lib/icons";
 import contactData from "@/data/contact.json";
 import Reveal from "@/components/Reveal";
 import DiscordWidget from "@/components/DiscordWidget";
+import OrderProcessTimeline from "@/components/OrderProcessTimeline";
 import ColourfulText from "@/components/ui/colourful-text";
 
 function useCount(target: number, duration: number, decimals = 0) {
@@ -149,6 +150,8 @@ export default function HomePage() {
           </div>
         </div>
       </article>
+
+      <OrderProcessTimeline />
 
       <article className="page-inner py-16">
         <Reveal>
