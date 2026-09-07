@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useApp } from "@/lib/context";
 
@@ -56,49 +57,59 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
   }
 
   return (
-    <section className="account-auth-shell" aria-labelledby="auth-title">
-      <div className="account-auth-brand" aria-hidden="true">SB</div>
-      <div className="account-auth-heading">
-        <span>{mode === "register" ? (tr ? "Yeni hesap" : "New account") : (tr ? "Tekrar hoş geldin" : "Welcome back")}</span>
-        <h1 id="auth-title">{mode === "register" ? (tr ? "SkyBlue hesabı oluştur" : "Create a SkyBlue account") : (tr ? "Hesabına giriş yap" : "Sign in to your account")}</h1>
-        <p>{mode === "register" ? (tr ? "Tool haklarını, premium kodlarını ve profilini tek yerden yönet." : "Manage tool access, premium codes, and your profile in one place.") : (tr ? "Tool haklarına ve hesabına devam et." : "Continue to your tools and account.")}</p>
+    <div className="auth-split">
+      <div className="auth-split-image">
+        <Image src="/login.webp" alt="" fill priority className="auth-split-img" />
+        <div className="auth-split-overlay">
+          <span className="auth-split-logo">SB</span>
+          <h2>{mode === "register" ? (tr ? "SkyBlue Ailesine Katıl" : "Join SkyBlue") : (tr ? "SkyBlue'e Hoş Geldin" : "Welcome to SkyBlue")}</h2>
+          <p>{mode === "register" ? (tr ? "Tasarım hizmetlerini keşfet, tool'ları kullan." : "Explore design services and use tools.") : (tr ? "Hesabına erişim sağla." : "Access your account.")}</p>
+        </div>
       </div>
 
-      <form className="account-form" onSubmit={submit}>
-        {mode === "register" && (
-          <label>
-            <span>{tr ? "Kullanıcı adı" : "Username"}</span>
-            <input name="username" required minLength={3} maxLength={20} pattern="[a-z0-9_]+" autoComplete="username" placeholder="skyblue_user" />
-            <small>{tr ? "Sonradan değiştirilemez." : "Cannot be changed later."}</small>
-          </label>
-        )}
-        <label>
-          <span>{tr ? "E-posta" : "Email"}</span>
-          <input name="email" type="email" required autoComplete="email" placeholder="mail@example.com" />
-        </label>
-        <label>
-          <span>{tr ? "Şifre" : "Password"}</span>
-          <input
-            name="password"
-            type="password"
-            required
-            minLength={8}
-            autoComplete={mode === "register" ? "new-password" : "current-password"}
-            onKeyDown={(event) => setCapsLock(event.getModifierState("CapsLock"))}
-            onKeyUp={(event) => setCapsLock(event.getModifierState("CapsLock"))}
-          />
-          {capsLock && <small className="account-form-warning">{tr ? "Caps Lock açık" : "Caps Lock is on"}</small>}
-        </label>
-        {error && <p className="account-form-error" role="alert">{error}</p>}
-        <button type="submit" disabled={pending}>
-          {pending ? (tr ? "İşleniyor..." : "Processing...") : mode === "register" ? (tr ? "Hesap oluştur" : "Create account") : (tr ? "Giriş yap" : "Sign in")}
-        </button>
-      </form>
+      <div className="auth-split-form">
+        <div className="account-auth-heading">
+          <span>{mode === "register" ? (tr ? "Yeni hesap" : "New account") : (tr ? "Tekrar hoş geldin" : "Welcome back")}</span>
+          <h1 id="auth-title">{mode === "register" ? (tr ? "Hesap oluştur" : "Create account") : (tr ? "Giriş yap" : "Sign in")}</h1>
+          <p>{mode === "register" ? (tr ? "Tool haklarını, premium kodlarını ve profilini tek yerden yönet." : "Manage tool access, premium codes, and your profile in one place.") : (tr ? "Tool haklarına ve hesabına devam et." : "Continue to your tools and account.")}</p>
+        </div>
 
-      <p className="account-auth-switch">
-        {mode === "register" ? (tr ? "Zaten hesabın var mı?" : "Already have an account?") : (tr ? "Henüz hesabın yok mu?" : "Need an account?")} {" "}
-        <Link href={mode === "register" ? "/login" : "/register"}>{mode === "register" ? (tr ? "Giriş yap" : "Sign in") : (tr ? "Kayıt ol" : "Register")}</Link>
-      </p>
-    </section>
+        <form className="account-form" onSubmit={submit}>
+          {mode === "register" && (
+            <label>
+              <span>{tr ? "Kullanıcı adı" : "Username"}</span>
+              <input name="username" required minLength={3} maxLength={20} pattern="[a-z0-9_]+" autoComplete="username" placeholder="skyblue_user" />
+              <small>{tr ? "Sonradan değiştirilemez." : "Cannot be changed later."}</small>
+            </label>
+          )}
+          <label>
+            <span>{tr ? "E-posta" : "Email"}</span>
+            <input name="email" type="email" required autoComplete="email" placeholder="mail@example.com" />
+          </label>
+          <label>
+            <span>{tr ? "Şifre" : "Password"}</span>
+            <input
+              name="password"
+              type="password"
+              required
+              minLength={8}
+              autoComplete={mode === "register" ? "new-password" : "current-password"}
+              onKeyDown={(event) => setCapsLock(event.getModifierState("CapsLock"))}
+              onKeyUp={(event) => setCapsLock(event.getModifierState("CapsLock"))}
+            />
+            {capsLock && <small className="account-form-warning">{tr ? "Caps Lock açık" : "Caps Lock is on"}</small>}
+          </label>
+          {error && <p className="account-form-error" role="alert">{error}</p>}
+          <button type="submit" disabled={pending}>
+            {pending ? (tr ? "İşleniyor..." : "Processing...") : mode === "register" ? (tr ? "Hesap oluştur" : "Create account") : (tr ? "Giriş yap" : "Sign in")}
+          </button>
+        </form>
+
+        <p className="account-auth-switch">
+          {mode === "register" ? (tr ? "Zaten hesabın var mı?" : "Already have an account?") : (tr ? "Henüz hesabın yok mu?" : "Need an account?")} {" "}
+          <Link href={mode === "register" ? "/login" : "/register"}>{mode === "register" ? (tr ? "Giriş yap" : "Sign in") : (tr ? "Kayıt ol" : "Register")}</Link>
+        </p>
+      </div>
+    </div>
   );
 }
