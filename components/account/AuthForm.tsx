@@ -66,7 +66,6 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
         <div className="account-auth-heading">
           <span>{mode === "register" ? (tr ? "Yeni hesap" : "New account") : (tr ? "Tekrar hoş geldin" : "Welcome back")}</span>
           <h1 id="auth-title">{mode === "register" ? (tr ? "Hesap oluştur" : "Create account") : (tr ? "Giriş yap" : "Sign in")}</h1>
-          <p>{mode === "register" ? (tr ? "Tool haklarını, premium kodlarını ve profilini tek yerden yönet." : "Manage tool access, premium codes, and your profile in one place.") : (tr ? "Tool haklarına ve hesabına devam et." : "Continue to your tools and account.")}</p>
         </div>
 
         <form className="account-form" onSubmit={submit}>

@@ -2515,6 +2515,21 @@ main {
   color: #8f9aff;
 }
 
+.account-badge.role-admin {
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #ef4444;
+}
+
+.account-badge.role-moderator {
+  border-color: rgba(89, 171, 254, 0.35);
+  color: #59abfe;
+}
+
+.account-badge.role-rehber {
+  border-color: rgba(52, 211, 153, 0.35);
+  color: #34d399;
+}
+
 .account-profile-summary dl {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
