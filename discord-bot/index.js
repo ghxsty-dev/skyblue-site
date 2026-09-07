@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { Client, GatewayIntentBits } from "discord.js";
 import { createClient } from "@supabase/supabase-js";
 
