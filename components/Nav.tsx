@@ -16,6 +16,7 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [indicator, setIndicator] = useState({ left: 0, width: 0, measured: false });
   const [isAdminUser, setIsAdminUser] = useState(false);
+  const [avatarPath, setAvatarPath] = useState<string | null>(null);
   const ulRef = useRef<HTMLUListElement>(null);
 
   const current = pathname === "/" ? "home" : pathname.replace("/", "").split("/")[0];
@@ -56,7 +57,12 @@ export default function Nav() {
   useEffect(() => {
     fetch("/api/auth/me", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d?.role === "admin") setIsAdminUser(true); })
+      .then((d) => {
+        if (d?.user) {
+          if (d.user.role === "admin") setIsAdminUser(true);
+          if (d.user.avatar_path) setAvatarPath(d.user.avatar_path);
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -106,16 +112,26 @@ export default function Nav() {
           </ul>
           <a
             href="/account"
-            className="ml-2 flex w-9 h-9 items-center justify-center text-white/70 hover:text-white no-underline"
+            className="ml-2 flex w-9 h-9 items-center justify-center text-white/70 hover:text-white no-underline overflow-hidden rounded-full"
             aria-label={t.account}
             title={t.account}
             aria-current={current === "account" ? "page" : undefined}
           >
-            <UserIcon size={19} />
+            {avatarPath ? (
+              <img
+                src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${avatarPath}`}
+                alt=""
+                width={36}
+                height={36}
+                className="rounded-full object-cover w-9 h-9"
+              />
+            ) : (
+              <UserIcon size={19} />
+            )}
           </a>
           {isAdminUser && (
             <a
-              href="/admin/dashboard"
+              href="/admin"
               className="ml-1 flex w-9 h-9 items-center justify-center text-white/70 hover:text-white no-underline"
               aria-label="Admin"
               title="Admin Panel"
@@ -144,7 +160,17 @@ export default function Nav() {
           ))}
           <li>
             <a href="/account" onClick={() => setOpen(false)} aria-current={current === "account" ? "page" : undefined} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold text-white/70 hover:text-white no-underline">
-              <UserIcon size={18} /> {t.account}
+              {avatarPath ? (
+                <img
+                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${avatarPath}`}
+                  alt=""
+                  width={18}
+                  height={18}
+                  className="rounded-full object-cover"
+                />
+              ) : (
+                <UserIcon size={18} />
+              )} {t.account}
             </a>
           </li>
         </ul>
