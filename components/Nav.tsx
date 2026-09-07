@@ -13,11 +13,13 @@ export default function Nav() {
   const pathname = usePathname();
   const { t, theme } = useApp();
   const [open, setOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [indicator, setIndicator] = useState({ left: 0, width: 0, measured: false });
   const [isAdminUser, setIsAdminUser] = useState(false);
   const [avatarPath, setAvatarPath] = useState<string | null>(null);
   const ulRef = useRef<HTMLUListElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const current = pathname === "/" ? "home" : pathname.replace("/", "").split("/")[0];
 
@@ -26,6 +28,16 @@ export default function Nav() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setAccountOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const measure = useCallback(() => {
@@ -66,6 +78,18 @@ export default function Nav() {
       .catch(() => {});
   }, []);
 
+  const accountAvatar = avatarPath ? (
+    <img
+      src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${avatarPath}`}
+      alt=""
+      width={36}
+      height={36}
+      className="rounded-full object-cover w-9 h-9"
+    />
+  ) : (
+    <UserIcon size={19} />
+  );
+
   return (
     <nav className={`fixed top-0 left-0 right-0 z-[1000] px-6 transition-all duration-300 ${
       scrolled
@@ -83,6 +107,8 @@ export default function Nav() {
         >
           <MenuIcon size={24} />
         </button>
+
+        {/* Desktop */}
         <div className="hidden md:flex items-center relative">
           {indicator.measured && (
             <div
@@ -90,10 +116,7 @@ export default function Nav() {
               style={{ left: indicator.left, width: indicator.width }}
             />
           )}
-          <ul
-            ref={ulRef}
-            className="list-none flex items-center gap-0 m-0 p-0"
-          >
+          <ul ref={ulRef} className="list-none flex items-center gap-0 m-0 p-0">
             {links.map((link) => (
               <li key={link}>
                 <Link
@@ -110,25 +133,33 @@ export default function Nav() {
               </li>
             ))}
           </ul>
-          <a
-            href="/account"
-            className="ml-2 flex w-9 h-9 items-center justify-center text-white/70 hover:text-white no-underline overflow-hidden rounded-full"
-            aria-label={t.account}
-            title={t.account}
-            aria-current={current === "account" ? "page" : undefined}
-          >
-            {avatarPath ? (
-              <img
-                src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${avatarPath}`}
-                alt=""
-                width={36}
-                height={36}
-                className="rounded-full object-cover w-9 h-9"
-              />
-            ) : (
-              <UserIcon size={19} />
+
+          {/* Account Dropdown */}
+          <div className="relative ml-2" ref={dropdownRef}>
+            <button
+              type="button"
+              onClick={() => setAccountOpen(!accountOpen)}
+              className="flex w-9 h-9 items-center justify-center text-white/70 hover:text-white cursor-pointer bg-transparent border-none p-0 overflow-hidden rounded-full"
+              aria-label={t.account}
+              title={t.account}
+            >
+              {accountAvatar}
+            </button>
+            {accountOpen && (
+              <div className="nav-dropdown">
+                <a href="/account/premium?tool=minecraft-rank" onClick={() => setAccountOpen(false)} className="nav-dropdown-item premium">
+                  <span className="nav-dropdown-icon"><Image src="/premium.webp" alt="" width={18} height={18} unoptimized /></span>
+                  Premium üyesi ol
+                </a>
+                <div className="nav-dropdown-divider" />
+                <a href="/account" onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
+                  <span className="nav-dropdown-icon">⚙</span>
+                  Hesap ayarları
+                </a>
+              </div>
             )}
-          </a>
+          </div>
+
           {isAdminUser && (
             <a
               href="/admin"
@@ -140,9 +171,9 @@ export default function Nav() {
             </a>
           )}
         </div>
-        <ul
-          className={`md:hidden list-none flex-col gap-1 flex absolute top-full left-0 right-0 bg-[var(--nav-bg)]/90 backdrop-blur-xl border-b border-[var(--border)] p-4 ${open ? "flex" : "hidden"}`}
-        >
+
+        {/* Mobile */}
+        <ul className={`md:hidden list-none flex-col gap-1 flex absolute top-full left-0 right-0 bg-[var(--nav-bg)]/90 backdrop-blur-xl border-b border-[var(--border)] p-4 ${open ? "flex" : "hidden"}`}>
           {links.map((link) => (
             <li key={link}>
               <Link
@@ -158,6 +189,11 @@ export default function Nav() {
               </Link>
             </li>
           ))}
+          <li>
+            <a href="/account/premium?tool=minecraft-rank" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold premium-gradient-text no-underline">
+              <Image src="/premium.webp" alt="" width={18} height={18} unoptimized /> Premium üyesi ol
+            </a>
+          </li>
           <li>
             <a href="/account" onClick={() => setOpen(false)} aria-current={current === "account" ? "page" : undefined} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold text-white/70 hover:text-white no-underline">
               {avatarPath ? (
