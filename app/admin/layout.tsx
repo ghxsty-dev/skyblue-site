@@ -14,7 +14,7 @@ export default function AdminLayout({
 }>) {
   return (
     <html lang="tr" data-theme="dark">
-      <body style={{ fontFamily: "var(--font-sans), sans-serif", margin: 0 }}>
+      <body style={{ fontFamily: "var(--font-sans), sans-serif", margin: 0, background: "#080a0d", color: "#e6edf3" }}>
         {children}
       </body>
     </html>
