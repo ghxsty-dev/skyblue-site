@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { useApp } from "@/lib/context";
-import { StarIcon, MessageIcon, CameraIcon, MailIcon } from "@/lib/icons";
+import { StarIcon, MessageIcon, InstagramIcon, MailIcon } from "@/lib/icons";
 import contactData from "@/data/contact.json";
 import Reveal from "@/components/Reveal";
 import DiscordWidget from "@/components/DiscordWidget";
@@ -320,7 +320,7 @@ export default function HomePage() {
               className="flex items-center gap-3 cursor-pointer group"
             >
               <div className="text-white shrink-0">
-                <CameraIcon size={24} />
+                 <InstagramIcon size={24} />
               </div>
               <div>
                 <div className="font-semibold text-sm text-[var(--text)] group-hover:text-[#59abfe] transition-colors">Instagram</div>

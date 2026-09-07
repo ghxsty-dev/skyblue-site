@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useApp } from "@/lib/context";
-import { MessageIcon, CameraIcon, MailIcon } from "@/lib/icons";
+import { MessageIcon, InstagramIcon, MailIcon } from "@/lib/icons";
 import data from "@/data/contact.json";
 import Reveal from "@/components/Reveal";
 
@@ -56,7 +56,7 @@ export default function ContactPage() {
 
           <div className="flex items-center gap-3 mb-4">
             <div className="text-white shrink-0">
-              <CameraIcon size={28} />
+               <InstagramIcon size={28} />
             </div>
             <div>
               <strong className="text-sm">Instagram</strong><br />
