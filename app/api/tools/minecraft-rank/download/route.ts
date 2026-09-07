@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import sharp from "sharp";
+import { PNG } from "pngjs";
 import { buildPixelText, getPixelFont, normalizeRankText } from "@/components/minecraft/pixel-fonts";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isTrustedMutation } from "@/lib/account/request";
@@ -97,9 +97,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const png = await sharp(pixels, { raw: { width, height: HEIGHT, channels: 4 } }).png().toBuffer();
+    const png = new PNG({ width, height: HEIGHT });
+    for (let y = 0; y < HEIGHT; y += 1) {
+      for (let x = 0; x < width; x += 1) {
+        const srcOffset = (y * width + x) * 4;
+        const dstOffset = (y * width + x) * 4;
+        png.data[dstOffset] = pixels[srcOffset];
+        png.data[dstOffset + 1] = pixels[srcOffset + 1];
+        png.data[dstOffset + 2] = pixels[srcOffset + 2];
+        png.data[dstOffset + 3] = pixels[srcOffset + 3];
+      }
+    }
+    const pngBuffer = PNG.sync.write(png);
     const filename = `rank-${text.toLowerCase().replace(/\s+/g, "-")}.png`;
-    return new NextResponse(new Uint8Array(png), {
+    return new NextResponse(new Uint8Array(pngBuffer), {
       headers: {
         "Content-Type": "image/png",
         "Content-Disposition": `attachment; filename="${filename}"`,
