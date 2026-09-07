@@ -9,10 +9,10 @@ import MembersTab from "./MembersTab";
 
 type Tab = "gelir-gider" | "premium-kod" | "uyeler";
 
-const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: "gelir-gider", label: "Gelir / Gider", icon: "📊" },
-  { id: "premium-kod", label: "Premium Kodlar", icon: "🔑" },
-  { id: "uyeler", label: "Üyeler", icon: "👥" },
+const TABS: { id: Tab; label: string }[] = [
+  { id: "gelir-gider", label: "Gelir / Gider" },
+  { id: "premium-kod", label: "Premium Kodlar" },
+  { id: "uyeler", label: "Üyeler" },
 ];
 
 export default function AdminPanel() {
@@ -43,7 +43,6 @@ export default function AdminPanel() {
               onClick={() => setTab(t.id)}
               className={`admin-sidebar-link ${tab === t.id ? "active" : ""}`}
             >
-              <span className="admin-sidebar-icon">{t.icon}</span>
               {t.label}
             </button>
           ))}
@@ -51,11 +50,9 @@ export default function AdminPanel() {
 
         <div className="admin-sidebar-footer">
           <a href="/" className="admin-sidebar-link">
-            <span className="admin-sidebar-icon">🏠</span>
             Siteye Dön
           </a>
           <button type="button" onClick={handleLogout} className="admin-sidebar-link logout">
-            <span className="admin-sidebar-icon">🚪</span>
             Çıkış Yap
           </button>
         </div>

@@ -196,11 +196,11 @@ export default function Nav() {
           {isAdminUser && (
             <a
               href="/admin"
-              className="ml-1 flex w-9 h-9 items-center justify-center text-white/70 hover:text-white no-underline"
+              className="ml-1 flex items-center justify-center text-white/70 hover:text-white no-underline text-[0.82rem] font-semibold px-2 py-1 rounded-md"
               aria-label="Admin"
               title="Admin Panel"
             >
-              ⚙
+              Admin
             </a>
           )}
         </div>
