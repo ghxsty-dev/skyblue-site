@@ -10,10 +10,9 @@ import {
   type PixelFont,
 } from "./pixel-fonts";
 
-const HEIGHT = 9;
-const TEXT_TOP = 2;
-const TEXT_HEIGHT = 5;
 const PADDING_X = 3;
+const PADDING_Y = 2;
+const TEXT_TOP = PADDING_Y;
 const DEFAULT_BACKGROUND = "#59abfe";
 const PREVIEW_SCALE = 28;
 
@@ -28,12 +27,12 @@ interface RankGeneratorProps {
   lang?: "tr" | "en";
 }
 
-function createGrid(width: number, color: Pixel): PixelGrid {
-  return Array.from({ length: HEIGHT }, () => Array.from({ length: width }, () => color));
+function createGrid(width: number, height: number, color: Pixel): PixelGrid {
+  return Array.from({ length: height }, () => Array.from({ length: width }, () => color));
 }
 
-function resizeGrid(grid: PixelGrid, width: number): PixelGrid {
-  return Array.from({ length: HEIGHT }, (_, y) =>
+function resizeGrid(grid: PixelGrid, width: number, height: number): PixelGrid {
+  return Array.from({ length: height }, (_, y) =>
     Array.from({ length: width }, (_, x) => grid[y]?.[x] ?? DEFAULT_BACKGROUND)
   );
 }
@@ -42,15 +41,21 @@ function copyGrid(grid: PixelGrid): PixelGrid {
   return grid.map((row) => [...row]);
 }
 
-function getInitialWidth() {
-  return buildPixelText(PIXEL_FONTS[0], "VIP").width + PADDING_X * 2;
+function getInitialDimensions() {
+  const layout = buildPixelText(PIXEL_FONTS[0], "VIP");
+  return {
+    width: layout.width + PADDING_X * 2,
+    height: layout.height + PADDING_Y * 2,
+  };
 }
+
+const INITIAL_DIMENSIONS = getInitialDimensions();
 
 export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageWrapRef = useRef<HTMLDivElement>(null);
   const paintingRef = useRef(false);
-  const backgroundRef = useRef<PixelGrid>(createGrid(getInitialWidth(), DEFAULT_BACKGROUND));
+  const backgroundRef = useRef<PixelGrid>(createGrid(INITIAL_DIMENSIONS.width, INITIAL_DIMENSIONS.height, DEFAULT_BACKGROUND));
   const undoRef = useRef<PixelGrid[]>([]);
   const redoRef = useRef<PixelGrid[]>([]);
   const [text, setText] = useState("VIP");
@@ -60,7 +65,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [customBrushColor, setCustomBrushColor] = useState("");
   const [tool, setTool] = useState<Tool>("brush");
   const [brushSize, setBrushSize] = useState(1);
-  const [background, setBackground] = useState<PixelGrid>(() => createGrid(getInitialWidth(), DEFAULT_BACKGROUND));
+  const [background, setBackground] = useState<PixelGrid>(() => createGrid(INITIAL_DIMENSIONS.width, INITIAL_DIMENSIONS.height, DEFAULT_BACKGROUND));
   const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
   const [previewScale, setPreviewScale] = useState(PREVIEW_SCALE);
   const [downloadState, setDownloadState] = useState<{ authenticated: boolean; premium: boolean; remaining: number } | null>(null);
@@ -70,6 +75,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const font = getPixelFont(fontId);
   const layout = buildPixelText(font, text);
   const width = layout.width + PADDING_X * 2;
+  const height = layout.height + PADDING_Y * 2;
   const activeBrushColor = customBrushColor || brushColor;
   const isTurkish = lang === "tr";
 
@@ -89,7 +95,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         reset: "Arka planı sıfırla",
         transparent: "Şeffaf",
         download: "PNG indir",
-        dimensions: `${width} × ${HEIGHT} px PNG`,
+        dimensions: `${width} × ${height} px PNG`,
         gridHint: "Grid üzerinde sadece arka planı boyayabilirsin.",
       }
     : {
@@ -107,18 +113,18 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         reset: "Reset background",
         transparent: "Transparent",
         download: "Download PNG",
-        dimensions: `${width} × ${HEIGHT} px PNG`,
+        dimensions: `${width} × ${height} px PNG`,
         gridHint: "Only the background can be painted on the grid.",
       };
 
   useEffect(() => {
-    const next = resizeGrid(backgroundRef.current, width);
+    const next = resizeGrid(backgroundRef.current, width, height);
     backgroundRef.current = next;
     setBackground(next);
     undoRef.current = [];
     redoRef.current = [];
     setHistoryState({ canUndo: false, canRedo: false });
-  }, [width]);
+  }, [height, width]);
 
   useEffect(() => {
     let active = true;
@@ -161,11 +167,11 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     if (!ctx) return;
 
     canvas.width = width;
-    canvas.height = HEIGHT;
+    canvas.height = height;
     ctx.imageSmoothingEnabled = false;
-    ctx.clearRect(0, 0, width, HEIGHT);
+    ctx.clearRect(0, 0, width, height);
 
-    for (let y = 0; y < HEIGHT; y += 1) {
+    for (let y = 0; y < height; y += 1) {
       for (let x = 0; x < width; x += 1) {
         const color = background[y]?.[x];
         if (color === null || color === undefined) {
@@ -181,7 +187,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     }
 
     ctx.fillStyle = textColor;
-    for (let y = 0; y < TEXT_HEIGHT; y += 1) {
+    for (let y = 0; y < layout.height; y += 1) {
       for (let x = 0; x < layout.width; x += 1) {
         if (layout.rows[y]?.[x] === "1") ctx.fillRect(PADDING_X + x, TEXT_TOP + y, 1, 1);
       }
@@ -193,15 +199,15 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
       ctx.beginPath();
       for (let x = 0; x <= width; x += 1) {
         ctx.moveTo(x, 0);
-        ctx.lineTo(x, HEIGHT);
+        ctx.lineTo(x, height);
       }
-      for (let y = 0; y <= HEIGHT; y += 1) {
+      for (let y = 0; y <= height; y += 1) {
         ctx.moveTo(0, y);
         ctx.lineTo(width, y);
       }
       ctx.stroke();
     }
-  }, [background, layout, textColor, width]);
+  }, [background, height, layout, textColor, width]);
 
   useEffect(() => {
     if (canvasRef.current) drawCanvas(canvasRef.current, true);
@@ -212,9 +218,9 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     const rect = canvas.getBoundingClientRect();
     return {
       x: Math.max(0, Math.min(width - 1, Math.floor(((event.clientX - rect.left) / rect.width) * width))),
-      y: Math.max(0, Math.min(HEIGHT - 1, Math.floor(((event.clientY - rect.top) / rect.height) * HEIGHT))),
+      y: Math.max(0, Math.min(height - 1, Math.floor(((event.clientY - rect.top) / rect.height) * height))),
     };
-  }, [width]);
+  }, [height, width]);
 
   const paintAt = useCallback((x: number, y: number) => {
     const next = copyGrid(backgroundRef.current);
@@ -226,7 +232,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
       for (let dx = 0; dx < brushSize; dx += 1) {
         const targetX = x + dx - start;
         const targetY = y + dy - start;
-        if (targetX < 0 || targetX >= width || targetY < 0 || targetY >= HEIGHT) continue;
+        if (targetX < 0 || targetX >= width || targetY < 0 || targetY >= height) continue;
         if (next[targetY][targetX] !== value) {
           next[targetY][targetX] = value;
           changed = true;
@@ -235,7 +241,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     }
 
     if (changed) commitGrid(next);
-  }, [activeBrushColor, brushSize, commitGrid, tool, width]);
+  }, [activeBrushColor, brushSize, commitGrid, height, tool, width]);
 
   const handlePointerDown = useCallback((event: React.PointerEvent<HTMLCanvasElement>) => {
     event.preventDefault();
@@ -310,15 +316,15 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   }, [redo, undo]);
 
   const fillBackground = useCallback(() => {
-    commitGrid(createGrid(width, tool === "eraser" ? null : activeBrushColor));
-  }, [activeBrushColor, commitGrid, tool, width]);
+    commitGrid(createGrid(width, height, tool === "eraser" ? null : activeBrushColor));
+  }, [activeBrushColor, commitGrid, height, tool, width]);
 
   const resetBackground = useCallback(() => {
-    commitGrid(createGrid(width, DEFAULT_BACKGROUND));
+    commitGrid(createGrid(width, height, DEFAULT_BACKGROUND));
     setTool("brush");
     setCustomBrushColor("");
     setBrushColor(DEFAULT_BACKGROUND);
-  }, [commitGrid, width]);
+  }, [commitGrid, height, width]);
 
   const download = useCallback(async () => {
     setDownloadPending(true);
@@ -364,16 +370,16 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
             <span className="pixel-rank-kicker">{isTurkish ? "ItemsAdder uyumlu PNG" : "ItemsAdder-ready PNG"}</span>
             <strong>{copy.dimensions}</strong>
           </div>
-          <span className="pixel-rank-grid-badge">9 px</span>
+          <span className="pixel-rank-grid-badge">{height} px</span>
         </div>
         <div ref={stageWrapRef} className="pixel-rank-stage-wrap">
-          <div className="pixel-rank-stage" style={{ width: `${width * previewScale}px`, height: `${HEIGHT * previewScale}px` }}>
+          <div className="pixel-rank-stage" style={{ width: `${width * previewScale}px`, height: `${height * previewScale}px` }}>
             <canvas
               ref={canvasRef}
               width={width}
-              height={HEIGHT}
+              height={height}
               className="pixel-rank-canvas"
-              style={{ width: `${width * previewScale}px`, height: `${HEIGHT * previewScale}px` }}
+              style={{ width: `${width * previewScale}px`, height: `${height * previewScale}px` }}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={stopPainting}

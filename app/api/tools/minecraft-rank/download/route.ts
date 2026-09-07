@@ -7,9 +7,9 @@ import { isTrustedMutation } from "@/lib/account/request";
 export const runtime = "nodejs";
 
 const TOOL_SLUG = "minecraft-rank";
-const HEIGHT = 9;
 const PADDING_X = 3;
 const TEXT_TOP = 2;
+const PADDING_Y = 2;
 const HEX_RE = /^#[0-9a-f]{6}$/i;
 
 function istanbulDate(): string {
@@ -56,10 +56,11 @@ export async function POST(request: NextRequest) {
     const font = getPixelFont(String(body.fontId || ""));
     const layout = buildPixelText(font, text);
     const width = layout.width + PADDING_X * 2;
+    const height = layout.height + PADDING_Y * 2;
     const textColor = String(body.textColor || "").toLowerCase();
     const background = body.background as unknown;
 
-    if (!text || !HEX_RE.test(textColor) || width < 7 || width > 220 || !Array.isArray(background) || background.length !== HEIGHT) {
+    if (!text || !HEX_RE.test(textColor) || width < 7 || width > 220 || !Array.isArray(background) || background.length !== height) {
       return NextResponse.json({ error: "INVALID_IMAGE" }, { status: 400 });
     }
     if (!background.every((row) => Array.isArray(row) && row.length === width && row.every((pixel) => pixel === null || (typeof pixel === "string" && HEX_RE.test(pixel))))) {
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "DAILY_LIMIT_REACHED", remaining: 0 }, { status: 429, headers: { "Cache-Control": "no-store" } });
     }
 
-    const pixels = Buffer.alloc(width * HEIGHT * 4);
+    const pixels = Buffer.alloc(width * height * 4);
     const setPixel = (x: number, y: number, color: string | null) => {
       const offset = (y * width + x) * 4;
       if (color === null) {
@@ -88,17 +89,17 @@ export async function POST(request: NextRequest) {
       pixels[offset + 3] = 255;
     };
 
-    for (let y = 0; y < HEIGHT; y += 1) {
+    for (let y = 0; y < height; y += 1) {
       for (let x = 0; x < width; x += 1) setPixel(x, y, background[y][x]);
     }
-    for (let y = 0; y < 5; y += 1) {
+    for (let y = 0; y < layout.height; y += 1) {
       for (let x = 0; x < layout.width; x += 1) {
         if (layout.rows[y]?.[x] === "1") setPixel(PADDING_X + x, TEXT_TOP + y, textColor);
       }
     }
 
-    const png = new PNG({ width, height: HEIGHT });
-    for (let y = 0; y < HEIGHT; y += 1) {
+    const png = new PNG({ width, height });
+    for (let y = 0; y < height; y += 1) {
       for (let x = 0; x < width; x += 1) {
         const srcOffset = (y * width + x) * 4;
         const dstOffset = (y * width + x) * 4;
