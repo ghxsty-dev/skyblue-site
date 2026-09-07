@@ -1,324 +1,406 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
-import { MINECRAFT_FONTS } from "@/app/fonts";
-import type { MinecraftFontId } from "@/app/fonts";
-import FontSelector from "./FontSelector";
-import ColorPicker from "./ColorPicker";
-import ShapeSelector from "./ShapeSelector";
-import DownloadButton from "./DownloadButton";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { BrushIcon } from "@/lib/icons";
+import {
+  buildPixelText,
+  getPixelFont,
+  normalizeRankText,
+  PIXEL_FONTS,
+  type PixelFont,
+} from "./pixel-fonts";
 
-const CANVAS_W = 512;
-const CANVAS_H = 128;
+const HEIGHT = 9;
+const TEXT_TOP = 2;
+const TEXT_HEIGHT = 5;
+const PADDING_X = 2;
+const DEFAULT_BACKGROUND = "#59abfe";
+const PREVIEW_SCALE = 28;
 
-const TEXT_COLORS = [
-  { id: "white", value: "#ffffff", label: "Beyaz" },
-  { id: "yellow", value: "#ffd700", label: "Altın" },
-  { id: "gold", value: "#ffaa00", label: "Sarı" },
-  { id: "red", value: "#ff4444", label: "Kırmızı" },
-  { id: "green", value: "#44ff44", label: "Yeşil" },
-  { id: "cyan", value: "#00ffff", label: "Cyan" },
-  { id: "purple", value: "#aa44ff", label: "Mor" },
-  { id: "blue", value: "#59abfe", label: "Mavi" },
-] as const;
+const TEXT_COLORS = ["#ffffff", "#000000", "#ffd166", "#ff6b6b", "#68d391", "#c084fc", "#59abfe"];
+const BACKGROUND_COLORS = ["#59abfe", "#97cdf2", "#0b0d10", "#1c2128", "#173c62", "#f1f4f7", "#7c3aed", "#ef4444"];
 
-const BG_COLORS = [
-  { id: "black", value: "#000000", label: "Siyah" },
-  { id: "dark-blue", value: "#0a1628", label: "Koyu Mavi" },
-  { id: "dark-red", value: "#1a0a0a", label: "Koyu Kırmızı" },
-  { id: "dark-green", value: "#0a1a0a", label: "Koyu Yeşil" },
-  { id: "dark-purple", value: "#150a1a", label: "Koyu Mor" },
-  { id: "navy", value: "#0d1b2a", label: "Lacivert" },
-  { id: "charcoal", value: "#1a1a1a", label: "Kömür" },
-  { id: "midnight", value: "#0f0f23", label: "Gece" },
-] as const;
-
-const SHAPES = ["rectangle", "shield", "rounded", "hexagon"] as const;
-type Shape = (typeof SHAPES)[number];
+type Pixel = string | null;
+type PixelGrid = Pixel[][];
+type Tool = "brush" | "eraser";
 
 interface RankGeneratorProps {
   lang?: "tr" | "en";
 }
 
+function createGrid(width: number, color: Pixel): PixelGrid {
+  return Array.from({ length: HEIGHT }, () => Array.from({ length: width }, () => color));
+}
+
+function resizeGrid(grid: PixelGrid, width: number): PixelGrid {
+  return Array.from({ length: HEIGHT }, (_, y) =>
+    Array.from({ length: width }, (_, x) => grid[y]?.[x] ?? DEFAULT_BACKGROUND)
+  );
+}
+
+function copyGrid(grid: PixelGrid): PixelGrid {
+  return grid.map((row) => [...row]);
+}
+
+function getInitialWidth() {
+  return buildPixelText(PIXEL_FONTS[0], "VIP").width + PADDING_X * 2;
+}
+
 export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const paintingRef = useRef(false);
+  const backgroundRef = useRef<PixelGrid>(createGrid(getInitialWidth(), DEFAULT_BACKGROUND));
+  const undoRef = useRef<PixelGrid[]>([]);
+  const redoRef = useRef<PixelGrid[]>([]);
   const [text, setText] = useState("VIP");
-  const [fontId, setFontId] = useState<MinecraftFontId>("monocraft");
+  const [fontId, setFontId] = useState(PIXEL_FONTS[0].id);
   const [textColor, setTextColor] = useState("#ffffff");
-  const [bgColor, setBgColor] = useState("#0a1628");
-  const [shape, setShape] = useState<Shape>("rectangle");
-  const [outline, setOutline] = useState(true);
-  const [glow, setGlow] = useState(false);
-  const [customTextColor, setCustomTextColor] = useState("");
-  const [customBgColor, setCustomBgColor] = useState("");
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [brushColor, setBrushColor] = useState("#0b0d10");
+  const [customBrushColor, setCustomBrushColor] = useState("");
+  const [tool, setTool] = useState<Tool>("brush");
+  const [brushSize, setBrushSize] = useState(1);
+  const [background, setBackground] = useState<PixelGrid>(() => createGrid(getInitialWidth(), DEFAULT_BACKGROUND));
+  const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
 
-  const activeTextColor = customTextColor || textColor;
-  const activeBgColor = customBgColor || bgColor;
+  const font = getPixelFont(fontId);
+  const layout = buildPixelText(font, text);
+  const width = layout.width + PADDING_X * 2;
+  const activeBrushColor = customBrushColor || brushColor;
+  const isTurkish = lang === "tr";
 
-  // Load fonts for canvas use
-  useEffect(() => {
-    const loadFonts = async () => {
-      try {
-        const fontPromises = MINECRAFT_FONTS.map(async (f) => {
-          try {
-            await document.fonts.load(`48px "${f.fontFamily}"`);
-          } catch {
-            // Font might not be loaded yet, try with CSS
-          }
-        });
-        await Promise.allSettled(fontPromises);
-        setFontsLoaded(true);
-      } catch {
-        setFontsLoaded(true);
+  const copy = isTurkish
+    ? {
+        rankName: "Rank adı",
+        rankPlaceholder: "VIP, MVP, Admin...",
+        font: "Pixel font",
+        textColor: "Yazı rengi",
+        background: "Arka plan",
+        brush: "Fırça",
+        eraser: "Silgi",
+        brushSize: "Fırça boyutu",
+        fill: "Tümünü boya",
+        undo: "Geri al",
+        redo: "İleri al",
+        reset: "Arka planı sıfırla",
+        transparent: "Şeffaf",
+        download: "PNG indir",
+        dimensions: `${width} × ${HEIGHT} px PNG`,
+        gridHint: "Grid üzerinde sadece arka planı boyayabilirsin.",
       }
-    };
-    loadFonts();
+    : {
+        rankName: "Rank name",
+        rankPlaceholder: "VIP, MVP, Admin...",
+        font: "Pixel font",
+        textColor: "Text color",
+        background: "Background",
+        brush: "Brush",
+        eraser: "Eraser",
+        brushSize: "Brush size",
+        fill: "Fill all",
+        undo: "Undo",
+        redo: "Redo",
+        reset: "Reset background",
+        transparent: "Transparent",
+        download: "Download PNG",
+        dimensions: `${width} × ${HEIGHT} px PNG`,
+        gridHint: "Only the background can be painted on the grid.",
+      };
+
+  useEffect(() => {
+    const next = resizeGrid(backgroundRef.current, width);
+    backgroundRef.current = next;
+    setBackground(next);
+    undoRef.current = [];
+    redoRef.current = [];
+    setHistoryState({ canUndo: false, canRedo: false });
+  }, [width]);
+
+  const commitGrid = useCallback((next: PixelGrid) => {
+    undoRef.current = [...undoRef.current.slice(-19), copyGrid(backgroundRef.current)];
+    redoRef.current = [];
+    backgroundRef.current = next;
+    setBackground(next);
+    setHistoryState({ canUndo: undoRef.current.length > 0, canRedo: false });
   }, []);
 
-  const getFontFamily = useCallback((id: MinecraftFontId): string => {
-    const font = MINECRAFT_FONTS.find((f) => f.id === id);
-    return font ? font.fontFamily : "Minecraft";
-  }, []);
-
-  const draw = useCallback(() => {
-    const c = canvasRef.current;
-    if (!c) return;
-    const ctx = c.getContext("2d");
+  const drawCanvas = useCallback((canvas: HTMLCanvasElement, showGrid: boolean) => {
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+    canvas.width = width;
+    canvas.height = HEIGHT;
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, width, HEIGHT);
 
-    // Background
-    ctx.fillStyle = activeBgColor;
-    if (shape === "rectangle") {
-      ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
-    } else if (shape === "rounded") {
-      roundRect(ctx, 0, 0, CANVAS_W, CANVAS_H, 20);
-      ctx.fill();
-    } else if (shape === "shield") {
-      drawShield(ctx, CANVAS_W, CANVAS_H, activeBgColor);
-    } else if (shape === "hexagon") {
-      drawHexagon(ctx, CANVAS_W, CANVAS_H, activeBgColor);
-    }
-
-    // Outline
-    if (outline) {
-      ctx.strokeStyle = "rgba(255,255,255,0.15)";
-      ctx.lineWidth = 3;
-      if (shape === "rectangle") {
-        ctx.strokeRect(1.5, 1.5, CANVAS_W - 3, CANVAS_H - 3);
-      } else if (shape === "rounded") {
-        roundRect(ctx, 1.5, 1.5, CANVAS_W - 3, CANVAS_H - 3, 20);
-        ctx.stroke();
-      } else if (shape === "shield") {
-        drawShieldStroke(ctx, CANVAS_W, CANVAS_H);
-      } else if (shape === "hexagon") {
-        drawHexagonStroke(ctx, CANVAS_W, CANVAS_H);
+    for (let y = 0; y < HEIGHT; y += 1) {
+      for (let x = 0; x < width; x += 1) {
+        const color = background[y]?.[x];
+        if (color === null || color === undefined) {
+          if (showGrid) {
+            ctx.fillStyle = (x + y) % 2 === 0 ? "#26313d" : "#1d252f";
+            ctx.fillRect(x, y, 1, 1);
+          }
+        } else {
+          ctx.fillStyle = color;
+          ctx.fillRect(x, y, 1, 1);
+        }
       }
     }
 
-    // Text glow
-    if (glow) {
-      ctx.shadowBlur = 20;
-      ctx.shadowColor = activeTextColor;
+    ctx.fillStyle = textColor;
+    for (let y = 0; y < TEXT_HEIGHT; y += 1) {
+      for (let x = 0; x < layout.width; x += 1) {
+        if (layout.rows[y]?.[x] === "1") ctx.fillRect(PADDING_X + x, TEXT_TOP + y, 1, 1);
+      }
     }
 
-    // Text
-    ctx.fillStyle = activeTextColor;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
-    const displayText = text || "VIP";
-    const fontFamily = getFontFamily(fontId);
-    let fontSize = 48;
-
-    // Auto-size: shrink if text is too wide
-    ctx.font = `${fontSize}px "${fontFamily}", monospace`;
-    while (ctx.measureText(displayText).width > CANVAS_W - 60 && fontSize > 16) {
-      fontSize -= 2;
-      ctx.font = `${fontSize}px "${fontFamily}", monospace`;
+    if (showGrid) {
+      ctx.strokeStyle = "rgba(255,255,255,0.2)";
+      ctx.lineWidth = 0.04;
+      ctx.beginPath();
+      for (let x = 0; x <= width; x += 1) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, HEIGHT);
+      }
+      for (let y = 0; y <= HEIGHT; y += 1) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+      }
+      ctx.stroke();
     }
-
-    ctx.fillText(displayText, CANVAS_W / 2, CANVAS_H / 2);
-    ctx.shadowBlur = 0;
-  }, [text, fontId, activeTextColor, activeBgColor, shape, outline, glow, getFontFamily]);
+  }, [background, layout, textColor, width]);
 
   useEffect(() => {
-    if (fontsLoaded) {
-      draw();
-    }
-  }, [draw, fontsLoaded]);
+    if (canvasRef.current) drawCanvas(canvasRef.current, true);
+  }, [drawCanvas]);
 
-  const handleDownload = useCallback(() => {
-    const c = canvasRef.current;
-    if (!c) return;
-    c.toBlob((blob) => {
+  const cellFromPointer = useCallback((event: React.PointerEvent<HTMLCanvasElement>) => {
+    const canvas = event.currentTarget;
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: Math.max(0, Math.min(width - 1, Math.floor(((event.clientX - rect.left) / rect.width) * width))),
+      y: Math.max(0, Math.min(HEIGHT - 1, Math.floor(((event.clientY - rect.top) / rect.height) * HEIGHT))),
+    };
+  }, [width]);
+
+  const paintAt = useCallback((x: number, y: number) => {
+    const next = copyGrid(backgroundRef.current);
+    const value = tool === "eraser" ? null : activeBrushColor;
+    const start = Math.floor(brushSize / 2);
+    let changed = false;
+
+    for (let dy = 0; dy < brushSize; dy += 1) {
+      for (let dx = 0; dx < brushSize; dx += 1) {
+        const targetX = x + dx - start;
+        const targetY = y + dy - start;
+        if (targetX < 0 || targetX >= width || targetY < 0 || targetY >= HEIGHT) continue;
+        if (next[targetY][targetX] !== value) {
+          next[targetY][targetX] = value;
+          changed = true;
+        }
+      }
+    }
+
+    if (changed) commitGrid(next);
+  }, [activeBrushColor, brushSize, commitGrid, tool, width]);
+
+  const handlePointerDown = useCallback((event: React.PointerEvent<HTMLCanvasElement>) => {
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    paintingRef.current = true;
+    const { x, y } = cellFromPointer(event);
+    paintAt(x, y);
+  }, [cellFromPointer, paintAt]);
+
+  const handlePointerMove = useCallback((event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!paintingRef.current) return;
+    const { x, y } = cellFromPointer(event);
+    paintAt(x, y);
+  }, [cellFromPointer, paintAt]);
+
+  const stopPainting = useCallback(() => {
+    paintingRef.current = false;
+  }, []);
+
+  const undo = useCallback(() => {
+    const previous = undoRef.current.pop();
+    if (!previous) return;
+    redoRef.current.push(copyGrid(backgroundRef.current));
+    backgroundRef.current = previous;
+    setBackground(previous);
+    setHistoryState({ canUndo: undoRef.current.length > 0, canRedo: redoRef.current.length > 0 });
+  }, []);
+
+  const redo = useCallback(() => {
+    const next = redoRef.current.pop();
+    if (!next) return;
+    undoRef.current.push(copyGrid(backgroundRef.current));
+    backgroundRef.current = next;
+    setBackground(next);
+    setHistoryState({ canUndo: undoRef.current.length > 0, canRedo: redoRef.current.length > 0 });
+  }, []);
+
+  const fillBackground = useCallback(() => {
+    commitGrid(createGrid(width, tool === "eraser" ? null : activeBrushColor));
+  }, [activeBrushColor, commitGrid, tool, width]);
+
+  const resetBackground = useCallback(() => {
+    commitGrid(createGrid(width, DEFAULT_BACKGROUND));
+    setTool("brush");
+    setCustomBrushColor("");
+    setBrushColor(DEFAULT_BACKGROUND);
+  }, [commitGrid, width]);
+
+  const download = useCallback(() => {
+    const exportCanvas = document.createElement("canvas");
+    drawCanvas(exportCanvas, false);
+    exportCanvas.toBlob((blob) => {
       if (!blob) return;
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `rank-${text.toLowerCase().replace(/\s+/g, "-") || "rank"}.png`;
-      a.click();
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `rank-${normalizeRankText(text).toLowerCase() || "rank"}.png`;
+      link.click();
       URL.revokeObjectURL(url);
     }, "image/png");
-  }, [text]);
+  }, [drawCanvas, text]);
 
   return (
-    <div className="rank-generator">
-      <div className="rank-preview">
-        <canvas
-          ref={canvasRef}
-          width={CANVAS_W}
-          height={CANVAS_H}
-          className="rank-canvas"
-        />
-        <DownloadButton onClick={handleDownload} lang={lang} />
+    <div className="pixel-rank-editor">
+      <div className="pixel-rank-preview-panel">
+        <div className="pixel-rank-preview-header">
+          <div>
+            <span className="pixel-rank-kicker">{isTurkish ? "ItemsAdder uyumlu PNG" : "ItemsAdder-ready PNG"}</span>
+            <strong>{copy.dimensions}</strong>
+          </div>
+          <span className="pixel-rank-grid-badge">9 px</span>
+        </div>
+        <div className="pixel-rank-stage-wrap">
+          <div className="pixel-rank-stage" style={{ width: `${width * PREVIEW_SCALE}px`, height: `${HEIGHT * PREVIEW_SCALE}px` }}>
+            <canvas
+              ref={canvasRef}
+              width={width}
+              height={HEIGHT}
+              className="pixel-rank-canvas"
+              style={{ width: `${width * PREVIEW_SCALE}px`, height: `${HEIGHT * PREVIEW_SCALE}px` }}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={stopPainting}
+              onPointerCancel={stopPainting}
+              aria-label={isTurkish ? "Rank arka plan pixel editörü" : "Rank background pixel editor"}
+            />
+          </div>
+        </div>
+        <p className="pixel-rank-hint">{copy.gridHint}</p>
+        <button type="button" className="pixel-rank-download" onClick={download}>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          {copy.download}
+        </button>
       </div>
 
-      <div className="rank-controls">
-        <div className="rank-field">
-          <label className="rank-label">
-            {lang === "tr" ? "Rank Adı" : "Rank Name"}
-          </label>
+      <div className="pixel-rank-controls">
+        <div className="pixel-rank-control-section">
+          <label className="pixel-rank-label" htmlFor="rank-text">{copy.rankName}</label>
           <input
+            id="rank-text"
             type="text"
             value={text}
-            onChange={(e) => setText(e.target.value.slice(0, 20))}
-            maxLength={20}
-            placeholder={lang === "tr" ? "Örn: VIP, Admin, Owner" : "e.g. VIP, Admin, Owner"}
-            className="rank-input"
+            onChange={(event) => setText(event.target.value)}
+            placeholder={copy.rankPlaceholder}
+            maxLength={32}
+            className="pixel-rank-input"
           />
         </div>
 
-        <FontSelector
-          fonts={MINECRAFT_FONTS}
-          selected={fontId}
-          onChange={(id) => setFontId(id as MinecraftFontId)}
-          lang={lang}
-        />
+        <div className="pixel-rank-control-section">
+          <span className="pixel-rank-label">{copy.font}</span>
+          <div className="pixel-rank-fonts">
+            {PIXEL_FONTS.map((item: PixelFont) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`pixel-rank-font-button ${fontId === item.id ? "is-active" : ""}`}
+                onClick={() => setFontId(item.id)}
+              >
+                <span className="pixel-rank-font-preview">Aa</span>
+                <span>{item.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
 
-        <ColorPicker
-          colors={TEXT_COLORS}
-          selected={textColor}
-          customColor={customTextColor}
-          onChange={setTextColor}
-          onCustomChange={setCustomTextColor}
-          label={lang === "tr" ? "Metin Rengi" : "Text Color"}
-        />
+        <div className="pixel-rank-control-section">
+          <span className="pixel-rank-label">{copy.textColor}</span>
+          <div className="pixel-rank-swatches">
+            {TEXT_COLORS.map((color) => (
+              <button
+                key={color}
+                type="button"
+                className={`pixel-rank-swatch ${textColor === color ? "is-active" : ""}`}
+                style={{ backgroundColor: color }}
+                onClick={() => setTextColor(color)}
+                aria-label={color}
+              />
+            ))}
+            <label className="pixel-rank-custom-color" title={copy.textColor}>
+              <input type="color" value={textColor} onChange={(event) => setTextColor(event.target.value)} aria-label={copy.textColor} />
+              <span>+</span>
+            </label>
+          </div>
+        </div>
 
-        <ColorPicker
-          colors={BG_COLORS}
-          selected={bgColor}
-          customColor={customBgColor}
-          onChange={setBgColor}
-          onCustomChange={setCustomBgColor}
-          label={lang === "tr" ? "Arka Plan Rengi" : "Background Color"}
-        />
+        <div className="pixel-rank-control-section">
+          <span className="pixel-rank-label">{copy.background}</span>
+          <div className="pixel-rank-tools">
+            <button type="button" className={`pixel-rank-tool-button ${tool === "brush" ? "is-active" : ""}`} onClick={() => setTool("brush")} title={copy.brush}>
+              <BrushIcon size={17} />
+              <span>{copy.brush}</span>
+            </button>
+            <button type="button" className={`pixel-rank-tool-button ${tool === "eraser" ? "is-active" : ""}`} onClick={() => setTool("eraser")} title={copy.eraser}>
+              <span className="pixel-rank-eraser-icon" aria-hidden="true">⌫</span>
+              <span>{copy.eraser}</span>
+            </button>
+          </div>
+          <div className="pixel-rank-swatches pixel-rank-background-swatches">
+            {BACKGROUND_COLORS.map((color) => (
+              <button
+                key={color}
+                type="button"
+                className={`pixel-rank-swatch ${activeBrushColor === color && tool === "brush" ? "is-active" : ""}`}
+                style={{ backgroundColor: color }}
+                onClick={() => { setBrushColor(color); setCustomBrushColor(""); setTool("brush"); }}
+                aria-label={color}
+              />
+            ))}
+            <label className="pixel-rank-custom-color" title={copy.background}>
+              <input type="color" value={activeBrushColor} onChange={(event) => { setCustomBrushColor(event.target.value); setTool("brush"); }} aria-label={copy.background} />
+              <span>+</span>
+            </label>
+          </div>
+        </div>
 
-        <ShapeSelector
-          shapes={SHAPES}
-          selected={shape}
-          onChange={(s) => setShape(s as Shape)}
-          lang={lang}
-        />
+        <div className="pixel-rank-control-section pixel-rank-brush-row">
+          <span className="pixel-rank-label">{copy.brushSize}</span>
+          <div className="pixel-rank-size-buttons">
+            {[1, 2, 3].map((size) => (
+              <button key={size} type="button" className={brushSize === size ? "is-active" : ""} onClick={() => setBrushSize(size)}>
+                {size}px
+              </button>
+            ))}
+          </div>
+          <button type="button" className="pixel-rank-fill-button" onClick={fillBackground}>{copy.fill}</button>
+        </div>
 
-        <div className="rank-toggles">
-          <label className="rank-toggle">
-            <input
-              type="checkbox"
-              checked={outline}
-              onChange={(e) => setOutline(e.target.checked)}
-            />
-            <span>{lang === "tr" ? "Kenarlık" : "Outline"}</span>
-          </label>
-          <label className="rank-toggle">
-            <input
-              type="checkbox"
-              checked={glow}
-              onChange={(e) => setGlow(e.target.checked)}
-            />
-            <span>{lang === "tr" ? "Neon Glow" : "Neon Glow"}</span>
-          </label>
+        <div className="pixel-rank-actions">
+          <button type="button" onClick={undo} disabled={!historyState.canUndo}>↶ <span>{copy.undo}</span></button>
+          <button type="button" onClick={redo} disabled={!historyState.canRedo}>↷ <span>{copy.redo}</span></button>
+          <button type="button" onClick={resetBackground}><span>{copy.reset}</span></button>
         </div>
       </div>
     </div>
   );
-}
-
-function roundRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  r: number
-) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
-}
-
-function drawShield(ctx: CanvasRenderingContext2D, w: number, h: number, color: string) {
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.moveTo(w * 0.05, h * 0.08);
-  ctx.lineTo(w * 0.95, h * 0.08);
-  ctx.lineTo(w * 0.95, h * 0.55);
-  ctx.quadraticCurveTo(w * 0.5, h * 1.05, w * 0.05, h * 0.55);
-  ctx.closePath();
-  ctx.fill();
-}
-
-function drawShieldStroke(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  ctx.beginPath();
-  ctx.moveTo(w * 0.05, h * 0.08);
-  ctx.lineTo(w * 0.95, h * 0.08);
-  ctx.lineTo(w * 0.95, h * 0.55);
-  ctx.quadraticCurveTo(w * 0.5, h * 1.05, w * 0.05, h * 0.55);
-  ctx.closePath();
-  ctx.stroke();
-}
-
-function drawHexagon(ctx: CanvasRenderingContext2D, w: number, h: number, color: string) {
-  const cx = w / 2;
-  const cy = h / 2;
-  const rx = w * 0.48;
-  const ry = h * 0.48;
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  for (let i = 0; i < 6; i++) {
-    const angle = (Math.PI / 3) * i - Math.PI / 6;
-    const x = cx + rx * Math.cos(angle);
-    const y = cy + ry * Math.sin(angle);
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.closePath();
-  ctx.fill();
-}
-
-function drawHexagonStroke(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const cx = w / 2;
-  const cy = h / 2;
-  const rx = w * 0.48;
-  const ry = h * 0.48;
-  ctx.beginPath();
-  for (let i = 0; i < 6; i++) {
-    const angle = (Math.PI / 3) * i - Math.PI / 6;
-    const x = cx + rx * Math.cos(angle);
-    const y = cy + ry * Math.sin(angle);
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.closePath();
-  ctx.stroke();
 }

@@ -42,14 +42,3 @@ export {
   pixelifySans,
   monocraft,
 };
-
-// Canvas font family names (must match what document.fonts.load() uses)
-export const MINECRAFT_FONTS = [
-  { id: "monocraft", name: "Monocraft", fontFamily: "Monocraft", cssVar: "var(--font-monocraft)" },
-  { id: "press-start", name: "Press Start 2P", fontFamily: "Press Start 2P", cssVar: "var(--font-pixel-heading)" },
-  { id: "vt323", name: "VT323", fontFamily: "VT323", cssVar: "var(--font-pixel-body)" },
-  { id: "silkscreen", name: "Silkscreen", fontFamily: "Silkscreen", cssVar: "var(--font-pixel-ui)" },
-  { id: "pixelify", name: "Pixelify Sans", fontFamily: "Pixelify Sans", cssVar: "var(--font-pixelify)" },
-] as const;
-
-export type MinecraftFontId = (typeof MINECRAFT_FONTS)[number]["id"];
