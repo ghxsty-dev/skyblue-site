@@ -44,14 +44,14 @@ export default async function AccountPage() {
       <section className="account-profile-layout">
         <AvatarEditor src={avatarApiUrl(profile)} username={profile.username} />
         <div className="account-profile-summary">
-          <div className="account-profile-name"><h2>@{profile.username}</h2><div className="account-badges">{activePremium.length > 0 && <span className="account-badge premium">Premium</span>}{discord && <span className="account-badge discord">Discord</span>}</div></div>
+          <div className="account-profile-name"><h2>@{profile.username}</h2><div className="account-badges">{activePremium.length > 0 && <span className="account-badge premium"><img src="/premium.webp" alt="" width={12} height={12} />Premium</span>}{discord && <span className="account-badge discord">Discord</span>}</div></div>
           <dl><div><dt>E-posta</dt><dd>{user.email}</dd></div><div><dt>Kullanıcı adı</dt><dd>Değiştirilemez</dd></div><div><dt>Katılım</dt><dd>{new Date(profile.created_at).toLocaleDateString("tr-TR")}</dd></div></dl>
           <Link href={`/users/${profile.username}`} className="account-text-link">Public profili görüntüle</Link>
         </div>
       </section>
 
       <section className="account-access-section">
-        <div className="account-section-heading"><div><span>Tool erişimi</span><h2>Minecraft Rank Generator</h2></div>{rankPremium ? <span className="account-badge premium">Premium aktif</span> : <Link href="/account/premium?tool=minecraft-rank" className="account-primary-button">Premium üyesi ol</Link>}</div>
+        <div className="account-section-heading"><div><span>Tool erişimi</span><h2>Minecraft Rank Generator</h2></div>{rankPremium ? <span className="account-badge premium"><img src="/premium.webp" alt="" width={12} height={12} />Premium aktif</span> : <Link href="/account/premium?tool=minecraft-rank" className="account-primary-button">Premium üyesi ol</Link>}</div>
         <div className="account-access-grid">
           <div><span>Premium</span><strong>{rankPremium ? "Aktif" : "Free"}</strong></div>
           <div><span>Discord</span><strong>{discord ? `@${discord.discord_username}` : "Bağlı değil"}</strong></div>

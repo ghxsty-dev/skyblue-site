@@ -2505,8 +2505,9 @@ main {
 }
 
 .account-badge.premium {
-  border-color: rgba(234, 191, 103, 0.35);
-  color: #eabf67;
+  border-color: rgba(139, 92, 246, 0.35);
+  color: #b388ff;
+  gap: 4px;
 }
 
 .account-badge.discord {

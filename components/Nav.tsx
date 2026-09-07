@@ -18,6 +18,8 @@ export default function Nav() {
   const [indicator, setIndicator] = useState({ left: 0, width: 0, measured: false });
   const [isAdminUser, setIsAdminUser] = useState(false);
   const [avatarPath, setAvatarPath] = useState<string | null>(null);
+  const [premiumActive, setPremiumActive] = useState(false);
+  const [premiumExpiresAt, setPremiumExpiresAt] = useState<string | null>(null);
   const ulRef = useRef<HTMLUListElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -76,7 +78,30 @@ export default function Nav() {
         }
       })
       .catch(() => {});
+    fetch("/api/account/premium-status", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.premium) {
+          setPremiumActive(true);
+          setPremiumExpiresAt(d.expires_at);
+        }
+      })
+      .catch(() => {});
   }, []);
+
+  function formatRemaining(expiresAt: string): string {
+    const diff = new Date(expiresAt).getTime() - Date.now();
+    if (diff <= 0) return "";
+    const totalHours = Math.floor(diff / (1000 * 60 * 60));
+    if (totalHours < 1) return "< 1 saat";
+    if (totalHours < 24) return `${totalHours} saat`;
+    const totalDays = Math.floor(totalHours / 24);
+    const months = Math.floor(totalDays / 30);
+    const days = totalDays % 30;
+    if (months > 0 && days > 0) return `${months} ay ${days} gün`;
+    if (months > 0) return `${months} ay`;
+    return `${days} gün`;
+  }
 
   const accountAvatar = avatarPath ? (
     <img
@@ -147,10 +172,18 @@ export default function Nav() {
             </button>
             {accountOpen && (
               <div className="nav-dropdown">
-                <a href="/account/premium?tool=minecraft-rank" onClick={() => setAccountOpen(false)} className="nav-dropdown-item premium">
-                  <span className="nav-dropdown-icon"><Image src="/premium.webp" alt="" width={18} height={18} unoptimized /></span>
-                  Premium üyesi ol
-                </a>
+                {premiumActive ? (
+                  <a href="/account/premium?tool=minecraft-rank" onClick={() => setAccountOpen(false)} className="nav-dropdown-item premium">
+                    <span className="nav-dropdown-icon"><Image src="/premium.webp" alt="" width={18} height={18} unoptimized /></span>
+                    <span className="premium-gradient-text font-semibold">Premium</span>
+                    <span className="ml-auto text-white/50 text-[0.68rem]">{premiumExpiresAt ? formatRemaining(premiumExpiresAt) : ""}</span>
+                  </a>
+                ) : (
+                  <a href="/account/premium?tool=minecraft-rank" onClick={() => setAccountOpen(false)} className="nav-dropdown-item premium">
+                    <span className="nav-dropdown-icon"><Image src="/premium.webp" alt="" width={18} height={18} unoptimized /></span>
+                    Premium üyesi ol
+                  </a>
+                )}
                 <div className="nav-dropdown-divider" />
                 <a href="/account" onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
                   <span className="nav-dropdown-icon">⚙</span>
@@ -191,7 +224,9 @@ export default function Nav() {
           ))}
           <li>
             <a href="/account/premium?tool=minecraft-rank" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold premium-gradient-text no-underline">
-              <Image src="/premium.webp" alt="" width={18} height={18} unoptimized /> Premium üyesi ol
+              <Image src="/premium.webp" alt="" width={18} height={18} unoptimized /> {premiumActive ? (
+                <span className="flex items-center gap-2"><span>Premium</span>{premiumExpiresAt && <span className="text-white/50 text-[0.72rem] font-normal">{formatRemaining(premiumExpiresAt)}</span>}</span>
+              ) : "Premium üyesi ol"}
             </a>
           </li>
           <li>

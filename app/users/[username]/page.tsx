@@ -33,7 +33,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
     <div className="page-inner public-profile-page">
       <section className="public-profile-identity">
         <Image src={avatarApiUrl(profile)} alt={`${profile.username} avatar`} width={160} height={160} unoptimized className="public-profile-avatar" />
-        <div><span>SkyBlue ID</span><h1>@{profile.username}</h1><div className="account-badges">{premium && <span className="account-badge premium">Premium</span>}{discord && <span className="account-badge discord">Discord doğrulandı</span>}</div><p>{new Date(profile.created_at).toLocaleDateString("tr-TR", { year: "numeric", month: "long" })} tarihinde katıldı.</p></div>
+        <div><span>SkyBlue ID</span><h1>@{profile.username}</h1><div className="account-badges">{premium && <span className="account-badge premium"><img src="/premium.webp" alt="" width={12} height={12} />Premium</span>}{discord && <span className="account-badge discord">Discord doğrulandı</span>}</div><p>{new Date(profile.created_at).toLocaleDateString("tr-TR", { year: "numeric", month: "long" })} tarihinde katıldı.</p></div>
       </section>
       <section className="public-profile-status"><div><span>Premium</span><strong>{premium ? "Aktif" : "Free"}</strong></div><div><span>Discord</span><strong>{discord ? "Doğrulandı" : "Doğrulanmadı"}</strong></div></section>
     </div>
