@@ -1876,7 +1876,7 @@ main {
 
 .pixel-rank-stage-wrap {
   max-width: 100%;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
   padding: 20px;
   border: 1px solid var(--border);

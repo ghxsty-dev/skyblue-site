@@ -48,6 +48,7 @@ function getInitialWidth() {
 
 export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const stageWrapRef = useRef<HTMLDivElement>(null);
   const paintingRef = useRef(false);
   const backgroundRef = useRef<PixelGrid>(createGrid(getInitialWidth(), DEFAULT_BACKGROUND));
   const undoRef = useRef<PixelGrid[]>([]);
@@ -61,6 +62,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [brushSize, setBrushSize] = useState(1);
   const [background, setBackground] = useState<PixelGrid>(() => createGrid(getInitialWidth(), DEFAULT_BACKGROUND));
   const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
+  const [previewScale, setPreviewScale] = useState(PREVIEW_SCALE);
 
   const font = getPixelFont(fontId);
   const layout = buildPixelText(font, text);
@@ -113,6 +115,21 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     undoRef.current = [];
     redoRef.current = [];
     setHistoryState({ canUndo: false, canRedo: false });
+  }, [width]);
+
+  useEffect(() => {
+    const element = stageWrapRef.current;
+    if (!element) return;
+
+    const updateScale = () => {
+      const availableWidth = Math.max(1, element.clientWidth - 40);
+      setPreviewScale(Math.min(PREVIEW_SCALE, availableWidth / width));
+    };
+
+    const observer = new ResizeObserver(updateScale);
+    observer.observe(element);
+    updateScale();
+    return () => observer.disconnect();
   }, [width]);
 
   const commitGrid = useCallback((next: PixelGrid) => {
@@ -275,14 +292,14 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           </div>
           <span className="pixel-rank-grid-badge">9 px</span>
         </div>
-        <div className="pixel-rank-stage-wrap">
-          <div className="pixel-rank-stage" style={{ width: `${width * PREVIEW_SCALE}px`, height: `${HEIGHT * PREVIEW_SCALE}px` }}>
+        <div ref={stageWrapRef} className="pixel-rank-stage-wrap">
+          <div className="pixel-rank-stage" style={{ width: `${width * previewScale}px`, height: `${HEIGHT * previewScale}px` }}>
             <canvas
               ref={canvasRef}
               width={width}
               height={HEIGHT}
               className="pixel-rank-canvas"
-              style={{ width: `${width * PREVIEW_SCALE}px`, height: `${HEIGHT * PREVIEW_SCALE}px` }}
+              style={{ width: `${width * previewScale}px`, height: `${HEIGHT * previewScale}px` }}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={stopPainting}
