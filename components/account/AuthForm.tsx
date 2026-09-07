@@ -60,11 +60,6 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
     <div className="auth-split">
       <div className="auth-split-image">
         <Image src="/login.webp" alt="" fill priority className="auth-split-img" />
-        <div className="auth-split-overlay">
-          <span className="auth-split-logo">SB</span>
-          <h2>{mode === "register" ? (tr ? "SkyBlue Ailesine Katıl" : "Join SkyBlue") : (tr ? "SkyBlue'e Hoş Geldin" : "Welcome to SkyBlue")}</h2>
-          <p>{mode === "register" ? (tr ? "Tasarım hizmetlerini keşfet, tool'ları kullan." : "Explore design services and use tools.") : (tr ? "Hesabına erişim sağla." : "Access your account.")}</p>
-        </div>
       </div>
 
       <div className="auth-split-form">
