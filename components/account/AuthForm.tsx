@@ -23,7 +23,6 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
   const tr = lang === "TR";
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [capsLock, setCapsLock] = useState(false);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -48,27 +47,12 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
         setError(message ? (tr ? message.tr : message.en) : (tr ? "Bir hata oluştu." : "Something went wrong."));
         return;
       }
-      if (result.requiresEmailVerification) {
-        setSuccess(tr ? "Hesabın oluşturuldu. Giriş yapmadan önce e-postandaki doğrulama bağlantısını aç." : "Your account was created. Open the verification link in your email before signing in.");
-        return;
-      }
       window.location.assign("/account");
     } catch {
       setError(tr ? "Bağlantı kurulamadı." : "Could not connect.");
     } finally {
       setPending(false);
     }
-  }
-
-  if (success) {
-    return (
-      <section className="account-auth-shell" aria-labelledby="auth-title">
-        <div className="account-auth-brand" aria-hidden="true">SB</div>
-        <div className="account-auth-heading"><span>{tr ? "E-posta doğrulama" : "Email verification"}</span><h1 id="auth-title">{tr ? "Hesabın oluşturuldu" : "Account created"}</h1></div>
-        <p className="account-form-success" role="status">{success}</p>
-        <p className="account-auth-switch"><Link href="/login">{tr ? "Giriş sayfasına git" : "Go to sign in"}</Link></p>
-      </section>
-    );
   }
 
   return (

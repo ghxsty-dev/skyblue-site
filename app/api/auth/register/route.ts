@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getClientIp, hashSignupIp } from "@/lib/account/security";
 import { isTrustedMutation } from "@/lib/account/request";
 
@@ -37,8 +36,7 @@ export async function POST(request: NextRequest) {
     if (!ip) return json({ error: "IP_UNAVAILABLE" }, 400);
 
     const admin = createSupabaseAdminClient();
-    const supabase = await createSupabaseServerClient();
-    if (!admin || !supabase) return json({ error: "AUTH_NOT_CONFIGURED" }, 503);
+    if (!admin) return json({ error: "AUTH_NOT_CONFIGURED" }, 503);
 
     const ipHash = hashSignupIp(ip);
     const { data: existingProfile, error: lookupError } = await admin
@@ -57,7 +55,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await admin.auth.admin.createUser({
       email,
       password,
-      email_confirm: false,
+      email_confirm: true,
       user_metadata: { username },
       app_metadata: { signup_ip_hash: ipHash },
     });
@@ -75,17 +73,7 @@ export async function POST(request: NextRequest) {
       return json({ error: "REGISTER_FAILED" }, 500);
     }
 
-    const { error: resendError } = await supabase.auth.resend({
-      type: "signup",
-      email,
-      options: { emailRedirectTo: `${request.nextUrl.origin}/login?verified=1` },
-    });
-    if (resendError) {
-      await admin.auth.admin.deleteUser(data.user.id);
-      console.error("[auth] confirmation email failed:", resendError.message);
-      return json({ error: "CONFIRMATION_FAILED" }, 500);
-    }
-    return json({ ok: true, requiresEmailVerification: true, username }, 201);
+    return json({ ok: true, username }, 201);
   } catch (error) {
     console.error("[auth] register error:", error);
     return json({ error: "REGISTER_FAILED" }, 500);
