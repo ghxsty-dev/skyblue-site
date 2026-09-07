@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import TransactionsTab from "./TransactionsTab";
 import PremiumCodesTab from "./PremiumCodesTab";
+import MembersTab from "./MembersTab";
 
-type Tab = "gelir-gider" | "premium-kod";
+type Tab = "gelir-gider" | "premium-kod" | "uyeler";
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: "gelir-gider", label: "Gelir / Gider", icon: "📊" },
   { id: "premium-kod", label: "Premium Kodlar", icon: "🔑" },
+  { id: "uyeler", label: "Üyeler", icon: "👥" },
 ];
 
 export default function AdminPanel() {
@@ -62,6 +64,7 @@ export default function AdminPanel() {
       <main className="admin-main">
         {tab === "gelir-gider" && <TransactionsTab />}
         {tab === "premium-kod" && <PremiumCodesTab />}
+        {tab === "uyeler" && <MembersTab />}
       </main>
     </div>
   );

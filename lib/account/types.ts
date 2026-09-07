@@ -1,8 +1,17 @@
+export type UserRole = "user" | "admin" | "moderator" | "rehber";
+
+export const ROLE_LABELS: Record<UserRole, string> = {
+  user: "Kullanıcı",
+  admin: "Admin",
+  moderator: "Moderatör",
+  rehber: "Rehber",
+};
+
 export interface ProfileRecord {
   id: string;
   username: string;
   avatar_path: string | null;
-  role: "user" | "admin";
+  role: UserRole;
   created_at: string;
   updated_at: string;
 }
