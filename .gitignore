@@ -44,3 +44,6 @@ public/*.exe
 
 # EXE files
 public/*.exe
+
+# Discord bot (calisma dizini olarak ayrildi)
+discord-bot/node_modules/
