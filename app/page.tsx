@@ -203,7 +203,7 @@ export default function HomePage() {
                         />
                       ))}
                     </div>
-                    <p className="text-sm text-[var(--text2)] leading-relaxed">
+                    <p className="home-review-text text-sm text-[var(--text2)]">
                       &ldquo;{item.text}&rdquo;
                     </p>
                   </div>

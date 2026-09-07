@@ -127,6 +127,15 @@ main {
   border-color: var(--c2);
 }
 
+.home-review-text {
+  display: -webkit-box;
+  min-height: calc(1.55em * 4);
+  overflow: hidden;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
 /* Buttons */
 .btn {
   display: inline-block;
