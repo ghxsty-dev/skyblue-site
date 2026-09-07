@@ -64,7 +64,7 @@ export default function MinecraftRankPage() {
           </li>
           <li>
             <strong>PNG indirin</strong> — Yazı 5px, üst ve alt boşluklar 2px
-            olacak şekilde ItemsAdder için PNG alın.
+            ve sağ/sol boşluklar 3px olacak şekilde ItemsAdder için PNG alın.
           </li>
         </ol>
 

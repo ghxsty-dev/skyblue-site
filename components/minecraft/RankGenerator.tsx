@@ -13,7 +13,7 @@ import {
 const HEIGHT = 9;
 const TEXT_TOP = 2;
 const TEXT_HEIGHT = 5;
-const PADDING_X = 2;
+const PADDING_X = 3;
 const DEFAULT_BACKGROUND = "#59abfe";
 const PREVIEW_SCALE = 28;
 
@@ -257,6 +257,42 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     setHistoryState({ canUndo: undoRef.current.length > 0, canRedo: redoRef.current.length > 0 });
   }, []);
 
+  useEffect(() => {
+    const handleShortcut = (event: KeyboardEvent) => {
+      if (event.key === "F12") {
+        event.preventDefault();
+        return;
+      }
+
+      const modifier = event.ctrlKey || event.metaKey;
+      const key = event.key.toLowerCase();
+      if (modifier && event.shiftKey && ["i", "j", "c"].includes(key)) {
+        event.preventDefault();
+        return;
+      }
+
+      if (modifier && key === "u") {
+        event.preventDefault();
+        return;
+      }
+
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("input, textarea, select")) return;
+
+      if (modifier && key === "z") {
+        event.preventDefault();
+        if (event.shiftKey) redo();
+        else undo();
+      } else if (modifier && key === "y") {
+        event.preventDefault();
+        redo();
+      }
+    };
+
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
+  }, [redo, undo]);
+
   const fillBackground = useCallback(() => {
     commitGrid(createGrid(width, tool === "eraser" ? null : activeBrushColor));
   }, [activeBrushColor, commitGrid, tool, width]);
@@ -283,7 +319,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   }, [drawCanvas, text]);
 
   return (
-    <div className="pixel-rank-editor">
+    <div className="pixel-rank-editor" onContextMenu={(event) => event.preventDefault()}>
       <div className="pixel-rank-preview-panel">
         <div className="pixel-rank-preview-header">
           <div>
