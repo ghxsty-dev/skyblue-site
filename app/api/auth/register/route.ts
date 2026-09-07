@@ -36,7 +36,10 @@ export async function POST(request: NextRequest) {
     if (!ip) return json({ error: "IP_UNAVAILABLE" }, 400);
 
     const admin = createSupabaseAdminClient();
-    if (!admin) return json({ error: "AUTH_NOT_CONFIGURED" }, 503);
+    if (!admin) {
+      console.error("[auth] admin client null - SUPABASE_SERVICE_ROLE_KEY missing?");
+      return json({ error: "AUTH_NOT_CONFIGURED" }, 503);
+    }
 
     const ipHash = hashSignupIp(ip);
     const { data: existingProfile, error: lookupError } = await admin
@@ -75,7 +78,8 @@ export async function POST(request: NextRequest) {
 
     return json({ ok: true, username }, 201);
   } catch (error) {
-    console.error("[auth] register error:", error);
-    return json({ error: "REGISTER_FAILED" }, 500);
+    const detail = error instanceof Error ? error.message : String(error);
+    console.error("[auth] register error:", detail);
+    return json({ error: "REGISTER_FAILED", detail }, 500);
   }
 }
