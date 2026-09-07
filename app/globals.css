@@ -2018,44 +2018,6 @@ main {
   font-weight: 700;
 }
 
-.pixel-rank-assets {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 7px;
-}
-
-.pixel-rank-asset-button {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 5px;
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  background: var(--bg2);
-  color: var(--text2);
-  font: inherit;
-  font-size: 0.58rem;
-  text-align: left;
-  cursor: pointer;
-  transition: border-color var(--transition), color var(--transition), background var(--transition);
-}
-
-.pixel-rank-asset-button:hover,
-.pixel-rank-asset-button.is-active {
-  border-color: var(--c2);
-  background: rgba(89, 171, 254, 0.12);
-  color: var(--text);
-}
-
-.pixel-rank-asset-preview {
-  display: block;
-  width: 100%;
-  height: 24px;
-  border-radius: 3px;
-  image-rendering: pixelated;
-}
-
 .pixel-rank-swatches {
   display: flex;
   flex-wrap: wrap;
@@ -2211,10 +2173,6 @@ main {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
-  }
-
-  .pixel-rank-assets {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .pixel-rank-control-section:first-child,
