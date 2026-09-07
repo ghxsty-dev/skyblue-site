@@ -59,8 +59,9 @@ export default function MinecraftRankPage() {
             kullanın.
           </li>
           <li>
-            <strong>Arka planı boyayın</strong> — 9px grid üzerinde fırça veya
-            silgi ile pixel pixel düzenleyin.
+            <strong>Asset seçin ve düzenleyin</strong> — Hazır arka plan
+            asset’lerinden birini seçip fırça veya silgi ile pixel pixel
+            değiştirin.
           </li>
           <li>
             <strong>PNG indirin</strong> — Yazı 5px, üst ve alt boşluklar 2px
@@ -73,6 +74,8 @@ export default function MinecraftRankPage() {
           <li>Sabit 9px yükseklik ve metne göre değişen genişlik</li>
           <li>5px yüksekliğinde hazır bitmap fontlar</li>
           <li>Varsayılan SkyBlue mavi arka plan</li>
+          <li>Hazır pixel arka plan asset’leri</li>
+          <li>Yazı ve arka plan için renk seçiciler</li>
           <li>1px, 2px ve 3px brush boyutları</li>
           <li>Silgi ile şeffaf arka plan pixel’leri</li>
           <li>Undo, redo, tümünü boya ve arka planı sıfırla</li>

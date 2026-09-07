@@ -9,6 +9,7 @@ import {
   PIXEL_FONTS,
   type PixelFont,
 } from "./pixel-fonts";
+import { getPixelAsset, PIXEL_ASSETS, type PixelAssetGrid } from "./pixel-assets";
 
 const HEIGHT = 9;
 const TEXT_TOP = 2;
@@ -21,7 +22,7 @@ const TEXT_COLORS = ["#ffffff", "#000000", "#ffd166", "#ff6b6b", "#68d391", "#c0
 const BACKGROUND_COLORS = ["#59abfe", "#97cdf2", "#0b0d10", "#1c2128", "#173c62", "#f1f4f7", "#7c3aed", "#ef4444"];
 
 type Pixel = string | null;
-type PixelGrid = Pixel[][];
+type PixelGrid = PixelAssetGrid;
 type Tool = "brush" | "eraser";
 
 interface RankGeneratorProps {
@@ -32,9 +33,10 @@ function createGrid(width: number, color: Pixel): PixelGrid {
   return Array.from({ length: HEIGHT }, () => Array.from({ length: width }, () => color));
 }
 
-function resizeGrid(grid: PixelGrid, width: number): PixelGrid {
+function resizeGrid(grid: PixelGrid, width: number, assetId: string): PixelGrid {
+  const assetGrid = getPixelAsset(assetId).create(width);
   return Array.from({ length: HEIGHT }, (_, y) =>
-    Array.from({ length: width }, (_, x) => grid[y]?.[x] ?? DEFAULT_BACKGROUND)
+    Array.from({ length: width }, (_, x) => grid[y]?.[x] ?? assetGrid[y][x])
   );
 }
 
@@ -55,6 +57,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const redoRef = useRef<PixelGrid[]>([]);
   const [text, setText] = useState("VIP");
   const [fontId, setFontId] = useState(PIXEL_FONTS[0].id);
+  const [assetId, setAssetId] = useState(PIXEL_ASSETS[0].id);
   const [textColor, setTextColor] = useState("#ffffff");
   const [brushColor, setBrushColor] = useState("#0b0d10");
   const [customBrushColor, setCustomBrushColor] = useState("");
@@ -77,6 +80,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         font: "Pixel font",
         textColor: "Yazı rengi",
         background: "Arka plan",
+        backgroundAsset: "Hazır arka plan assetleri",
         brush: "Fırça",
         eraser: "Silgi",
         brushSize: "Fırça boyutu",
@@ -95,6 +99,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         font: "Pixel font",
         textColor: "Text color",
         background: "Background",
+        backgroundAsset: "Ready background assets",
         brush: "Brush",
         eraser: "Eraser",
         brushSize: "Brush size",
@@ -109,13 +114,13 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
       };
 
   useEffect(() => {
-    const next = resizeGrid(backgroundRef.current, width);
+    const next = resizeGrid(backgroundRef.current, width, assetId);
     backgroundRef.current = next;
     setBackground(next);
     undoRef.current = [];
     redoRef.current = [];
     setHistoryState({ canUndo: false, canRedo: false });
-  }, [width]);
+  }, [assetId, width]);
 
   useEffect(() => {
     const element = stageWrapRef.current;
@@ -139,6 +144,12 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     setBackground(next);
     setHistoryState({ canUndo: undoRef.current.length > 0, canRedo: false });
   }, []);
+
+  const selectAsset = useCallback((nextAssetId: string) => {
+    setAssetId(nextAssetId);
+    commitGrid(getPixelAsset(nextAssetId).create(width));
+    setTool("brush");
+  }, [commitGrid, width]);
 
   const drawCanvas = useCallback((canvas: HTMLCanvasElement, showGrid: boolean) => {
     const ctx = canvas.getContext("2d");
@@ -262,11 +273,11 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   }, [activeBrushColor, commitGrid, tool, width]);
 
   const resetBackground = useCallback(() => {
-    commitGrid(createGrid(width, DEFAULT_BACKGROUND));
+    commitGrid(getPixelAsset(assetId).create(width));
     setTool("brush");
     setCustomBrushColor("");
     setBrushColor(DEFAULT_BACKGROUND);
-  }, [commitGrid, width]);
+  }, [assetId, commitGrid, width]);
 
   const download = useCallback(() => {
     const exportCanvas = document.createElement("canvas");
@@ -345,6 +356,24 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
               >
                 <span className="pixel-rank-font-preview">Aa</span>
                 <span>{item.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="pixel-rank-control-section">
+          <span className="pixel-rank-label">{copy.backgroundAsset}</span>
+          <div className="pixel-rank-assets">
+            {PIXEL_ASSETS.map((asset) => (
+              <button
+                key={asset.id}
+                type="button"
+                className={`pixel-rank-asset-button ${assetId === asset.id ? "is-active" : ""}`}
+                onClick={() => selectAsset(asset.id)}
+                title={isTurkish ? asset.description : asset.descriptionEn}
+              >
+                <span className="pixel-rank-asset-preview" style={{ background: asset.preview }} aria-hidden="true" />
+                <span>{isTurkish ? asset.name : asset.nameEn}</span>
               </button>
             ))}
           </div>
