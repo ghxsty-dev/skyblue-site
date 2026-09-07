@@ -8,7 +8,6 @@ import {
   monocraft,
 } from "./fonts";
 import "./globals.css";
-import Script from "next/script";
 import { AppProvider } from "@/lib/context";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -21,6 +20,7 @@ import LangAttr from "@/components/LangAttr";
 import LiveChat from "@/components/LiveChat";
 import CookieConsent from "@/components/CookieConsent";
 import BackToTop from "@/components/BackToTop";
+import AdSenseScript from "@/components/AdSenseScript";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -156,12 +156,7 @@ export default function RootLayout({
             ]),
           }}
         />
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7679661881079802"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+        <AdSenseScript />
         <AppProvider>
           <LangAttr />
           <SWRegister />

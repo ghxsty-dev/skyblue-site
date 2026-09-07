@@ -1,4 +1,4 @@
-const CACHE = "skyblue-v3";
+const CACHE = "skyblue-v4";
 const OFFLINE_URL = "/offline.html";
 
 self.addEventListener("install", (event) => {
@@ -32,11 +32,17 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
+  const privatePath = ["/api", "/account", "/login", "/register", "/admin"].some(
+    (prefix) => url.pathname === prefix || url.pathname.startsWith(`${prefix}/`)
+  );
+  const isRscRequest = req.headers.has("rsc") || url.searchParams.has("_rsc");
+  if (privatePath || isRscRequest) return;
+
   event.respondWith(
     (async () => {
       try {
         const res = await fetch(req);
-        if (res.ok) {
+        if (res.ok && !res.headers.get("Cache-Control")?.includes("no-store")) {
           const clone = res.clone();
           const cache = await caches.open(CACHE);
           cache.put(req, clone).catch(() => {});

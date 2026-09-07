@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 
 interface Transaction {
   id: string;
@@ -68,7 +70,8 @@ export default function AdminDashboard() {
   }, [router]);
 
   useEffect(() => {
-    fetchData();
+    const timer = window.setTimeout(() => { void fetchData(); }, 0);
+    return () => window.clearTimeout(timer);
   }, [fetchData]);
 
   const handleLogout = async () => {
@@ -151,11 +154,12 @@ export default function AdminDashboard() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <img
+          <Image
             src="/logo.webp"
             alt="SkyBlue"
             width={36}
             height={36}
+            unoptimized
             style={{
               borderRadius: "50%",
               objectFit: "cover",
@@ -166,21 +170,24 @@ export default function AdminDashboard() {
             <p style={{ fontSize: "0.7rem", color: "#8b949e", margin: 0 }}>SkyBlue Yönetim</p>
           </div>
         </div>
-        <button
-          onClick={handleLogout}
-          style={{
-            padding: "8px 16px",
-            borderRadius: "8px",
-            border: "1px solid #1c2128",
-            background: "transparent",
-            color: "#8b949e",
-            fontSize: "0.8rem",
-            fontFamily: "inherit",
-            cursor: "pointer",
-          }}
-        >
-          Çıkış Yap
-        </button>
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <Link href="/admin/premium-codes" style={{ padding: "8px 14px", borderRadius: "8px", border: "1px solid #1c2128", color: "#59abfe", fontSize: "0.8rem", textDecoration: "none" }}>Premium Kodları</Link>
+          <button
+            onClick={handleLogout}
+            style={{
+              padding: "8px 16px",
+              borderRadius: "8px",
+              border: "1px solid #1c2128",
+              background: "transparent",
+              color: "#8b949e",
+              fontSize: "0.8rem",
+              fontFamily: "inherit",
+              cursor: "pointer",
+            }}
+          >
+            Çıkış Yap
+          </button>
+        </div>
       </header>
 
       <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "24px" }}>

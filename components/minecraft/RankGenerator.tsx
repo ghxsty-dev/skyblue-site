@@ -63,6 +63,9 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [background, setBackground] = useState<PixelGrid>(() => createGrid(getInitialWidth(), DEFAULT_BACKGROUND));
   const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
   const [previewScale, setPreviewScale] = useState(PREVIEW_SCALE);
+  const [downloadState, setDownloadState] = useState<{ authenticated: boolean; premium: boolean; remaining: number } | null>(null);
+  const [downloadPending, setDownloadPending] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
 
   const font = getPixelFont(fontId);
   const layout = buildPixelText(font, text);
@@ -116,6 +119,19 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     redoRef.current = [];
     setHistoryState({ canUndo: false, canRedo: false });
   }, [width]);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/tools/minecraft-rank/download", { cache: "no-store" })
+      .then(async (response) => ({ response, result: await response.json() }))
+      .then(({ response, result }) => {
+        if (!active) return;
+        if (response.ok) setDownloadState({ authenticated: true, premium: Boolean(result.premium), remaining: Number(result.remaining) });
+        else setDownloadState({ authenticated: false, premium: false, remaining: 0 });
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, []);
 
   useEffect(() => {
     const element = stageWrapRef.current;
@@ -304,19 +320,41 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     setBrushColor(DEFAULT_BACKGROUND);
   }, [commitGrid, width]);
 
-  const download = useCallback(() => {
-    const exportCanvas = document.createElement("canvas");
-    drawCanvas(exportCanvas, false);
-    exportCanvas.toBlob((blob) => {
-      if (!blob) return;
+  const download = useCallback(async () => {
+    setDownloadPending(true);
+    setDownloadError("");
+    try {
+      const response = await fetch("/api/tools/minecraft-rank/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, fontId, textColor, background }),
+      });
+      if (response.status === 401) {
+        window.location.assign("/login");
+        return;
+      }
+      if (response.status === 429) {
+        setDownloadState({ authenticated: true, premium: false, remaining: 0 });
+        setDownloadError(isTurkish ? "Günlük indirme hakkın doldu. Premium kodu kullan veya Discord hesabını doğrula." : "Your daily downloads are used. Redeem a premium code or verify Discord.");
+        return;
+      }
+      if (!response.ok) throw new Error("DOWNLOAD_FAILED");
+      const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.download = `rank-${normalizeRankText(text).toLowerCase() || "rank"}.png`;
       link.click();
       URL.revokeObjectURL(url);
-    }, "image/png");
-  }, [drawCanvas, text]);
+      const premium = response.headers.get("X-Premium") === "true";
+      const remaining = Number(response.headers.get("X-Downloads-Remaining") || 0);
+      setDownloadState({ authenticated: true, premium, remaining });
+    } catch {
+      setDownloadError(isTurkish ? "PNG indirilemedi. Hesap sistemi ayarlarını kontrol edin." : "Could not download PNG. Check the account system configuration.");
+    } finally {
+      setDownloadPending(false);
+    }
+  }, [background, fontId, isTurkish, text, textColor]);
 
   return (
     <div className="pixel-rank-editor" onContextMenu={(event) => event.preventDefault()}>
@@ -345,14 +383,21 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           </div>
         </div>
         <p className="pixel-rank-hint">{copy.gridHint}</p>
-        <button type="button" className="pixel-rank-download" onClick={download}>
+        <button type="button" className="pixel-rank-download" onClick={download} disabled={downloadPending}>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
-          {copy.download}
+          {downloadPending ? (isTurkish ? "Hazırlanıyor..." : "Preparing...") : copy.download}
         </button>
+        <div className="pixel-rank-quota">
+          {downloadState?.authenticated ? (
+            downloadState.premium ? <span>Premium / {isTurkish ? "sınırsız indirme" : "unlimited downloads"}</span> : <span>{isTurkish ? `Bugün ${downloadState.remaining} indirme hakkın kaldı` : `${downloadState.remaining} downloads left today`}</span>
+          ) : <a href="/login">{isTurkish ? "İndirmek için giriş yap" : "Sign in to download"}</a>}
+          {downloadState?.authenticated && !downloadState.premium && <span><a href="/account/premium?tool=minecraft-rank">Premium</a> · <a href="/account/discord">Discord +2</a></span>}
+        </div>
+        {downloadError && <p className="pixel-rank-download-error" role="alert">{downloadError}</p>}
       </div>
 
       <div className="pixel-rank-controls">

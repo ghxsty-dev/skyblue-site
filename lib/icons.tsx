@@ -18,6 +18,14 @@ export function MenuIcon(props: Props) {
   );
 }
 
+export function UserIcon(props: Props) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="8" r="4" /><path d="M4 22a8 8 0 0 1 16 0" />
+    </Icon>
+  );
+}
+
 export function SunIcon(props: Props) {
   return (
     <Icon {...props}>

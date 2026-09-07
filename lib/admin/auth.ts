@@ -2,11 +2,16 @@ import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
-const SECRET = new TextEncoder().encode(
-  process.env.ADMIN_JWT_SECRET || "skyblue-admin-secret-key-change-in-production-2024"
-);
 const COOKIE_NAME = "admin_token";
 const TOKEN_EXPIRY = "24h";
+const ISSUER = "skyblue-admin";
+const AUDIENCE = "skyblue-admin-panel";
+
+function getSecret(): Uint8Array | null {
+  const value = process.env.ADMIN_JWT_SECRET;
+  if (!value || value.length < 32 || value === "skyblue-admin-secret-key-change-in-production-2024") return null;
+  return new TextEncoder().encode(value);
+}
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 12);
@@ -20,17 +25,23 @@ export async function verifyPassword(
 }
 
 export async function createToken(): Promise<string> {
+  const secret = getSecret();
+  if (!secret) throw new Error("ADMIN_JWT_SECRET is missing or insecure");
   return new SignJWT({ role: "admin" })
     .setProtectedHeader({ alg: "HS256" })
+    .setIssuer(ISSUER)
+    .setAudience(AUDIENCE)
     .setIssuedAt()
     .setExpirationTime(TOKEN_EXPIRY)
-    .sign(SECRET);
+    .sign(secret);
 }
 
 export async function verifyToken(token: string): Promise<boolean> {
   try {
-    await jwtVerify(token, SECRET);
-    return true;
+    const secret = getSecret();
+    if (!secret) return false;
+    const { payload } = await jwtVerify(token, secret, { issuer: ISSUER, audience: AUDIENCE });
+    return payload.role === "admin" && typeof payload.exp === "number";
   } catch {
     return false;
   }
