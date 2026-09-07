@@ -2758,6 +2758,22 @@ main {
   font-size: 0.78rem;
 }
 
+.discord-verification-link {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.discord-verification-link a {
+  color: #59abfe;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.discord-verification-link a:hover {
+  text-decoration: underline;
+}
+
 .discord-verification-success {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;

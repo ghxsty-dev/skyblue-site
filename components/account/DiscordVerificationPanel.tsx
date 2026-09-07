@@ -80,9 +80,10 @@ export default function DiscordVerificationPanel() {
 
   return (
     <div className="discord-verification-panel">
-      <div className="discord-verification-steps"><div><span>01</span><p>{tr ? "Tek kullanımlık kod oluştur." : "Create a one-time code."}</p></div><div><span>02</span><p>{tr ? "SkyBlue Discord sunucusunda bot komutunu çalıştır." : "Run the bot command in the SkyBlue Discord server."}</p></div><div><span>03</span><p>{tr ? "Doğrulama sonrası günlük limitin 4 olur." : "Your daily limit becomes 4 after verification."}</p></div></div>
-      {!code ? <button type="button" className="account-primary-button" onClick={createCode} disabled={pending}>{pending ? (tr ? "Oluşturuluyor..." : "Creating...") : (tr ? "Doğrulama kodu oluştur" : "Create verification code")}</button> : <div className="discord-verification-code"><span>{tr ? "10 dakika geçerli" : "Valid for 10 minutes"}</span><strong>{code}</strong><code>/verify kod:{code}</code></div>}
+      <div className="discord-verification-steps"><div><span>01</span><p>{tr ? "Tek kullanımlık kod oluştur." : "Create a one-time code."}</p></div><div><span>02</span><p>{tr ? "Kodu Discord #dogrulama kanalına yapıştır." : "Paste the code in the Discord #dogrulama channel."}</p></div><div><span>03</span><p>{tr ? "Bot otomatik doğrulayıp mesajı silecek. Günlük limitin 4 olur." : "Bot auto-verifies and deletes the message. Your daily limit becomes 4."}</p></div></div>
+      {!code ? <button type="button" className="account-primary-button" onClick={createCode} disabled={pending}>{pending ? (tr ? "Oluşturuluyor..." : "Creating...") : (tr ? "Doğrulama kodu oluştur" : "Create verification code")}</button> : <div className="discord-verification-code"><span>{tr ? "10 dakika geçerli — kodu Discord kanalına yapıştır" : "Valid for 10 minutes — paste in Discord channel"}</span><strong>{code}</strong></div>}
       {error && <p className="account-form-error">{error}</p>}
+      <p className="discord-verification-link"><a href="https://discord.com/channels/1366027066293620957/1546599370131111956" target="_blank" rel="noopener noreferrer">{tr ? "Discord #dogrulama kanalına git →" : "Go to Discord #dogrulama channel →"}</a></p>
     </div>
   );
 }
