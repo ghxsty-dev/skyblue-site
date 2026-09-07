@@ -55,35 +55,6 @@ const BASE_GLYPHS: Record<string, Glyph> = {
   " ": ["000", "000", "000", "000", "000"],
 };
 
-function compactGlyph(glyph: Glyph): Glyph {
-  return glyph.map((row) =>
-    [0, 1, 2, 3].map((column) => row[column] === "1" || row[column + 1] === "1" ? "1" : "0").join("")
-  );
-}
-
-function outlineGlyph(glyph: Glyph): Glyph {
-  return glyph.map((row, y) =>
-    row.split("").map((cell, x) => {
-      if (cell !== "1") return "0";
-      const neighbours = [
-        glyph[y - 1]?.[x],
-        glyph[y + 1]?.[x],
-        row[x - 1],
-        row[x + 1],
-      ];
-      return neighbours.every((neighbour) => neighbour === "1") ? "0" : "1";
-    }).join("")
-  );
-}
-
-const COMPACT_GLYPHS = Object.fromEntries(
-  Object.entries(BASE_GLYPHS).map(([key, glyph]) => [key, compactGlyph(glyph)])
-) as Record<string, Glyph>;
-
-const OUTLINE_GLYPHS = Object.fromEntries(
-  Object.entries(BASE_GLYPHS).map(([key, glyph]) => [key, outlineGlyph(glyph)])
-) as Record<string, Glyph>;
-
 // Minecraft Ten glyphs use a 7 px line height; the rank canvas adds 2 px on each side.
 const MINECRAFT_TEN_GLYPHS: Record<string, Glyph> = {
   " ": ["0000", "0000", "0000", "0000", "0000", "0000", "0000"],
@@ -162,8 +133,6 @@ const RANK_CHARACTERS = new Set(Object.keys(MINECRAFT_TEN_GLYPHS));
 
 export const PIXEL_FONTS: readonly PixelFont[] = [
   { id: "block", name: "Block 5", height: 5, glyphs: BASE_GLYPHS },
-  { id: "compact", name: "Compact 5", height: 5, glyphs: COMPACT_GLYPHS },
-  { id: "outline", name: "Outline 5", height: 5, glyphs: OUTLINE_GLYPHS },
   { id: "minecraft-ten", name: "Minecraft Ten", height: 7, glyphs: MINECRAFT_TEN_GLYPHS },
 ];
 
