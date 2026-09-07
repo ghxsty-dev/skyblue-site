@@ -88,7 +88,7 @@ security definer set search_path = public
 as $$
 declare
   new_username text := lower(trim(new.raw_user_meta_data ->> 'username'));
-  new_ip_hash text := new.raw_app_meta_data ->> 'signup_ip_hash';
+  new_ip_hash text := new.raw_user_meta_data ->> 'signup_ip_hash';
 begin
   if new_username is null or new_username !~ '^[a-z0-9_]{3,20}$' then
     raise exception 'invalid_username';

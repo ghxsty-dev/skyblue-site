@@ -59,8 +59,7 @@ export async function POST(request: NextRequest) {
       email,
       password,
       email_confirm: true,
-      user_metadata: { username },
-      app_metadata: { signup_ip_hash: ipHash },
+      user_metadata: { username, signup_ip_hash: ipHash },
     });
 
     if (error || !data.user) {
