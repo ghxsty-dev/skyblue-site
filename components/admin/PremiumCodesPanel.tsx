@@ -25,7 +25,7 @@ export default function PremiumCodesPanel() {
     try {
       const response = await fetch("/api/admin/premium-codes", { cache: "no-store" });
       if (response.status === 401) {
-        window.location.assign("/admin/login");
+        window.location.assign("/login");
         return;
       }
       const result = await response.json();

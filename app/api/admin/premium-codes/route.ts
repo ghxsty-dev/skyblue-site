@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAuthenticated } from "@/lib/admin/auth";
+import { isAdmin } from "@/lib/admin/auth";
 import { createLicenseCode, hashLicenseCode } from "@/lib/account/security";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isTrustedMutation } from "@/lib/account/request";
@@ -7,7 +7,7 @@ import { isTrustedMutation } from "@/lib/account/request";
 export const runtime = "nodejs";
 
 export async function GET() {
-  if (!(await isAuthenticated())) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+  if (!(await isAdmin())) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   const admin = createSupabaseAdminClient();
   if (!admin) return NextResponse.json({ error: "AUTH_NOT_CONFIGURED" }, { status: 503 });
 
@@ -22,7 +22,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   if (!isTrustedMutation(request, "json")) return NextResponse.json({ error: "INVALID_ORIGIN" }, { status: 403 });
-  if (!(await isAuthenticated())) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+  if (!(await isAdmin())) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   try {
     const { toolSlug, durationMonths, quantity } = await request.json();
     const duration = Number(durationMonths);
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   if (!isTrustedMutation(request, "json")) return NextResponse.json({ error: "INVALID_ORIGIN" }, { status: 403 });
-  if (!(await isAuthenticated())) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+  if (!(await isAdmin())) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   const { id } = await request.json();
   const admin = createSupabaseAdminClient();
   if (!admin) return NextResponse.json({ error: "AUTH_NOT_CONFIGURED" }, { status: 503 });

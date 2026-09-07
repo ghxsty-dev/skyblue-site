@@ -15,6 +15,7 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [indicator, setIndicator] = useState({ left: 0, width: 0, measured: false });
+  const [isAdminUser, setIsAdminUser] = useState(false);
   const ulRef = useRef<HTMLUListElement>(null);
 
   const current = pathname === "/" ? "home" : pathname.replace("/", "").split("/")[0];
@@ -51,6 +52,13 @@ export default function Nav() {
     const t = setTimeout(measure, 300);
     return () => clearTimeout(t);
   }, [measure]);
+
+  useEffect(() => {
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.role === "admin") setIsAdminUser(true); })
+      .catch(() => {});
+  }, []);
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-[1000] px-6 transition-all duration-300 ${
@@ -105,6 +113,16 @@ export default function Nav() {
           >
             <UserIcon size={19} />
           </a>
+          {isAdminUser && (
+            <a
+              href="/admin/dashboard"
+              className="ml-1 flex w-9 h-9 items-center justify-center text-white/70 hover:text-white no-underline"
+              aria-label="Admin"
+              title="Admin Panel"
+            >
+              ⚙
+            </a>
+          )}
         </div>
         <ul
           className={`md:hidden list-none flex-col gap-1 flex absolute top-full left-0 right-0 bg-[var(--nav-bg)]/90 backdrop-blur-xl border-b border-[var(--border)] p-4 ${open ? "flex" : "hidden"}`}

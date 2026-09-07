@@ -56,14 +56,14 @@ export default function AdminDashboard() {
       ]);
 
       if (statsRes.status === 401 || txRes.status === 401) {
-        router.push("/admin/login");
+        router.push("/login");
         return;
       }
 
       if (statsRes.ok) setStats(await statsRes.json());
       if (txRes.ok) setTransactions(await txRes.json());
     } catch {
-      router.push("/admin/login");
+      router.push("/login");
     } finally {
       setLoading(false);
     }
@@ -75,8 +75,8 @@ export default function AdminDashboard() {
   }, [fetchData]);
 
   const handleLogout = async () => {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.push("/admin/login");
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
