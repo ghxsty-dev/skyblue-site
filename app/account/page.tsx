@@ -51,7 +51,7 @@ export default async function AccountPage() {
         <AccountLogoutButton />
       </header>
 
-      <section className="account-profile-layout account-card">
+      <section className="account-profile-layout">
         <AvatarEditor src={avatarApiUrl(profile)} username={profile.username} />
         <div className="account-profile-summary">
           <div className="account-profile-name"><h2><StyledUsername username={profile.username} style={nameStyle} enabled={namePremium} /></h2><ProfileBadges premium={activePremium.length > 0} discordUsername={discord?.discord_username} role={profile.role} /></div>
@@ -61,7 +61,7 @@ export default async function AccountPage() {
       </section>
 
       <div className="account-grid">
-        <section className="account-access-section account-card">
+        <section className="account-access-section">
           <div className="account-section-heading"><div><span>Tool erişimi</span><h2>Minecraft Rank Generator</h2></div>{rankPremium ? <span className="account-badge premium"><img src="/premium.webp" alt="" width={10} height={10} />Aktif</span> : <Link href="/account/premium?tool=minecraft-rank" className="account-primary-button">Premium ol</Link>}</div>
           <div className="account-access-grid">
             <div><span>Premium</span><strong>{rankPremium ? "Aktif" : "Free"}</strong></div>

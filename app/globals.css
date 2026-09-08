@@ -3231,13 +3231,6 @@ button.pixel-rank-dot:hover {
   grid-column: 1 / -1;
 }
 
-.account-card {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--card-bg);
-  padding: 18px;
-}
-
 .account-avatar-editor {
   display: flex;
   flex-direction: column;
@@ -3591,9 +3584,10 @@ button.pixel-rank-dot:hover {
 
 .account-banner-preview {
   margin: 12px 0 0;
-  height: 150px;
+  height: 100px;
+  aspect-ratio: 5 / 1;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
   background-size: cover;
   background-position: center;
   background-color: var(--bg2);

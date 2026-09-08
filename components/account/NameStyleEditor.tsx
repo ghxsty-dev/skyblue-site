@@ -22,7 +22,7 @@ export default function NameStyleEditor({ username, initial, premium }: NameStyl
 
   if (!premium) {
     return (
-      <section className="account-name-style account-card">
+      <section className="account-name-style">
         <div className="account-section-heading">
           <div><span>Premium</span><h2>İsim Görünümü</h2></div>
           <span className="account-badge">Premium</span>
@@ -77,7 +77,7 @@ export default function NameStyleEditor({ username, initial, premium }: NameStyl
   }
 
   return (
-    <section className="account-name-style account-card">
+    <section className="account-name-style">
       <div className="account-section-heading">
         <div><span>Premium</span><h2>İsim Görünümü</h2></div>
         <span className="account-badge premium"><img src="/premium.webp" alt="" width={10} height={10} />Aktif</span>
