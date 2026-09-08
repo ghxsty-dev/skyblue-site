@@ -1832,6 +1832,17 @@ main {
   padding: 20px;
 }
 
+@media (min-width: 851px) {
+  .pixel-rank-preview-panel {
+    position: sticky;
+    top: 80px;
+    align-self: start;
+    max-height: calc(100svh - 96px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+
 .pixel-rank-preview-header {
   display: flex;
   align-items: center;
@@ -1914,6 +1925,15 @@ main {
   image-rendering: crisp-edges;
   touch-action: none;
   cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.pixel-rank-protected {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .pixel-rank-hint {

@@ -498,6 +498,23 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
+      // Kopyalamaya karşı caydırıcı: F12 / geliştirici araçları / sayfayı kaydetme.
+      // Not: kararlı bir kullanıcıyı durdurmaz, sadece günlük kopyalamayı zorlaştırır.
+      if (event.key === "F12") {
+        event.preventDefault();
+        return;
+      }
+      const mod = event.ctrlKey || event.metaKey;
+      const k = event.key.toLowerCase();
+      if (mod && event.shiftKey && ["i", "j", "c"].includes(k)) {
+        event.preventDefault();
+        return;
+      }
+      if (mod && ["u", "s"].includes(k)) {
+        event.preventDefault();
+        return;
+      }
+
       const target = event.target as HTMLElement | null;
       if (target?.closest("input, textarea, select")) return;
       const modifier = event.ctrlKey || event.metaKey;
@@ -711,13 +728,19 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           </div>
         </div>
 
-        <div ref={stageWrapRef} className="pixel-rank-stage-wrap">
+        <div
+          ref={stageWrapRef}
+          className="pixel-rank-stage-wrap pixel-rank-protected"
+          onContextMenu={(event) => event.preventDefault()}
+        >
           <div className="pixel-rank-stage" style={{ width: `${displayW}px`, height: `${displayH}px` }}>
             <canvas
               ref={canvasRef}
               width={width}
               height={height}
               className="pixel-rank-canvas"
+              draggable={false}
+              onDragStart={(event) => event.preventDefault()}
               style={{ width: `${displayW}px`, height: `${displayH}px` }}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
