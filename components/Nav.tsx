@@ -95,14 +95,14 @@ export default function Nav() {
     const diff = new Date(expiresAt).getTime() - Date.now();
     if (diff <= 0) return "";
     const totalHours = Math.floor(diff / (1000 * 60 * 60));
-    if (totalHours < 1) return "< 1 saat";
-    if (totalHours < 24) return `${totalHours} saat`;
+    if (totalHours < 1) return t.remainingLessThanHour;
+    if (totalHours < 24) return `${totalHours} ${t.remainingHours}`;
     const totalDays = Math.floor(totalHours / 24);
     const months = Math.floor(totalDays / 30);
     const days = totalDays % 30;
-    if (months > 0 && days > 0) return `${months} ay ${days} gün`;
-    if (months > 0) return `${months} ay`;
-    return `${days} gün`;
+    if (months > 0 && days > 0) return `${months} ${t.remainingMonths} ${days} ${t.remainingDays}`;
+    if (months > 0) return `${months} ${t.remainingMonths}`;
+    return `${days} ${t.remainingDays}`;
   }
 
   const accountAvatar = avatarPath ? (
@@ -185,24 +185,24 @@ export default function Nav() {
                     ) : (
                       <a href="/account/premium?tool=minecraft-rank" onClick={() => setAccountOpen(false)} className="nav-dropdown-item premium">
                         <span className="nav-dropdown-icon"><Image src="/premium.webp" alt="" width={18} height={18} unoptimized /></span>
-                        Premium üyesi ol
+                        {t.premiumBecome}
                       </a>
                     )}
                     <div className="nav-dropdown-divider" />
                     <a href="/account" onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
                       <span className="nav-dropdown-icon">⚙</span>
-                      Hesap ayarları
+                      {t.accountSettings}
                     </a>
                   </>
                 ) : (
                   <>
                     <a href="/login" onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
                       <span className="nav-dropdown-icon">→</span>
-                      Giriş yap
+                      {t.signIn}
                     </a>
                     <a href="/register" onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
                       <span className="nav-dropdown-icon">✦</span>
-                      Kayıt ol
+                      {t.signUp}
                     </a>
                   </>
                 )}
@@ -214,10 +214,10 @@ export default function Nav() {
             <a
               href="/admin"
               className="ml-1 flex items-center justify-center text-white/70 hover:text-white no-underline text-[0.82rem] font-semibold px-2 py-1 rounded-md"
-              aria-label="Kurucu"
-              title="SkyBlue Kurucu Paneli"
+              aria-label={t.kurucu}
+              title={t.adminPanel}
             >
-              Kurucu
+              {t.kurucu}
             </a>
           )}
         </div>
@@ -243,7 +243,7 @@ export default function Nav() {
             <a href="/account/premium?tool=minecraft-rank" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold premium-gradient-text no-underline">
               <Image src="/premium.webp" alt="" width={18} height={18} unoptimized /> {premiumActive ? (
                 <span className="flex items-center gap-2"><span>Premium</span>{premiumExpiresAt && <span className="text-white/50 text-[0.72rem] font-normal">{formatRemaining(premiumExpiresAt)}</span>}</span>
-              ) : "Premium üyesi ol"}
+              ) : t.premiumBecome}
             </a>
           </li>
           {isLoggedIn ? (
@@ -266,12 +266,12 @@ export default function Nav() {
             <>
               <li>
                 <a href="/login" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold text-white/70 hover:text-white no-underline">
-                  Giriş yap
+                  {t.signIn}
                 </a>
               </li>
               <li>
                 <a href="/register" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold text-white/70 hover:text-white no-underline">
-                  Kayıt ol
+                  {t.signUp}
                 </a>
               </li>
             </>
