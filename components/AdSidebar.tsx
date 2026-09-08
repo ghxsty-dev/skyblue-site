@@ -56,8 +56,17 @@ export default function AdSidebar() {
   const [leftAd, setLeftAd] = useState<number | null>(null);
   const [rightAd, setRightAd] = useState<number | null>(null);
   const [fade, setFade] = useState(true);
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
+    fetch("/api/account/premium-status", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.premium) setIsPremium(true); })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (isPremium) return;
     getAvailableAds().then((available) => {
       setAds(available);
       if (available.length === 0) return;
@@ -85,6 +94,7 @@ export default function AdSidebar() {
   }, [ads, rotate]);
 
   if (
+    isPremium ||
     pathname.startsWith("/admin") ||
     pathname.startsWith("/account") ||
     pathname.startsWith("/users") ||
