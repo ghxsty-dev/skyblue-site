@@ -1,41 +1,97 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useApp } from "@/lib/context";
 import { StarIcon, LayersIcon } from "@/lib/icons";
-import data from "@/data/services.json";
+import fallbackData from "@/data/services.json";
 import Reveal from "@/components/Reveal";
 import Invoice from "@/components/Invoice";
 
 const DISCORD_URL = "https://discord.gg/F3uQ2fU8RV";
 
+interface ApiProduct {
+  id: string;
+  category: string;
+  slug: string | null;
+  data: Record<string, unknown>;
+  sort_order: number;
+}
+
+function getVal(data: Record<string, unknown>, lang: string, key: string): unknown {
+  const section = data[lang] as Record<string, unknown> | undefined;
+  return section?.[key];
+}
+
+function getStr(data: Record<string, unknown>, lang: string, key: string): string {
+  return String(getVal(data, lang, key) ?? "");
+}
+
+function getNum(data: Record<string, unknown>, lang: string, key: string): number {
+  return Number(getVal(data, lang, key) ?? 0);
+}
+
+function getArr(data: Record<string, unknown>, lang: string, key: string): string[] {
+  const v = getVal(data, lang, key);
+  return Array.isArray(v) ? v : [];
+}
+
 export default function DesignPage() {
   const { t, lang } = useApp();
-  const d = data[lang as "EN" | "TR"];
   const [selectedItems, setSelectedItems] = useState<Record<string, number>>({});
   const [showInvoice, setShowInvoice] = useState(false);
 
-  const allItems = (d.design as any).all?.items || [];
+  const [apiPackages, setApiPackages] = useState<ApiProduct[]>([]);
+  const [apiDesignItems, setApiDesignItems] = useState<ApiProduct[]>([]);
+
+  useEffect(() => {
+    fetch("/api/design-products", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((result) => {
+        const products: ApiProduct[] = result.products || [];
+        setApiPackages(products.filter((p) => p.category === "package"));
+        setApiDesignItems(products.filter((p) => p.category === "design"));
+      })
+      .catch(() => {});
+  }, []);
+
+  const d = fallbackData[lang as "EN" | "TR"];
+  const packages = apiPackages.length > 0
+    ? apiPackages.map((p) => ({
+        title: getStr(p.data, lang, "title"),
+        desc: getStr(p.data, lang, "desc"),
+        slug: getStr(p.data, lang, "slug") || p.slug || "",
+        basic: getNum(p.data, lang, "basic"),
+        pro: getNum(p.data, lang, "pro"),
+      }))
+    : d.packages;
+
+  const allItems = apiDesignItems.length > 0
+    ? apiDesignItems.map((p) => ({
+        title: getStr(p.data, lang, "title"),
+        price: getNum(p.data, lang, "price"),
+        unit: getStr(p.data, lang, "unit") || undefined,
+      }))
+    : (d.design as Record<string, unknown>).all
+      ? ((d.design as Record<string, Record<string, unknown>>).all.items as Array<Record<string, unknown>>)
+      : [];
 
   const toggleItem = (itemTitle: string) => {
-    const itemKey = itemTitle;
     setSelectedItems((prev) => ({
       ...prev,
-      [itemKey]: prev[itemKey] ? 0 : 1,
+      [itemTitle]: prev[itemTitle] ? 0 : 1,
     }));
   };
 
   const updateQuantity = (itemTitle: string, qty: number) => {
-    const itemKey = itemTitle;
     if (qty <= 0) {
       setSelectedItems((prev) => {
         const next = { ...prev };
-        delete next[itemKey];
+        delete next[itemTitle];
         return next;
       });
     } else {
-      setSelectedItems((prev) => ({ ...prev, [itemKey]: qty }));
+      setSelectedItems((prev) => ({ ...prev, [itemTitle]: qty }));
     }
   };
 
@@ -45,8 +101,8 @@ export default function DesignPage() {
   const totalPrice = useMemo(() => {
     let total = 0;
     for (const [itemTitle, qty] of selectedEntries) {
-      const item = allItems.find((i: any) => i.title === itemTitle);
-      if (item) total += item.price * qty;
+      const item = allItems.find((i: Record<string, unknown>) => String(i.title) === itemTitle);
+      if (item) total += Number(item.price || 0) * qty;
     }
     return total;
   }, [selectedEntries, allItems]);
@@ -54,14 +110,14 @@ export default function DesignPage() {
   const getInvoiceItems = () => {
     const items: { title: string; qty: number; price: number }[] = [];
     for (const [itemTitle, qty] of selectedEntries) {
-      const item = allItems.find((i: any) => i.title === itemTitle);
-      if (item) items.push({ title: item.title, qty, price: item.price });
+      const item = allItems.find((i: Record<string, unknown>) => String(i.title) === itemTitle);
+      if (item) items.push({ title: itemTitle, qty, price: Number(item.price || 0) });
     }
     return items;
   };
 
   const getSelectedItemInfo = (itemKey: string) => {
-    return allItems.find((i: any) => i.title === itemKey) || null;
+    return allItems.find((i: Record<string, unknown>) => String(i.title) === itemKey) || null;
   };
 
   return (
@@ -92,7 +148,7 @@ export default function DesignPage() {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-            {d.packages.map((pkg: any, i: number) => (
+            {packages.map((pkg: Record<string, unknown>, i: number) => (
               <Link
                 key={i}
                 href={`/services/design/packages/${pkg.slug}`}
@@ -104,17 +160,17 @@ export default function DesignPage() {
                     <div className="text-white">
                       <StarIcon size={20} />
                     </div>
-                    <h4 className="font-bold text-sm text-[var(--text)] group-hover:text-[#59abfe] transition-colors">{pkg.title}</h4>
+                    <h4 className="font-bold text-sm text-[var(--text)] group-hover:text-[#59abfe] transition-colors">{String(pkg.title)}</h4>
                   </div>
-                  <p className="text-[11px] text-[var(--text2)] mb-4 leading-relaxed">{pkg.desc}</p>
+                  <p className="text-[11px] text-[var(--text2)] mb-4 leading-relaxed">{String(pkg.desc)}</p>
                   <div className="flex items-center gap-2 text-xs mb-3">
                     <div className="flex-1 rounded-xl bg-[var(--bg2)] py-3 px-2">
                       <p className="text-[9px] text-[var(--text2)] text-center mb-1">{lang === "TR" ? "Başlangıç" : "Basic"}</p>
-                      <p className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center text-base">{pkg.basic} TL</p>
+                      <p className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center text-base">{Number(pkg.basic)} TL</p>
                     </div>
                     <div className="flex-1 rounded-xl bg-[var(--bg2)] py-3 px-2">
                       <p className="text-[9px] text-[var(--text2)] text-center mb-1">{lang === "TR" ? "Tam" : "Pro"}</p>
-                      <p className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center text-base">{pkg.pro} TL</p>
+                      <p className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center text-base">{Number(pkg.pro)} TL</p>
                     </div>
                   </div>
                   <div className="text-center text-[10px] text-[var(--text2)]">
@@ -151,10 +207,11 @@ export default function DesignPage() {
             {/* Left: Items Grid */}
             <div className="flex-1 min-w-0">
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {allItems.map((item: any, ii: number) => {
-                  const itemKey = item.title;
-                  const qty = selectedItems[itemKey] || 0;
+                {allItems.map((item: Record<string, unknown>, ii: number) => {
+                  const itemTitle = String(item.title);
+                  const qty = selectedItems[itemTitle] || 0;
                   const isSelected = qty > 0;
+                  const price = Number(item.price || 0);
                   return (
                     <div
                       key={ii}
@@ -165,28 +222,28 @@ export default function DesignPage() {
                       }`}
                     >
                       <button
-                        onClick={() => toggleItem(item.title)}
+                        onClick={() => toggleItem(itemTitle)}
                         className="w-full cursor-pointer bg-transparent border-none p-0"
                       >
-                        <span className="text-sm font-medium text-[var(--text)]">{item.title}</span>
+                        <span className="text-sm font-medium text-[var(--text)]">{itemTitle}</span>
                         <div className="flex flex-col items-center mt-1">
-                          <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{item.price} TL</span>
-                          {item.unit && (
-                            <span className="text-[9px] text-[var(--text2)]">/ {item.unit}</span>
+                          <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{price} TL</span>
+                          {Boolean(item.unit) && (
+                            <span className="text-[9px] text-[var(--text2)]">/ {String(item.unit as string)}</span>
                           )}
                         </div>
                       </button>
                       {isSelected && (
                         <div className="flex items-center gap-2 mt-2">
                           <button
-                            onClick={() => updateQuantity(item.title, qty - 1)}
+                            onClick={() => updateQuantity(itemTitle, qty - 1)}
                             className="w-6 h-6 rounded-md bg-[var(--bg2)] border border-[var(--border)] text-[var(--text)] text-xs flex items-center justify-center hover:bg-[#59abfe] hover:text-white hover:border-[#59abfe] transition-all cursor-pointer"
                           >
                             −
                           </button>
                           <span className="text-sm font-bold text-[#59abfe] min-w-[20px] text-center">{qty}</span>
                           <button
-                            onClick={() => updateQuantity(item.title, qty + 1)}
+                            onClick={() => updateQuantity(itemTitle, qty + 1)}
                             className="w-6 h-6 rounded-md bg-[var(--bg2)] border border-[var(--border)] text-[var(--text)] text-xs flex items-center justify-center hover:bg-[#59abfe] hover:text-white hover:border-[#59abfe] transition-all cursor-pointer"
                           >
                             +
@@ -217,13 +274,14 @@ export default function DesignPage() {
                       {selectedEntries.map(([itemKey, qty]) => {
                         const info = getSelectedItemInfo(itemKey);
                         if (!info) return null;
+                        const price = Number(info.price || 0);
                         return (
                           <div key={itemKey} className="flex items-center justify-between text-xs py-1.5 border-b border-[var(--border)] last:border-0">
                             <div className="flex-1 min-w-0">
-                              <p className="text-[var(--text)] font-medium truncate">{info.title}</p>
-                              <p className="text-[var(--text2)] text-[10px]">x{qty} × {info.price} TL</p>
+                              <p className="text-[var(--text)] font-medium truncate">{String(info.title)}</p>
+                              <p className="text-[var(--text2)] text-[10px]">x{qty} × {price} TL</p>
                             </div>
-                            <span className="font-bold text-[#59abfe] ml-2">{info.price * qty} TL</span>
+                            <span className="font-bold text-[#59abfe] ml-2">{price * qty} TL</span>
                           </div>
                         );
                       })}
