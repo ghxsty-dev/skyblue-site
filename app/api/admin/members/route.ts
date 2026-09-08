@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "@/lib/admin/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isTrustedMutation } from "@/lib/account/request";
-import { notifyPremiumActive } from "@/lib/discord-premium";
+import { notifyPremiumActive, removePremiumRole } from "@/lib/discord-premium";
 import type { UserRole } from "@/lib/account/types";
 
 export const runtime = "nodejs";
@@ -83,6 +83,29 @@ export async function PUT(request: NextRequest) {
       .update({ banned: Boolean(banned), updated_at: new Date().toISOString() })
       .eq("id", String(userId));
     if (error) return NextResponse.json({ error: "UPDATE_FAILED" }, { status: 500 });
+    return NextResponse.json({ ok: true });
+  }
+
+  if (action === "remove-premium") {
+    const toolSlug = String(body.toolSlug || "minecraft-rank");
+    if (toolSlug !== "minecraft-rank") return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+
+    const { error } = await admin
+      .from("tool_entitlements")
+      .delete()
+      .eq("user_id", String(userId))
+      .eq("tool_slug", toolSlug);
+    if (error) return NextResponse.json({ error: "DELETE_FAILED" }, { status: 500 });
+
+    const { data: discordLink } = await admin
+      .from("discord_links")
+      .select("discord_user_id")
+      .eq("user_id", String(userId))
+      .maybeSingle();
+    if (discordLink?.discord_user_id) {
+      removePremiumRole(discordLink.discord_user_id).catch(() => {});
+    }
+
     return NextResponse.json({ ok: true });
   }
 

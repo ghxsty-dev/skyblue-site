@@ -29,7 +29,6 @@ export default function MembersTab() {
   const [error, setError] = useState("");
   const [actionPending, setActionPending] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [premiumUserId, setPremiumUserId] = useState<string | null>(null);
   const [premiumDuration, setPremiumDuration] = useState(1);
 
   const loadMembers = useCallback(async () => {
@@ -94,9 +93,26 @@ export default function MembersTab() {
       if (!response.ok) throw new Error("UPDATE_FAILED");
       const result = await response.json();
       setMembers((prev) => prev.map((m) => m.id === userId ? { ...m, premium_expires_at: result.expires_at } : m));
-      setPremiumUserId(null);
     } catch {
       setError("Premium tanımlanamadı.");
+    } finally {
+      setActionPending(null);
+    }
+  }
+
+  async function removePremium(userId: string) {
+    if (!window.confirm("Bu kullanıcının premium üyeliği kaldırılsın mı?")) return;
+    setActionPending(userId);
+    try {
+      const response = await fetch("/api/admin/members", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, action: "remove-premium", toolSlug: "minecraft-rank" }),
+      });
+      if (!response.ok) throw new Error("DELETE_FAILED");
+      setMembers((prev) => prev.map((m) => m.id === userId ? { ...m, premium_expires_at: null } : m));
+    } catch {
+      setError("Premium kaldırılamadı.");
     } finally {
       setActionPending(null);
     }
@@ -108,14 +124,6 @@ export default function MembersTab() {
     m.discord_username?.toLowerCase().includes(search.toLowerCase()) ||
     m.signup_ip?.includes(search)
   );
-
-  const roleBadgeClass = (role: UserRole) => {
-    if (role === "kurucu") return "admin-badge red";
-    if (role === "bas-gelirtici" || role === "gelirtici" || role === "k-gelirtici") return "admin-badge purple";
-    if (role === "moderator") return "admin-badge blue";
-    if (role === "rehber") return "admin-badge green";
-    return "admin-badge";
-  };
 
   return (
     <>
@@ -246,6 +254,16 @@ export default function MembersTab() {
                             >
                               Premium Ekle
                             </button>
+                            {member.premium_expires_at && (
+                              <button
+                                type="button"
+                                className="admin-btn danger small"
+                                disabled={actionPending === member.id}
+                                onClick={() => removePremium(member.id)}
+                              >
+                                Premium Kaldır
+                              </button>
+                            )}
                           </div>
                           <button
                             type="button"

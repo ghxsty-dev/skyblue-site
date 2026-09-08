@@ -7,6 +7,7 @@ import { StarIcon, LayersIcon } from "@/lib/icons";
 import fallbackData from "@/data/services.json";
 import Reveal from "@/components/Reveal";
 import Invoice from "@/components/Invoice";
+import { formatPrice, getDiscountedPrice } from "@/lib/pricing";
 
 const DISCORD_URL = "https://discord.gg/F3uQ2fU8RV";
 
@@ -18,8 +19,23 @@ interface ApiProduct {
   sort_order: number;
 }
 
+interface DiscountState {
+  percent: number;
+  labelEn: string | null;
+  labelTr: string | null;
+}
+
+interface DesignItem {
+  title: string;
+  price: number;
+  basePrice: number;
+  unit?: string;
+}
+
+const EMPTY_DISCOUNT: DiscountState = { percent: 0, labelEn: null, labelTr: null };
+
 function getVal(data: Record<string, unknown>, lang: string, key: string): unknown {
-  const section = data[lang] as Record<string, unknown> | undefined;
+  const section = (data[lang] || data[lang.toLowerCase()]) as Record<string, unknown> | undefined;
   return section?.[key];
 }
 
@@ -31,11 +47,6 @@ function getNum(data: Record<string, unknown>, lang: string, key: string): numbe
   return Number(getVal(data, lang, key) ?? 0);
 }
 
-function getArr(data: Record<string, unknown>, lang: string, key: string): string[] {
-  const v = getVal(data, lang, key);
-  return Array.isArray(v) ? v : [];
-}
-
 export default function DesignPage() {
   const { t, lang } = useApp();
   const [selectedItems, setSelectedItems] = useState<Record<string, number>>({});
@@ -43,12 +54,14 @@ export default function DesignPage() {
 
   const [apiPackages, setApiPackages] = useState<ApiProduct[]>([]);
   const [apiDesignItems, setApiDesignItems] = useState<ApiProduct[]>([]);
-  const [designDiscount, setDesignDiscount] = useState<{ percent: number; label: string | null }>({ percent: 0, label: null });
+  const [designDiscount, setDesignDiscount] = useState<DiscountState>(EMPTY_DISCOUNT);
 
   useEffect(() => {
+    let cancelled = false;
     fetch("/api/design-products", { cache: "no-store" })
       .then((r) => r.json())
       .then((result) => {
+        if (cancelled) return;
         const products: ApiProduct[] = result.products || [];
         setApiPackages(products.filter((p) => p.category === "package"));
         setApiDesignItems(products.filter((p) => p.category === "design"));
@@ -58,36 +71,68 @@ export default function DesignPage() {
       .then((r) => r.json())
       .then((result) => {
         const d = (result.discounts || []).find((x: { category: string }) => x.category === "design");
-        if (d) setDesignDiscount({ percent: d.percent, label: lang === "TR" ? d.label_tr : d.label_en });
+        if (!cancelled) {
+          setDesignDiscount(d ? {
+            percent: Number(d.percent) || 0,
+            labelEn: d.label_en || null,
+            labelTr: d.label_tr || null,
+          } : EMPTY_DISCOUNT);
+        }
       })
       .catch(() => {});
+
+    return () => { cancelled = true; };
   }, [lang]);
 
   const d = fallbackData[lang as "EN" | "TR"];
-  const packages = apiPackages.length > 0
-    ? apiPackages.map((p) => ({
+  const packages = useMemo(() => {
+    if (apiPackages.length > 0) {
+      return apiPackages.map((p) => ({
         title: getStr(p.data, lang, "title"),
         desc: getStr(p.data, lang, "desc"),
         slug: String((p.data as Record<string, unknown>).slug || p.slug || ""),
-        basic: getNum(p.data, lang, "basic"),
-        pro: getNum(p.data, lang, "pro"),
-      }))
-    : d.packages;
+        basicBase: getNum(p.data, lang, "basic"),
+        proBase: getNum(p.data, lang, "pro"),
+        basic: getDiscountedPrice(getNum(p.data, lang, "basic"), designDiscount.percent),
+        pro: getDiscountedPrice(getNum(p.data, lang, "pro"), designDiscount.percent),
+      }));
+    }
 
-  const allItems = apiDesignItems.length > 0
-    ? apiDesignItems.map((p) => {
+    return d.packages.map((pkg) => ({
+      ...pkg,
+      basicBase: Number(pkg.basic),
+      proBase: Number(pkg.pro),
+      basic: getDiscountedPrice(Number(pkg.basic), designDiscount.percent),
+      pro: getDiscountedPrice(Number(pkg.pro), designDiscount.percent),
+    }));
+  }, [apiPackages, d, lang, designDiscount.percent]);
+
+  const allItems: DesignItem[] = useMemo(() => {
+    if (apiDesignItems.length > 0) {
+      return apiDesignItems.map((p) => {
         const basePrice = getNum(p.data, lang, "price");
-        const discounted = designDiscount.percent > 0 ? Math.round(basePrice * (1 - designDiscount.percent / 100)) : basePrice;
         return {
           title: getStr(p.data, lang, "title"),
-          price: discounted,
+          price: getDiscountedPrice(basePrice, designDiscount.percent),
           basePrice,
           unit: getStr(p.data, lang, "unit") || undefined,
         };
-      })
-    : (d.design as Record<string, unknown>).all
-      ? ((d.design as Record<string, Record<string, unknown>>).all.items as Array<Record<string, unknown>>)
+      });
+    }
+
+    const allDesigns = (d.design as Record<string, unknown>).all as Record<string, unknown> | undefined;
+    return allDesigns && Array.isArray(allDesigns.items)
+      ? (allDesigns.items as Array<Record<string, unknown>>).map((item) => {
+          const basePrice = Number(item.price || 0);
+          return {
+            title: String(item.title || ""),
+            price: getDiscountedPrice(basePrice, designDiscount.percent),
+            basePrice,
+            unit: item.unit ? String(item.unit) : undefined,
+          };
+        })
       : [];
+  }, [apiDesignItems, d, lang, designDiscount.percent]);
 
   const toggleItem = (itemTitle: string) => {
     setSelectedItems((prev) => ({
@@ -114,7 +159,7 @@ export default function DesignPage() {
   const totalPrice = useMemo(() => {
     let total = 0;
     for (const [itemTitle, qty] of selectedEntries) {
-      const item = allItems.find((i: Record<string, unknown>) => String(i.title) === itemTitle);
+      const item = allItems.find((i: DesignItem) => i.title === itemTitle);
       if (item) total += Number(item.price || 0) * qty;
     }
     return total;
@@ -123,14 +168,14 @@ export default function DesignPage() {
   const getInvoiceItems = () => {
     const items: { title: string; qty: number; price: number }[] = [];
     for (const [itemTitle, qty] of selectedEntries) {
-      const item = allItems.find((i: Record<string, unknown>) => String(i.title) === itemTitle);
+      const item = allItems.find((i: DesignItem) => i.title === itemTitle);
       if (item) items.push({ title: itemTitle, qty, price: Number(item.price || 0) });
     }
     return items;
   };
 
   const getSelectedItemInfo = (itemKey: string) => {
-    return allItems.find((i: Record<string, unknown>) => String(i.title) === itemKey) || null;
+    return allItems.find((i: DesignItem) => i.title === itemKey) || null;
   };
 
   return (
@@ -159,6 +204,11 @@ export default function DesignPage() {
               </h3>
               <p className="text-xs text-[var(--text2)]">{t.packagesDesc}</p>
             </div>
+            {designDiscount.percent > 0 && (
+              <span className="admin-badge" style={{ background: "rgba(46, 160, 67, 0.15)", color: "#2ea043", border: "1px solid rgba(46, 160, 67, 0.3)" }}>
+                {designDiscount.labelTr && lang === "TR" ? designDiscount.labelTr : designDiscount.labelEn && lang === "EN" ? designDiscount.labelEn : `%${designDiscount.percent} ${lang === "TR" ? "İndirim" : "Off"}`}
+              </span>
+            )}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
             {packages.map((pkg: Record<string, unknown>, i: number) => (
@@ -179,11 +229,17 @@ export default function DesignPage() {
                   <div className="flex items-center gap-2 text-xs mb-3">
                     <div className="flex-1 rounded-xl bg-[var(--bg2)] py-3 px-2">
                       <p className="text-[9px] text-[var(--text2)] text-center mb-1">{lang === "TR" ? "Başlangıç" : "Basic"}</p>
-                      <p className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center text-base">{Number(pkg.basic)} TL</p>
+                      {designDiscount.percent > 0 && Number(pkg.basicBase) > 0 && (
+                        <p className="text-[10px] text-[var(--text2)] text-center line-through">{formatPrice(Number(pkg.basicBase))} TL</p>
+                      )}
+                      <p className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center text-base">{formatPrice(Number(pkg.basic))} TL</p>
                     </div>
                     <div className="flex-1 rounded-xl bg-[var(--bg2)] py-3 px-2">
                       <p className="text-[9px] text-[var(--text2)] text-center mb-1">{lang === "TR" ? "Tam" : "Pro"}</p>
-                      <p className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center text-base">{Number(pkg.pro)} TL</p>
+                      {designDiscount.percent > 0 && Number(pkg.proBase) > 0 && (
+                        <p className="text-[10px] text-[var(--text2)] text-center line-through">{formatPrice(Number(pkg.proBase))} TL</p>
+                      )}
+                      <p className="font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent text-center text-base">{formatPrice(Number(pkg.pro))} TL</p>
                     </div>
                   </div>
                   <div className="text-center text-[10px] text-[var(--text2)]">
@@ -214,8 +270,8 @@ export default function DesignPage() {
               {t.createOwn}
             </h3>
             {designDiscount.percent > 0 && (
-              <span className="admin-badge" style={{ background: "rgba(46, 160, 67, 0.15)", color: "#2ea043", border: "1px solid rgba(46, 160, 67, 0.3)" }}>
-                %{designDiscount.percent} {designDiscount.label || (lang === "TR" ? "İndirim" : "Off")}
+                <span className="admin-badge" style={{ background: "rgba(46, 160, 67, 0.15)", color: "#2ea043", border: "1px solid rgba(46, 160, 67, 0.3)" }}>
+                {designDiscount.labelTr && lang === "TR" ? designDiscount.labelTr : designDiscount.labelEn && lang === "EN" ? designDiscount.labelEn : `%${designDiscount.percent} ${lang === "TR" ? "İndirim" : "Off"}`}
               </span>
             )}
           </div>
@@ -225,11 +281,10 @@ export default function DesignPage() {
             {/* Left: Items Grid */}
             <div className="flex-1 min-w-0">
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {allItems.map((item: Record<string, unknown>, ii: number) => {
-                  const itemTitle = String(item.title);
+                {allItems.map((item: DesignItem, ii: number) => {
+                  const itemTitle = item.title;
                   const qty = selectedItems[itemTitle] || 0;
                   const isSelected = qty > 0;
-                  const price = Number(item.price || 0);
                   return (
                     <div
                       key={ii}
@@ -245,12 +300,12 @@ export default function DesignPage() {
                       >
                         <span className="text-sm font-medium text-[var(--text)]">{itemTitle}</span>
                         <div className="flex flex-col items-center mt-1">
-                          <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{Number(item.price || 0)} TL</span>
-                          {designDiscount.percent > 0 && Number((item as Record<string, unknown>).basePrice || 0) > 0 && (
-                            <span className="text-[9px] text-[var(--text2)] line-through">{String((item as Record<string, unknown>).basePrice)} TL</span>
+                          <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{formatPrice(Number(item.price || 0))} TL</span>
+                          {designDiscount.percent > 0 && item.basePrice > 0 && (
+                            <span className="text-[9px] text-[var(--text2)] line-through">{formatPrice(item.basePrice)} TL</span>
                           )}
                           {Boolean(item.unit) && (
-                            <span className="text-[9px] text-[var(--text2)]">/ {String(item.unit as string)}</span>
+                            <span className="text-[9px] text-[var(--text2)]">/ {item.unit}</span>
                           )}
                         </div>
                       </button>
@@ -300,9 +355,9 @@ export default function DesignPage() {
                           <div key={itemKey} className="flex items-center justify-between text-xs py-1.5 border-b border-[var(--border)] last:border-0">
                             <div className="flex-1 min-w-0">
                               <p className="text-[var(--text)] font-medium truncate">{String(info.title)}</p>
-                              <p className="text-[var(--text2)] text-[10px]">x{qty} × {price} TL</p>
+                              <p className="text-[var(--text2)] text-[10px]">x{qty} × {formatPrice(price)} TL</p>
                             </div>
-                            <span className="font-bold text-[#59abfe] ml-2">{price * qty} TL</span>
+                            <span className="font-bold text-[#59abfe] ml-2">{formatPrice(price * qty)} TL</span>
                           </div>
                         );
                       })}
@@ -311,7 +366,7 @@ export default function DesignPage() {
                     <div className="border-t border-[var(--border)] pt-3 mb-3">
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-[var(--text2)]">{t.totalPrice}</span>
-                        <span className="text-lg font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{totalPrice} TL</span>
+                        <span className="text-lg font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{formatPrice(totalPrice)} TL</span>
                       </div>
                     </div>
 
