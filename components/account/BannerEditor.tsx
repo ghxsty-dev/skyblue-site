@@ -96,13 +96,13 @@ export default function BannerEditor({ current, premium }: BannerEditorProps) {
       <section className="account-name-style account-card">
         <div className="account-section-heading">
           <div><span>Premium</span><h2>{tr ? "Profil Bannerı" : "Profile Banner"}</h2></div>
-          <span className="account-badge">Premium özel</span>
+          <span className="account-badge">Premium</span>
         </div>
         <p className="account-text-muted">
-          {tr ? "Profil sayfana özel banner yüklemek sadece premium üyelere açık." : "Custom profile banners are for premium members only."}
+          {tr ? "Özel banner yüklemek premium üyelere açık." : "Custom banners are for premium members."}
         </p>
         <Link href="/account/premium?tool=minecraft-rank" className="account-primary-button">
-          {tr ? "Premium üyesi ol" : "Become premium"}
+          {tr ? "Premium ol" : "Become premium"}
         </Link>
       </section>
     );
@@ -174,7 +174,7 @@ export default function BannerEditor({ current, premium }: BannerEditorProps) {
     <section className="account-name-style account-card">
       <div className="account-section-heading">
         <div><span>Premium</span><h2>{tr ? "Profil Bannerı" : "Profile Banner"}</h2></div>
-        <span className="account-badge premium"><img src="/premium.webp" alt="" width={12} height={12} />{tr ? "Aktif" : "Active"}</span>
+        <span className="account-badge premium"><img src="/premium.webp" alt="" width={10} height={10} />{tr ? "Aktif" : "Active"}</span>
       </div>
 
       {current ? (

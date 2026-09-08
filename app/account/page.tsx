@@ -47,7 +47,7 @@ export default async function AccountPage() {
   return (
     <div className="page-inner account-page">
       <header className="account-page-header">
-        <div><span>SkyBlue ID</span><h1>Hesabım</h1><p>Profilini ve tool erişimlerini yönet.</p></div>
+        <h1>Hesabım</h1>
         <AccountLogoutButton />
       </header>
 
@@ -62,13 +62,13 @@ export default async function AccountPage() {
 
       <div className="account-grid">
         <section className="account-access-section account-card">
-          <div className="account-section-heading"><div><span>Tool erişimi</span><h2>Minecraft Rank Generator</h2></div>{rankPremium ? <span className="account-badge premium"><img src="/premium.webp" alt="" width={12} height={12} />Premium aktif</span> : <Link href="/account/premium?tool=minecraft-rank" className="account-primary-button">Premium üyesi ol</Link>}</div>
+          <div className="account-section-heading"><div><span>Tool erişimi</span><h2>Minecraft Rank Generator</h2></div>{rankPremium ? <span className="account-badge premium"><img src="/premium.webp" alt="" width={10} height={10} />Aktif</span> : <Link href="/account/premium?tool=minecraft-rank" className="account-primary-button">Premium ol</Link>}</div>
           <div className="account-access-grid">
             <div><span>Premium</span><strong>{rankPremium ? "Aktif" : "Free"}</strong></div>
             <div><span>Discord</span><strong>{discord ? `@${discord.discord_username}` : "Bağlı değil"}</strong></div>
-            <div><span>Günlük limit</span><strong>{rankPremium ? "Sınırsız" : discord ? "4 indirme" : "2 indirme"}</strong></div>
+            <div><span>Günlük limit</span><strong>{rankPremium ? "Sınırsız" : discord ? "4" : "2"}</strong></div>
           </div>
-          {!discord && <Link href="/account/discord" className="account-text-link">Discord hesabını doğrula ve günlük +2 indirme kazan</Link>}
+          {!discord && <Link href="/account/discord" className="account-text-link">Discord doğrula, günlük +2 indirme kazan</Link>}
         </section>
 
         <NameStyleEditor username={profile.username} initial={nameStyle} premium={namePremium} />

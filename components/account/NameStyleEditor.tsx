@@ -25,12 +25,12 @@ export default function NameStyleEditor({ username, initial, premium }: NameStyl
       <section className="account-name-style account-card">
         <div className="account-section-heading">
           <div><span>Premium</span><h2>İsim Görünümü</h2></div>
-          <span className="account-badge">Premium özel</span>
+          <span className="account-badge">Premium</span>
         </div>
         <p className="account-text-muted">
-          Profil sayfandaki ismine özel font, renk ve gradient sadece premium üyeler için.
+          Özel font ve renk sadece premium üyeler için.
         </p>
-        <Link href="/account/premium?tool=minecraft-rank" className="account-primary-button">Premium üyesi ol</Link>
+        <Link href="/account/premium?tool=minecraft-rank" className="account-primary-button">Premium ol</Link>
       </section>
     );
   }
@@ -80,7 +80,7 @@ export default function NameStyleEditor({ username, initial, premium }: NameStyl
     <section className="account-name-style account-card">
       <div className="account-section-heading">
         <div><span>Premium</span><h2>İsim Görünümü</h2></div>
-        <span className="account-badge premium"><img src="/premium.webp" alt="" width={12} height={12} />Aktif</span>
+        <span className="account-badge premium"><img src="/premium.webp" alt="" width={10} height={10} />Aktif</span>
       </div>
 
       <div className="account-name-preview">
