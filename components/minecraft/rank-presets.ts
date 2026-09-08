@@ -54,8 +54,8 @@ export function mixHex(from: string, to: string, t: number): string {
 }
 
 /**
- * Profesyonel rank hissi için: dikey geçiş + üstte hafif parlama, altta hafif gölge.
- * Yatay modda soldan sağa yumuşak geçiş.
+ * Seçilen renklerin birebir göründüğü temiz geçiş: soldan sağa / yukarıdan
+ * aşağıya doğrusal interpolasyon, ekstra parlama yok.
  */
 export function buildGradientGrid(
   width: number,
@@ -67,17 +67,7 @@ export function buildGradientGrid(
   return Array.from({ length: height }, (_, y) =>
     Array.from({ length: width }, (_, x) => {
       const t = direction === "vertical" ? (height <= 1 ? 0 : y / (height - 1)) : width <= 1 ? 0 : x / (width - 1);
-      // Üstte daha açık başla, alta doğru doygunlaş (örnek VIP stili)
-      const eased = t * t * 0.25 + t * 0.75;
-      let color = mixHex(from, to, eased);
-      if (direction === "vertical") {
-        if (y === 0) color = mixHex(color, "#ffffff", 0.22);
-        else if (y === height - 1) color = mixHex(color, "#000000", 0.12);
-      } else {
-        if (x === 0) color = mixHex(color, "#ffffff", 0.14);
-        else if (x === width - 1) color = mixHex(color, "#000000", 0.1);
-      }
-      return color;
+      return mixHex(from, to, t);
     }),
   );
 }
@@ -101,124 +91,50 @@ export function contrastRatio(a: string, b: string): number {
   }
 }
 
-/** Renk seçimini kolaylaştıran aile sistemi: her ailenin Açık / Normal / Koyu tonu. */
-export interface ColorShade {
+/** Kompakt hazır renk listesi + kullanıcının ekleyip sakladığı renkler. */
+export interface QuickColor {
   labelTr: string;
   labelEn: string;
   value: string;
 }
 
-export interface ColorFamily {
-  id: string;
-  nameTr: string;
-  nameEn: string;
-  shades: ColorShade[];
-}
-
-const LIGHT = { labelTr: "Açık", labelEn: "Light" };
-const REGULAR = { labelTr: "Normal", labelEn: "Regular" };
-const DARK = { labelTr: "Koyu", labelEn: "Dark" };
-
-export const COLOR_FAMILIES: readonly ColorFamily[] = [
-  {
-    id: "neutral",
-    nameTr: "Beyaz / Siyah",
-    nameEn: "White / Black",
-    shades: [
-      { labelTr: "Beyaz", labelEn: "White", value: "#ffffff" },
-      { labelTr: "Gri", labelEn: "Gray", value: "#94a3b8" },
-      { labelTr: "Koyu Gri", labelEn: "Dark Gray", value: "#334155" },
-      { labelTr: "Siyah", labelEn: "Black", value: "#0b0d10" },
-    ],
-  },
-  {
-    id: "yellow",
-    nameTr: "Sarı",
-    nameEn: "Yellow",
-    shades: [
-      { ...LIGHT, value: "#fef08a" },
-      { ...REGULAR, value: "#eab308" },
-      { ...DARK, value: "#a16207" },
-    ],
-  },
-  {
-    id: "orange",
-    nameTr: "Turuncu",
-    nameEn: "Orange",
-    shades: [
-      { ...LIGHT, value: "#fed7aa" },
-      { ...REGULAR, value: "#f97316" },
-      { ...DARK, value: "#c2410c" },
-    ],
-  },
-  {
-    id: "red",
-    nameTr: "Kırmızı",
-    nameEn: "Red",
-    shades: [
-      { ...LIGHT, value: "#fecaca" },
-      { ...REGULAR, value: "#ef4444" },
-      { ...DARK, value: "#991b1b" },
-    ],
-  },
-  {
-    id: "pink",
-    nameTr: "Pembe",
-    nameEn: "Pink",
-    shades: [
-      { ...LIGHT, value: "#f9a8d4" },
-      { ...REGULAR, value: "#ec4899" },
-      { ...DARK, value: "#9d174d" },
-    ],
-  },
-  {
-    id: "purple",
-    nameTr: "Mor",
-    nameEn: "Purple",
-    shades: [
-      { ...LIGHT, value: "#c4b5fd" },
-      { ...REGULAR, value: "#8b5cf6" },
-      { ...DARK, value: "#5b21b6" },
-    ],
-  },
-  {
-    id: "blue",
-    nameTr: "Mavi",
-    nameEn: "Blue",
-    shades: [
-      { ...LIGHT, value: "#93c5fd" },
-      { labelTr: "Sky", labelEn: "Sky", value: "#59abfe" },
-      { ...REGULAR, value: "#3b82f6" },
-      { ...DARK, value: "#1e40af" },
-    ],
-  },
-  {
-    id: "green",
-    nameTr: "Yeşil",
-    nameEn: "Green",
-    shades: [
-      { ...LIGHT, value: "#86efac" },
-      { ...REGULAR, value: "#22c55e" },
-      { ...DARK, value: "#166534" },
-    ],
-  },
-  {
-    id: "teal",
-    nameTr: "Turkuaz",
-    nameEn: "Teal",
-    shades: [
-      { ...LIGHT, value: "#5eead4" },
-      { ...REGULAR, value: "#14b8a6" },
-      { ...DARK, value: "#115e59" },
-    ],
-  },
+export const QUICK_COLORS: readonly QuickColor[] = [
+  { labelTr: "Beyaz", labelEn: "White", value: "#ffffff" },
+  { labelTr: "Gri", labelEn: "Gray", value: "#94a3b8" },
+  { labelTr: "Koyu Gri", labelEn: "Dark Gray", value: "#334155" },
+  { labelTr: "Siyah", labelEn: "Black", value: "#0b0d10" },
+  { labelTr: "Sarı", labelEn: "Yellow", value: "#eab308" },
+  { labelTr: "Koyu Sarı", labelEn: "Dark Yellow", value: "#a16207" },
+  { labelTr: "Turuncu", labelEn: "Orange", value: "#f97316" },
+  { labelTr: "Koyu Turuncu", labelEn: "Dark Orange", value: "#c2410c" },
+  { labelTr: "Kırmızı", labelEn: "Red", value: "#ef4444" },
+  { labelTr: "Koyu Kırmızı", labelEn: "Dark Red", value: "#991b1b" },
+  { labelTr: "Pembe", labelEn: "Pink", value: "#ec4899" },
+  { labelTr: "Koyu Pembe", labelEn: "Dark Pink", value: "#9d174d" },
+  { labelTr: "Mor", labelEn: "Purple", value: "#8b5cf6" },
+  { labelTr: "Koyu Mor", labelEn: "Dark Purple", value: "#5b21b6" },
+  { labelTr: "Açık Mavi", labelEn: "Light Blue", value: "#59abfe" },
+  { labelTr: "Koyu Mavi", labelEn: "Dark Blue", value: "#1e40af" },
+  { labelTr: "Yeşil", labelEn: "Green", value: "#22c55e" },
+  { labelTr: "Koyu Yeşil", labelEn: "Dark Green", value: "#166534" },
+  { labelTr: "Turkuaz", labelEn: "Teal", value: "#14b8a6" },
+  { labelTr: "Koyu Turkuaz", labelEn: "Dark Teal", value: "#115e59" },
 ];
 
-/** Verilen zeminde okunacak yazı rengi (beyaz/siyah). */
-export function readableOn(hex: string): string {
+export const CUSTOM_COLORS_KEY = "rank-custom-colors";
+export const MAX_CUSTOM_COLORS = 12;
+
+export function parseCustomColors(raw: string | null): string[] {
+  if (!raw) return [];
   try {
-    return luminance(hex) > 0.35 ? "#0b0d10" : "#ffffff";
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((c): c is string => typeof c === "string" && /^#[0-9a-f]{6}$/i.test(c))
+      .map((c) => c.toLowerCase())
+      .filter((c, i, arr) => arr.indexOf(c) === i)
+      .slice(0, MAX_CUSTOM_COLORS);
   } catch {
-    return "#ffffff";
+    return [];
   }
 }

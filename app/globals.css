@@ -2052,96 +2052,123 @@ main {
   font-weight: 700;
 }
 
-.pixel-rank-families {
+.pixel-rank-colors {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 10px;
 }
 
-.pixel-rank-family {
-  display: grid;
-  grid-template-columns: 88px minmax(0, 1fr);
-  align-items: center;
-  gap: 8px;
-}
-
-.pixel-rank-family-name {
-  color: var(--text2);
-  font-size: 0.66rem;
-  font-weight: 700;
-  line-height: 1.3;
-}
-
-.pixel-rank-family-shades {
+.pixel-rank-quick {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
-  min-width: 0;
 }
 
-.pixel-rank-shade {
-  flex: 1 1 0;
-  min-width: 0;
-  min-height: 38px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  padding: 0 4px;
+.pixel-rank-dot {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
   border: 2px solid transparent;
-  border-radius: 8px;
-  font: inherit;
-  font-size: 0.62rem;
-  font-weight: 800;
-  white-space: nowrap;
-  overflow: hidden;
+  border-radius: 7px;
+  box-sizing: border-box;
+  padding: 0;
   cursor: pointer;
   transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
 }
 
-.pixel-rank-shade:hover {
-  transform: translateY(-1px);
+button.pixel-rank-dot:hover {
+  transform: scale(1.15);
 }
 
-.pixel-rank-shade.is-active {
+.pixel-rank-dot.is-active {
   border-color: var(--c2);
-  box-shadow: 0 0 0 2px rgba(89, 171, 254, 0.3), 0 4px 10px var(--card-shadow);
+  box-shadow: 0 0 0 2px rgba(89, 171, 254, 0.35);
 }
 
-.pixel-rank-custom-row {
+.pixel-rank-customs {
   display: flex;
-  align-items: center;
-  gap: 9px;
-  margin-top: 2px;
-  padding: 8px 10px;
-  border: 1px dashed var(--border);
-  border-radius: 8px;
-  color: var(--text2);
-  font-size: 0.72rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: border-color var(--transition), color var(--transition);
+  flex-direction: column;
+  gap: 6px;
 }
 
-.pixel-rank-custom-row:hover {
+.pixel-rank-customs-label {
+  color: var(--text2);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pixel-rank-customs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.pixel-rank-dot-pick {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.pixel-rank-dot-remove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 16px;
+  height: 16px;
+  display: none;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text2);
+  font-size: 0.6rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.pixel-rank-dot.is-custom:hover .pixel-rank-dot-remove {
+  display: grid;
+}
+
+.pixel-rank-dot-remove:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.pixel-rank-dot.is-add {
+  display: grid;
+  place-items: center;
+  border-style: dashed;
+  border-color: var(--text2);
+  color: var(--text2);
+  font-size: 1rem;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+.pixel-rank-dot.is-add:hover {
   border-color: var(--c2);
   color: var(--text);
 }
 
-.pixel-rank-custom-row input[type="color"] {
-  width: 44px;
-  height: 30px;
-  flex-shrink: 0;
-  padding: 2px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--bg2);
+.pixel-rank-dot.is-add input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
   cursor: pointer;
 }
 
-.pixel-rank-custom-row code {
-  margin-left: auto;
-  font-size: 0.66rem;
-  text-transform: uppercase;
+.pixel-rank-dot.is-add span {
+  pointer-events: none;
 }
 
 .pixel-rank-tools {
