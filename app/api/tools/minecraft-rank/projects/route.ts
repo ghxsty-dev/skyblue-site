@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
   if (loadId) {
     const { data } = await supabase
       .from("rank_projects")
-      .select("id, name, text, font_id, text_color, background, extra_brush_colors, extra_text_colors, bg_mode, gradient_from, gradient_to, gradient_dir, gradient_preset, solid_color")
+      .select("id, name, text, font_id, text_color, background, extra_brush_colors, extra_text_colors, bg_mode, gradient_from, gradient_to, gradient_dir, gradient_preset, solid_color, icon_left, icon_right, icon_color")
       .eq("id", loadId)
       .eq("user_id", user.id)
       .maybeSingle();
@@ -33,6 +33,9 @@ export async function GET(request: NextRequest) {
         gradient_dir: (data as Record<string, unknown>).gradient_dir ?? "vertical",
         gradient_preset: (data as Record<string, unknown>).gradient_preset ?? "custom",
         solid_color: (data as Record<string, unknown>).solid_color ?? null,
+        icon_left: (data as Record<string, unknown>).icon_left ?? "none",
+        icon_right: (data as Record<string, unknown>).icon_right ?? "none",
+        icon_color: (data as Record<string, unknown>).icon_color ?? "#ffffff",
       },
     }, { headers: { "Cache-Control": "no-store" } });
   }
@@ -60,7 +63,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
 
-  const { id, name, text, fontId, textColor, background, extraBrushColors, extraTextColors, bgMode, gradientFrom, gradientTo, gradientDir, gradientPreset, solidColor } = body;
+  const { id, name, text, fontId, textColor, background, extraBrushColors, extraTextColors, bgMode, gradientFrom, gradientTo, gradientDir, gradientPreset, solidColor, leftSlot, rightSlot, iconColor } = body;
 
   if (!Array.isArray(background) || background.length > MAX_BACKGROUND_SIZE) {
     return NextResponse.json({ error: "Invalid background" }, { status: 400 });
@@ -86,6 +89,9 @@ export async function POST(request: NextRequest) {
     gradient_dir: gradientDir === "horizontal" ? "horizontal" : "vertical",
     gradient_preset: (typeof gradientPreset === "string" ? gradientPreset : "custom").slice(0, 32),
     solid_color: cleanHex(solidColor, "#59abfe"),
+    icon_left: (typeof leftSlot === "string" ? leftSlot : "none").slice(0, 32),
+    icon_right: (typeof rightSlot === "string" ? rightSlot : "none").slice(0, 32),
+    icon_color: cleanHex(iconColor, "#ffffff"),
     updated_at: new Date().toISOString(),
   };
 

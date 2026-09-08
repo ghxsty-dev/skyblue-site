@@ -2850,6 +2850,63 @@ button.pixel-rank-dot:hover {
   line-height: 1.5;
 }
 
+.pixel-rank-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.pixel-rank-slot-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pixel-rank-slot-option {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg2);
+  color: var(--text2);
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition), background var(--transition), transform var(--transition);
+}
+
+.pixel-rank-slot-option:hover {
+  border-color: var(--c2);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.pixel-rank-slot-option.is-active {
+  border-color: var(--c2);
+  background: rgba(89, 171, 254, 0.14);
+  color: var(--text);
+}
+
+.pixel-rank-icon-preview {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+}
+
+.pixel-rank-space-thumb {
+  width: 14px;
+  height: 14px;
+  border: 1px dashed var(--text2);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
 .pixel-rank-fill-row {
   display: flex;
   gap: 6px;

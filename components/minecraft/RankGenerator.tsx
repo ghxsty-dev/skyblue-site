@@ -4,11 +4,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BrushIcon } from "@/lib/icons";
 import {
   buildPixelText,
+  buildRankLayout,
   getPixelFont,
   normalizeRankText,
   PIXEL_FONTS,
   type PixelFont,
 } from "./pixel-fonts";
+import {
+  RANK_ICONS,
+  resolveSlot,
+  SLOT_NONE,
+  SLOT_SPACE,
+} from "./rank-icons";
 import {
   buildGradientGrid,
   contrastRatio,
@@ -24,7 +31,6 @@ import {
 
 const PADDING_X = 3;
 const PADDING_Y = 2;
-const TEXT_TOP = PADDING_Y;
 const DEFAULT_PRESET = GRADIENT_PRESETS[0];
 const DEFAULT_SOLID = "#59abfe";
 const BASE_PREVIEW_SCALE = 22;
@@ -155,6 +161,103 @@ function CompactColorPicker({
   );
 }
 
+/** Simge seçeneğinin gerçek piksel önizlemesi. */
+function IconPreview({ rows, color, label }: { rows: readonly string[]; color: string; label: string }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  const w = rows[0]?.length ?? 0;
+  const h = rows.length;
+  useEffect(() => {
+    const canvas = ref.current;
+    if (!canvas || w === 0 || h === 0) return;
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = color;
+    for (let y = 0; y < h; y += 1) {
+      const row = rows[y] ?? "";
+      for (let x = 0; x < row.length; x += 1) {
+        if (row[x] === "1") ctx.fillRect(x, y, 1, 1);
+      }
+    }
+  }, [rows, color, w, h]);
+  const scale = w <= 5 ? 4 : 3;
+  return (
+    <canvas
+      ref={ref}
+      className="pixel-rank-icon-preview"
+      style={{ width: `${w * scale}px`, height: `${h * scale}px` }}
+      role="img"
+      aria-label={label}
+    />
+  );
+}
+
+/** Sol/sağ slot seçici: Yok / Boşluk / simgeler. */
+function SlotPicker({
+  value,
+  onChange,
+  sideLabel,
+  noneLabel,
+  spaceLabel,
+  iconRows,
+  iconColor,
+  lang,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  sideLabel: string;
+  noneLabel: string;
+  spaceLabel: string;
+  iconRows: (id: string) => readonly string[];
+  iconColor: string;
+  lang: "tr" | "en";
+}) {
+  const isTurkish = lang === "tr";
+  return (
+    <div className="pixel-rank-slot">
+      <span className="pixel-rank-label">{sideLabel}</span>
+      <div className="pixel-rank-slot-options">
+        <button
+          type="button"
+          className={`pixel-rank-slot-option is-text ${value === SLOT_NONE ? "is-active" : ""}`}
+          onClick={() => onChange(SLOT_NONE)}
+          aria-pressed={value === SLOT_NONE}
+        >
+          {noneLabel}
+        </button>
+        <button
+          type="button"
+          className={`pixel-rank-slot-option is-text ${value === SLOT_SPACE ? "is-active" : ""}`}
+          onClick={() => onChange(SLOT_SPACE)}
+          aria-pressed={value === SLOT_SPACE}
+          title={spaceLabel}
+        >
+          <span className="pixel-rank-space-thumb" aria-hidden="true" />
+          {spaceLabel}
+        </button>
+        {RANK_ICONS.map((icon) => {
+          const label = isTurkish ? icon.nameTr : icon.nameEn;
+          return (
+            <button
+              key={icon.id}
+              type="button"
+              className={`pixel-rank-slot-option ${value === icon.id ? "is-active" : ""}`}
+              onClick={() => onChange(icon.id)}
+              aria-pressed={value === icon.id}
+              title={label}
+              aria-label={label}
+            >
+              <IconPreview rows={iconRows(icon.id)} color={iconColor} label={label} />
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageWrapRef = useRef<HTMLDivElement>(null);
@@ -168,6 +271,9 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [projectName, setProjectName] = useState(INITIAL_TEXT);
   const [fontId, setFontId] = useState(INITIAL_FONT_ID);
   const [textColor, setTextColor] = useState(DEFAULT_PRESET.text);
+  const [leftSlot, setLeftSlot] = useState<string>(SLOT_NONE);
+  const [rightSlot, setRightSlot] = useState<string>(SLOT_NONE);
+  const [iconColor, setIconColor] = useState("#ffffff");
 
   const [bgMode, setBgMode] = useState<BgMode>("gradient");
   const [presetId, setPresetId] = useState(DEFAULT_PRESET.id);
@@ -229,9 +335,14 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
 
   const font = getPixelFont(fontId);
   const normalized = normalizeRankText(text);
-  const layout = useMemo(() => buildPixelText(font, text), [font, text]);
-  const width = layout.width + PADDING_X * 2;
-  const height = layout.height + PADDING_Y * 2;
+  const leftSlotInput = useMemo(() => resolveSlot(leftSlot, font.height), [leftSlot, font.height]);
+  const rightSlotInput = useMemo(() => resolveSlot(rightSlot, font.height), [rightSlot, font.height]);
+  const layout = useMemo(
+    () => buildRankLayout(font, text, leftSlotInput, rightSlotInput),
+    [font, text, leftSlotInput, rightSlotInput],
+  );
+  const width = layout.width;
+  const height = layout.height;
   const isTurkish = lang === "tr";
   const trimmedEmpty = text.trim().length === 0;
   const activePreset = GRADIENT_PRESETS.find((p) => p.id === presetId);
@@ -273,6 +384,13 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         reset: "Sıfırla",
         showGridLines: "Izgara çizgileri",
         customHint: "Sadece ince detaylar için — çoğu işi gradientler halleder.",
+        step4: "4 · Simge",
+        iconLeft: "Sol",
+        iconRight: "Sağ",
+        iconNone: "Yok",
+        iconSpace: "Boşluk",
+        iconColor: "Simge rengi",
+        iconHint: "Simge, yazı yüksekliğinde kare alana 1 kare boşlukla yerleşir. Boşluk sadece zemini uzatır.",
         previewTitle: "Canlı önizleme",
         zoomIn: "Yakınlaştır",
         zoomOut: "Uzaklaştır",
@@ -327,6 +445,13 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         reset: "Reset",
         showGridLines: "Grid lines",
         customHint: "Only for fine details — gradients cover most jobs.",
+        step4: "4 · Icon",
+        iconLeft: "Left",
+        iconRight: "Right",
+        iconNone: "None",
+        iconSpace: "Space",
+        iconColor: "Icon color",
+        iconHint: "The icon sits in a square matching text height with a 1px gap. Space only extends the background.",
         previewTitle: "Live preview",
         zoomIn: "Zoom in",
         zoomOut: "Zoom out",
@@ -503,12 +628,22 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
       }
     }
     ctx.fillStyle = textColor;
-    for (let y = 0; y < layout.height; y += 1) {
-      for (let x = 0; x < layout.width; x += 1) {
-        if (layout.rows[y]?.[x] === "1") ctx.fillRect(PADDING_X + x, TEXT_TOP + y, 1, 1);
+    for (let y = 0; y < layout.textRows.length; y += 1) {
+      const row = layout.textRows[y] ?? "";
+      for (let x = 0; x < row.length; x += 1) {
+        if (row[x] === "1") ctx.fillRect(layout.textDX + x, layout.textDY + y, 1, 1);
       }
     }
-  }, [height, layout, textColor, width]);
+    ctx.fillStyle = iconColor;
+    for (const icon of layout.icons) {
+      for (let y = 0; y < icon.rows.length; y += 1) {
+        const row = icon.rows[y] ?? "";
+        for (let x = 0; x < row.length; x += 1) {
+          if (row[x] === "1") ctx.fillRect(icon.dx + x, icon.dy + y, 1, 1);
+        }
+      }
+    }
+  }, [height, iconColor, layout, textColor, width]);
 
   useEffect(() => {
     if (canvasRef.current) drawToCanvas(canvasRef.current, background);
@@ -643,6 +778,9 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     setText("VIP");
     setProjectName("VIP");
     setFontId(PIXEL_FONTS[0].id);
+    setLeftSlot(SLOT_NONE);
+    setRightSlot(SLOT_NONE);
+    setIconColor("#ffffff");
     setCurrentProjectId(null);
     resetAll();
   }, [resetAll]);
@@ -659,7 +797,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
       const response = await fetch("/api/tools/minecraft-rank/download", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, fontId, textColor, background }),
+        body: JSON.stringify({ text, fontId, textColor, background, leftSlot, rightSlot, iconColor }),
       });
       if (response.status === 401) {
         window.location.assign("/login");
@@ -688,7 +826,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     } finally {
       setDownloadPending(false);
     }
-  }, [background, fontId, isTurkish, text, textColor, trimmedEmpty]);
+  }, [background, fontId, iconColor, isTurkish, leftSlot, rightSlot, text, textColor, trimmedEmpty]);
 
   const loadProject = useCallback(async (projectId: string) => {
     try {
@@ -700,6 +838,9 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
       setProjectName(project.name ?? project.text ?? "VIP");
       setFontId(project.font_id ?? PIXEL_FONTS[0].id);
       setTextColor(project.text_color ?? "#ffffff");
+      setLeftSlot(typeof project.icon_left === "string" ? project.icon_left : SLOT_NONE);
+      setRightSlot(typeof project.icon_right === "string" ? project.icon_right : SLOT_NONE);
+      setIconColor(typeof project.icon_color === "string" && /^#[0-9a-f]{6}$/i.test(project.icon_color) ? project.icon_color.toLowerCase() : "#ffffff");
       const bgModeLoaded = (project.bg_mode as BgMode) || null;
       if (bgModeLoaded === "gradient" && project.gradient_from && project.gradient_to) {
         setBgMode("gradient");
@@ -754,6 +895,9 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           gradientDir: gradDir,
           gradientPreset: presetId,
           solidColor,
+          leftSlot,
+          rightSlot,
+          iconColor,
         }),
       });
       if (response.status === 401) {
@@ -775,7 +919,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     } finally {
       setSavePending(false);
     }
-  }, [background, bgMode, currentProjectId, downloadState, fontId, gradDir, gradFrom, gradTo, isTurkish, presetId, projectName, solidColor, text, textColor, trimmedEmpty]);
+  }, [background, bgMode, currentProjectId, downloadState, fontId, gradDir, gradFrom, gradTo, iconColor, isTurkish, leftSlot, presetId, projectName, rightSlot, solidColor, text, textColor, trimmedEmpty]);
 
   const deleteProject = useCallback(async (projectId: string) => {
     try {
@@ -1118,6 +1262,43 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
               </div>
             </>
           )}
+        </section>
+
+        {/* Adım 4 · Simge */}
+        <section className="pixel-rank-step">
+          <h3 className="pixel-rank-step-title">{copy.step4}</h3>
+          <p className="pixel-rank-section-desc">{copy.iconHint}</p>
+          <SlotPicker
+            value={leftSlot}
+            onChange={setLeftSlot}
+            sideLabel={copy.iconLeft}
+            noneLabel={copy.iconNone}
+            spaceLabel={copy.iconSpace}
+            iconRows={(id) => resolveSlot(id, font.height)?.rows ?? []}
+            iconColor={iconColor}
+            lang={lang}
+          />
+          <SlotPicker
+            value={rightSlot}
+            onChange={setRightSlot}
+            sideLabel={copy.iconRight}
+            noneLabel={copy.iconNone}
+            spaceLabel={copy.iconSpace}
+            iconRows={(id) => resolveSlot(id, font.height)?.rows ?? []}
+            iconColor={iconColor}
+            lang={lang}
+          />
+          <span className="pixel-rank-label">{copy.iconColor}</span>
+          <CompactColorPicker
+            value={iconColor}
+            onChange={setIconColor}
+            customs={customColors}
+            onAddCustom={(c) => { const v = addCustomColor(c); if (v) setIconColor(v); }}
+            onRemoveCustom={removeCustomColor}
+            addLabel={copy.addColor}
+            savedLabel={copy.savedColors}
+            lang={lang}
+          />
         </section>
       </div>
     </div>

@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PNG } from "pngjs";
-import { buildPixelText, getPixelFont, normalizeRankText } from "@/components/minecraft/pixel-fonts";
+import { buildRankLayout, getPixelFont, normalizeRankText } from "@/components/minecraft/pixel-fonts";
+import { isKnownSlot, resolveSlot } from "@/components/minecraft/rank-icons";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isTrustedMutation } from "@/lib/account/request";
 
 export const runtime = "nodejs";
 
 const TOOL_SLUG = "minecraft-rank";
-const PADDING_X = 3;
-const TEXT_TOP = 2;
-const PADDING_Y = 2;
 const HEX_RE = /^#[0-9a-f]{6}$/i;
 
 function istanbulDate(): string {
@@ -57,13 +55,19 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const text = normalizeRankText(String(body.text || ""));
     const font = getPixelFont(String(body.fontId || ""));
-    const layout = buildPixelText(font, text);
-    const width = layout.width + PADDING_X * 2;
-    const height = layout.height + PADDING_Y * 2;
+    const leftSlotId = String(body.leftSlot || "none");
+    const rightSlotId = String(body.rightSlot || "none");
+    if (!isKnownSlot(leftSlotId) || !isKnownSlot(rightSlotId)) {
+      return NextResponse.json({ error: "INVALID_SLOT" }, { status: 400 });
+    }
+    const layout = buildRankLayout(font, text, resolveSlot(leftSlotId, font.height), resolveSlot(rightSlotId, font.height));
+    const width = layout.width;
+    const height = layout.height;
     const textColor = String(body.textColor || "").toLowerCase();
+    const iconColor = String(body.iconColor || "#ffffff").toLowerCase();
     const background = body.background as unknown;
 
-    if (!text || !HEX_RE.test(textColor) || width < 7 || width > 400 || !Array.isArray(background) || background.length !== height) {
+    if (!text || !HEX_RE.test(textColor) || !HEX_RE.test(iconColor) || width < 7 || width > 400 || !Array.isArray(background) || background.length !== height) {
       return NextResponse.json({ error: "INVALID_IMAGE" }, { status: 400 });
     }
     if (!background.every((row) => Array.isArray(row) && row.length === width && row.every((pixel) => pixel === null || (typeof pixel === "string" && HEX_RE.test(pixel))))) {
@@ -95,9 +99,18 @@ export async function POST(request: NextRequest) {
     for (let y = 0; y < height; y += 1) {
       for (let x = 0; x < width; x += 1) setPixel(x, y, background[y][x]);
     }
-    for (let y = 0; y < layout.height; y += 1) {
-      for (let x = 0; x < layout.width; x += 1) {
-        if (layout.rows[y]?.[x] === "1") setPixel(PADDING_X + x, TEXT_TOP + y, textColor);
+    for (let y = 0; y < layout.textRows.length; y += 1) {
+      const row = layout.textRows[y] ?? "";
+      for (let x = 0; x < row.length; x += 1) {
+        if (row[x] === "1") setPixel(layout.textDX + x, layout.textDY + y, textColor);
+      }
+    }
+    for (const icon of layout.icons) {
+      for (let y = 0; y < icon.rows.length; y += 1) {
+        const row = icon.rows[y] ?? "";
+        for (let x = 0; x < row.length; x += 1) {
+          if (row[x] === "1") setPixel(icon.dx + x, icon.dy + y, iconColor);
+        }
       }
     }
 

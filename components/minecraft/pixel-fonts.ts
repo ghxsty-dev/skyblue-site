@@ -264,6 +264,7 @@ export function normalizeRankText(value: string): string {
 }
 
 export function buildPixelText(font: PixelFont, value: string) {
+
   const text = normalizeRankText(value) || "VIP";
   const rows = Array.from({ length: font.height }, () => [] as string[]);
 
@@ -279,5 +280,60 @@ export function buildPixelText(font: PixelFont, value: string) {
     rows: rows.map((row) => row.slice(0, -1).join("")),
     width: rows[0].join("").length - 1,
     height: font.height,
+  };
+}
+
+export const RANK_PAD_X = 3;
+export const RANK_PAD_Y = 2;
+export const RANK_SLOT_GAP = 1;
+
+export interface RankSlotInput {
+  width: number;
+  /** null = boş kare alan (zemin uzar, piksel çizilmez) */
+  rows: Glyph | null;
+}
+
+export interface PlacedIcon {
+  rows: Glyph;
+  dx: number;
+  dy: number;
+}
+
+export interface RankLayout {
+  text: string;
+  width: number;
+  height: number;
+  textRows: string[];
+  textDX: number;
+  textDY: number;
+  icons: PlacedIcon[];
+}
+
+/**
+ * Yazı + sağ/sol slotları tek canvas düzenine dizer.
+ * Slot genişliği yazı yüksekliğine eşit karedir; simge ile yazı arası 1px'dir.
+ */
+export function buildRankLayout(
+  font: PixelFont,
+  value: string,
+  left: RankSlotInput | null,
+  right: RankSlotInput | null,
+): RankLayout {
+  const t = buildPixelText(font, value);
+  const leftW = left ? left.width + RANK_SLOT_GAP : 0;
+  const rightW = right ? RANK_SLOT_GAP + right.width : 0;
+  const width = t.width + leftW + rightW + RANK_PAD_X * 2;
+  const height = t.height + RANK_PAD_Y * 2;
+  const icons: PlacedIcon[] = [];
+  if (left?.rows) icons.push({ rows: left.rows, dx: RANK_PAD_X, dy: RANK_PAD_Y });
+  if (right?.rows) icons.push({ rows: right.rows, dx: RANK_PAD_X + leftW + t.width + RANK_SLOT_GAP, dy: RANK_PAD_Y });
+  return {
+    text: t.text,
+    width,
+    height,
+    textRows: t.rows,
+    textDX: RANK_PAD_X + leftW,
+    textDY: RANK_PAD_Y,
+    icons,
   };
 }

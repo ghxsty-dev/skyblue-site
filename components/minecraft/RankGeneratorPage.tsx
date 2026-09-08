@@ -33,6 +33,7 @@ export default function RankGeneratorPage() {
           <li><strong>{t.rankStep2Title}</strong> — {t.rankStep2Desc}</li>
           <li><strong>{t.rankStep3Title}</strong> — {t.rankStep3Desc}</li>
           <li><strong>{t.rankStep4Title}</strong> — {t.rankStep4Desc}</li>
+          <li><strong>{t.rankStep5Title}</strong> — {t.rankStep5Desc}</li>
         </ol>
 
         <h2>{t.rankFeatures}</h2>
@@ -45,6 +46,7 @@ export default function RankGeneratorPage() {
           <li>{t.rankFeature6}</li>
           <li>{t.rankFeature7}</li>
           <li>{t.rankFeature8}</li>
+          <li>{t.rankFeature9}</li>
         </ul>
       </article>
     </div>
