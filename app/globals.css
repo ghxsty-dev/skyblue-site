@@ -3411,6 +3411,108 @@ main {
   gap: 4px;
 }
 
+.admin-design-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-design-card {
+  background: #0d1117;
+  border: 1px solid #1c2128;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.admin-design-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  gap: 12px;
+}
+
+.admin-design-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.admin-design-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-design-price {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #2ea043;
+}
+
+.admin-design-card-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.admin-design-card-editor {
+  padding: 16px;
+  border-top: 1px solid #1c2128;
+  background: #161b22;
+}
+
+.admin-package-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-lang-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: #0d1117;
+  border: 1px solid #1c2128;
+  border-radius: 6px;
+}
+
+.admin-lang-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #8b949e;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-field span {
+  font-size: 0.72rem;
+  color: #8b949e;
+  font-weight: 600;
+}
+
+.admin-price-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.admin-textarea {
+  resize: vertical;
+  min-height: 60px;
+  font-family: monospace;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
 .admin-error {
   padding: 10px 14px;
   border-radius: 8px;
