@@ -10,8 +10,6 @@ import {
   type PixelFont,
 } from "./pixel-fonts";
 
-const STORAGE_KEY = "skyblue-rank-projects";
-
 const PADDING_X = 3;
 const PADDING_Y = 2;
 const TEXT_TOP = PADDING_Y;
@@ -78,6 +76,12 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [downloadError, setDownloadError] = useState("");
   const [panelWidth, setPanelWidth] = useState<number | null>(null);
   const resizingRef = useRef(false);
+  const [savedProjects, setSavedProjects] = useState<{ id: string; name: string; text: string; font_id: string; text_color: string; updated_at: string }[]>([]);
+  const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
+  const [savePending, setSavePending] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [showProjectList, setShowProjectList] = useState(false);
 
   const font = getPixelFont(fontId);
   const layout = buildPixelText(font, text);
@@ -118,6 +122,12 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         reset: "Arka planı sıfırla",
         transparent: "Şeffaf",
         download: "PNG indir",
+        save: "Kaydet",
+        saved: "Kaydedildi",
+        myProjects: "Projelerim",
+        loadProject: "Yükle",
+        deleteProject: "Sil",
+        loginToSave: "Kaydetmek için giriş yap",
         dimensions: `${width} × ${height} px PNG`,
         gridHint: "Grid üzerinde sadece arka planı boyayabilirsin.",
       }
@@ -136,6 +146,12 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         reset: "Reset background",
         transparent: "Transparent",
         download: "Download PNG",
+        save: "Save",
+        saved: "Saved",
+        myProjects: "My Projects",
+        loadProject: "Load",
+        deleteProject: "Delete",
+        loginToSave: "Sign in to save",
         dimensions: `${width} × ${height} px PNG`,
         gridHint: "Only the background can be painted on the grid.",
       };
@@ -157,6 +173,35 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         if (!active) return;
         if (response.ok) setDownloadState({ authenticated: true, premium: Boolean(result.premium), remaining: Number(result.remaining) });
         else setDownloadState({ authenticated: false, premium: false, remaining: 0 });
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/tools/minecraft-rank/projects", { cache: "no-store" })
+      .then(async (r) => ({ ok: r.ok, data: await r.json() }))
+      .then(async ({ ok, data }) => {
+        if (!active || !ok) return;
+        const projects = data.projects || [];
+        setSavedProjects(projects);
+        if (projects.length > 0 && projects[0].id) {
+          const detail = await fetch(`/api/tools/minecraft-rank/projects?id=${projects[0].id}`, { cache: "no-store" });
+          if (!active || !detail.ok) return;
+          const { project } = await detail.json();
+          if (!active || !project) return;
+          setText(project.text);
+          setFontId(project.font_id);
+          setTextColor(project.text_color);
+          setExtraTextColors(Array.isArray(project.extra_text_colors) ? project.extra_text_colors : []);
+          setExtraBrushColors(Array.isArray(project.extra_brush_colors) ? project.extra_brush_colors : []);
+          if (Array.isArray(project.background) && project.background.length > 0) {
+            backgroundRef.current = project.background;
+            setBackground(project.background);
+          }
+          setCurrentProjectId(project.id);
+        }
       })
       .catch(() => {});
     return () => { active = false; };
@@ -410,9 +455,99 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     }
   }, [background, fontId, isTurkish, text, textColor]);
 
+  const loadProject = useCallback(async (projectId: string) => {
+    try {
+      const response = await fetch(`/api/tools/minecraft-rank/projects?id=${projectId}`, { cache: "no-store" });
+      if (!response.ok) return;
+      const { project } = await response.json();
+      if (!project) return;
+
+      setText(project.text);
+      setFontId(project.font_id);
+      setTextColor(project.text_color);
+      setExtraTextColors(Array.isArray(project.extra_text_colors) ? project.extra_text_colors : []);
+      setExtraBrushColors(Array.isArray(project.extra_brush_colors) ? project.extra_brush_colors : []);
+
+      if (Array.isArray(project.background) && project.background.length > 0) {
+        const rows = project.background;
+        const h = rows.length;
+        const w = rows[0]?.length || 0;
+        if (w > 0 && h > 0) {
+          backgroundRef.current = rows;
+          setBackground(rows);
+          undoRef.current = [];
+          redoRef.current = [];
+          setHistoryState({ canUndo: false, canRedo: false });
+        }
+      }
+      setCurrentProjectId(project.id);
+    } catch {}
+  }, []);
+
+  const saveProject = useCallback(async () => {
+    if (!downloadState?.authenticated) {
+      window.location.assign("/login");
+      return;
+    }
+    setSavePending(true);
+    setSaveError("");
+    setSaveSuccess(false);
+    try {
+      const projectName = text || "Proje";
+      const response = await fetch("/api/tools/minecraft-rank/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: currentProjectId || undefined,
+          name: projectName,
+          text,
+          fontId,
+          textColor,
+          background,
+          extraBrushColors,
+          extraTextColors,
+        }),
+      });
+      if (response.status === 401) {
+        window.location.assign("/login");
+        return;
+      }
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "SAVE_FAILED");
+      if (result.project) {
+        setCurrentProjectId(result.project.id);
+      }
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2000);
+
+      const listRes = await fetch("/api/tools/minecraft-rank/projects", { cache: "no-store" });
+      if (listRes.ok) {
+        const { projects } = await listRes.json();
+        setSavedProjects(projects || []);
+      }
+    } catch {
+      setSaveError(isTurkish ? "Kaydedilemedi." : "Could not save.");
+    } finally {
+      setSavePending(false);
+    }
+  }, [background, currentProjectId, downloadState, extraBrushColors, extraTextColors, fontId, isTurkish, text, textColor]);
+
+  const deleteProject = useCallback(async (projectId: string) => {
+    try {
+      const response = await fetch("/api/tools/minecraft-rank/projects", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: projectId }),
+      });
+      if (!response.ok) return;
+      if (currentProjectId === projectId) setCurrentProjectId(null);
+      setSavedProjects((prev) => prev.filter((p) => p.id !== projectId));
+    } catch {}
+  }, [currentProjectId]);
+
   return (
-    <div className="pixel-rank-editor" onContextMenu={(event) => event.preventDefault()}>
-      <div className="pixel-rank-preview-panel">
+      <div className="pixel-rank-editor" style={panelWidth ? { maxWidth: `${panelWidth}px` } : undefined} onContextMenu={(event) => event.preventDefault()}>
+        <div className="pixel-rank-preview-panel">
         <div className="pixel-rank-preview-header">
           <div>
             <span className="pixel-rank-kicker">{isTurkish ? "ItemsAdder uyumlu PNG" : "ItemsAdder-ready PNG"}</span>
@@ -438,14 +573,25 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           </div>
         </div>
         <p className="pixel-rank-hint">{copy.gridHint}</p>
-        <button type="button" className="pixel-rank-download" onClick={download} disabled={downloadPending}>
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-          {downloadPending ? (isTurkish ? "Hazırlanıyor..." : "Preparing...") : copy.download}
-        </button>
+        <div className="pixel-rank-action-row">
+          <button type="button" className="pixel-rank-download" onClick={download} disabled={downloadPending}>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            {downloadPending ? (isTurkish ? "Hazırlanıyor..." : "Preparing...") : copy.download}
+          </button>
+          <button type="button" className={`pixel-rank-save ${saveSuccess ? "is-success" : ""}`} onClick={saveProject} disabled={savePending}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+            {savePending ? "..." : saveSuccess ? copy.saved : copy.save}
+          </button>
+        </div>
+        {saveError && <p className="pixel-rank-download-error" role="alert">{saveError}</p>}
         <div className="pixel-rank-quota">
           {downloadState?.authenticated ? (
             downloadState.premium ? <span>Premium / {isTurkish ? "sınırsız indirme" : "unlimited downloads"}</span> : <span>{isTurkish ? `Bugün ${downloadState.remaining} indirme hakkın kaldı` : `${downloadState.remaining} downloads left today`}</span>
@@ -453,8 +599,33 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           {downloadState?.authenticated && !downloadState.premium && <span><a href="/account/premium?tool=minecraft-rank">Premium</a> · <a href="/account/discord">Discord +2</a></span>}
         </div>
         {downloadError && <p className="pixel-rank-download-error" role="alert">{downloadError}</p>}
+        {downloadState?.authenticated && savedProjects.length > 0 && (
+          <div className="pixel-rank-projects">
+            <button type="button" className="pixel-rank-projects-toggle" onClick={() => setShowProjectList((prev) => !prev)}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+              </svg>
+              {copy.myProjects} ({savedProjects.length})
+              <span className={`pixel-rank-projects-chevron ${showProjectList ? "is-open" : ""}`}>▾</span>
+            </button>
+            {showProjectList && (
+              <div className="pixel-rank-projects-list">
+                {savedProjects.map((project) => (
+                  <div key={project.id} className={`pixel-rank-project-item ${currentProjectId === project.id ? "is-active" : ""}`}>
+                    <span className="pixel-rank-project-name" title={project.name}>{project.name}</span>
+                    <span className="pixel-rank-project-meta">{project.text} · {project.font_id}</span>
+                    <div className="pixel-rank-project-actions">
+                      <button type="button" onClick={() => loadProject(project.id)}>{copy.loadProject}</button>
+                      <button type="button" className="pixel-rank-project-delete" onClick={() => deleteProject(project.id)}>{copy.deleteProject}</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
-
+      <div className="pixel-rank-resize-handle" onPointerDown={handleResizeStart} />
       <div className="pixel-rank-controls">
         <div className="pixel-rank-control-section">
           <label className="pixel-rank-label" htmlFor="rank-text">{copy.rankName}</label>

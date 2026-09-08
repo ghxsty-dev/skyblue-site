@@ -1,0 +1,135 @@
+import { NextResponse, type NextRequest } from "next/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { isTrustedMutation } from "@/lib/account/request";
+
+export const dynamic = "force-dynamic";
+
+const MAX_PROJECTS = 20;
+const MAX_BACKGROUND_SIZE = 200 * 200;
+
+export async function GET(request: NextRequest) {
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return NextResponse.json({ projects: [] });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ projects: [] });
+
+  const url = new URL(request.url);
+  const loadId = url.searchParams.get("id");
+
+  if (loadId) {
+    const { data } = await supabase
+      .from("rank_projects")
+      .select("id, name, text, font_id, text_color, background, extra_brush_colors, extra_text_colors")
+      .eq("id", loadId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    return NextResponse.json({ project: data || null }, { headers: { "Cache-Control": "no-store" } });
+  }
+
+  const { data } = await supabase
+    .from("rank_projects")
+    .select("id, name, text, font_id, text_color, updated_at")
+    .eq("user_id", user.id)
+    .order("updated_at", { ascending: false })
+    .limit(MAX_PROJECTS);
+
+  return NextResponse.json({ projects: data || [] }, { headers: { "Cache-Control": "no-store" } });
+}
+
+export async function POST(request: NextRequest) {
+  if (!isTrustedMutation(request)) {
+    return NextResponse.json({ error: "Invalid request" }, { status: 403 });
+  }
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const body = await request.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+
+  const { id, name, text, fontId, textColor, background, extraBrushColors, extraTextColors } = body;
+
+  if (!Array.isArray(background) || background.length > MAX_BACKGROUND_SIZE) {
+    return NextResponse.json({ error: "Invalid background" }, { status: 400 });
+  }
+
+  const projectName = (typeof name === "string" ? name : "").slice(0, 64) || "Proje";
+  const rankText = (typeof text === "string" ? text : "VIP").slice(0, 32);
+
+  const projectData = {
+    name: projectName,
+    text: rankText,
+    font_id: (typeof fontId === "string" ? fontId : "block").slice(0, 32),
+    text_color: (typeof textColor === "string" ? textColor : "#ffffff").slice(0, 16),
+    background: background,
+    extra_brush_colors: Array.isArray(extraBrushColors) ? extraBrushColors.slice(0, 6) : [],
+    extra_text_colors: Array.isArray(extraTextColors) ? extraTextColors.slice(0, 6) : [],
+    updated_at: new Date().toISOString(),
+  };
+
+  if (typeof id === "string" && id.length > 0) {
+    const { data, error } = await supabase
+      .from("rank_projects")
+      .update(projectData)
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .select("id, name, text, font_id, text_color, updated_at")
+      .maybeSingle();
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ project: data });
+  }
+
+  const { count } = await supabase
+    .from("rank_projects")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id);
+
+  if ((count || 0) >= MAX_PROJECTS) {
+    const { data: oldest } = await supabase
+      .from("rank_projects")
+      .select("id")
+      .eq("user_id", user.id)
+      .order("updated_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (oldest) await supabase.from("rank_projects").delete().eq("id", oldest.id);
+  }
+
+  const { data, error } = await supabase
+    .from("rank_projects")
+    .insert({ ...projectData, user_id: user.id })
+    .select("id, name, text, font_id, text_color, updated_at")
+    .maybeSingle();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ project: data });
+}
+
+export async function DELETE(request: NextRequest) {
+  if (!isTrustedMutation(request)) {
+    return NextResponse.json({ error: "Invalid request" }, { status: 403 });
+  }
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const body = await request.json().catch(() => null);
+  const projectId = body?.id;
+  if (!projectId || typeof projectId !== "string") {
+    return NextResponse.json({ error: "Missing project id" }, { status: 400 });
+  }
+
+  const { error } = await supabase
+    .from("rank_projects")
+    .delete()
+    .eq("id", projectId)
+    .eq("user_id", user.id);
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true });
+}
