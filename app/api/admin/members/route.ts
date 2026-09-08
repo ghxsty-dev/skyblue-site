@@ -102,11 +102,12 @@ export async function PUT(request: NextRequest) {
       .select("discord_user_id")
       .eq("user_id", String(userId))
       .maybeSingle();
+    let discordRoleRemoved = false;
     if (discordLink?.discord_user_id) {
-      removePremiumRole(discordLink.discord_user_id).catch(() => {});
+      discordRoleRemoved = await removePremiumRole(discordLink.discord_user_id);
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, discordRoleRemoved });
   }
 
   if (action === "premium") {
@@ -151,11 +152,18 @@ export async function PUT(request: NextRequest) {
       .select("discord_user_id")
       .eq("user_id", String(userId))
       .maybeSingle();
+    let discordResult = { roleAssigned: false, dmSent: false, error: "Discord account not linked" as string | null };
     if (discordLink?.discord_user_id) {
-      notifyPremiumActive(discordLink.discord_user_id).catch(() => {});
+      discordResult = await notifyPremiumActive(discordLink.discord_user_id);
     }
 
-    return NextResponse.json({ ok: true, expires_at: baseDate.toISOString() });
+    return NextResponse.json({
+      ok: true,
+      expires_at: baseDate.toISOString(),
+      discordRoleAssigned: discordResult.roleAssigned,
+      discordDmSent: discordResult.dmSent,
+      discordError: discordResult.error,
+    });
   }
 
   return NextResponse.json({ error: "INVALID_ACTION" }, { status: 400 });

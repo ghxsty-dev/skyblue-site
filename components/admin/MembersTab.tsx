@@ -93,6 +93,7 @@ export default function MembersTab() {
       if (!response.ok) throw new Error("UPDATE_FAILED");
       const result = await response.json();
       setMembers((prev) => prev.map((m) => m.id === userId ? { ...m, premium_expires_at: result.expires_at } : m));
+      setError(result.discordError ? `Premium tanımlandı, ancak Discord işlemi tamamlanamadı: ${result.discordError}` : "");
     } catch {
       setError("Premium tanımlanamadı.");
     } finally {

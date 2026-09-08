@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     if (error || !data) return NextResponse.json({ error: "INVALID_CODE" }, { status: 400 });
 
     const admin = createSupabaseAdminClient();
+    let discordResult = { roleAssigned: false, dmSent: false, error: "Discord account not linked" as string | null };
     if (admin) {
       const { data: discordLink } = await admin
         .from("discord_links")
@@ -33,11 +34,17 @@ export async function POST(request: NextRequest) {
         .eq("user_id", user.id)
         .maybeSingle();
       if (discordLink?.discord_user_id) {
-        notifyPremiumActive(discordLink.discord_user_id).catch(() => {});
+        discordResult = await notifyPremiumActive(discordLink.discord_user_id);
       }
     }
 
-    return NextResponse.json({ ok: true, expiresAt: data }, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json({
+      ok: true,
+      expiresAt: data,
+      discordRoleAssigned: discordResult.roleAssigned,
+      discordDmSent: discordResult.dmSent,
+      discordError: discordResult.error,
+    }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("[account] redeem error:", error);
     return NextResponse.json({ error: "REDEEM_FAILED" }, { status: 500 });
