@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useApp } from "@/lib/context";
-import { MenuIcon, UserIcon, SettingsIcon, SparklesIcon } from "@/lib/icons";
+import { MenuIcon, UserIcon, SettingsIcon, SparklesIcon, LogoutIcon } from "@/lib/icons";
 
 const links = ["home", "designs", "services", "contact"] as const;
 
@@ -25,6 +25,17 @@ export default function Nav() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const current = pathname === "/" ? "home" : pathname.replace("/", "").split("/")[0];
+
+  const handleLogout = useCallback(async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      /* yok say, yine de yönlendir */
+    }
+    setAccountOpen(false);
+    setOpen(false);
+    window.location.assign("/login");
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -196,6 +207,11 @@ export default function Nav() {
                       <span className="nav-dropdown-icon"><SettingsIcon size={16} /></span>
                       {t.accountSettings}
                     </a>
+                    <div className="nav-dropdown-divider" />
+                    <button type="button" onClick={handleLogout} className="nav-dropdown-item danger">
+                      <span className="nav-dropdown-icon"><LogoutIcon size={16} /></span>
+                      {t.signOut}
+                    </button>
                   </>
                 ) : (
                   <>
@@ -250,21 +266,28 @@ export default function Nav() {
             </a>
           </li>
           {isLoggedIn ? (
-            <li>
-              <a href="/account" onClick={() => setOpen(false)} aria-current={current === "account" ? "page" : undefined} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold text-white/70 hover:text-white no-underline">
-                {avatarPath ? (
-                  <img
-                    src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${avatarPath}`}
-                    alt=""
-                    width={18}
-                    height={18}
-                    className="rounded-full object-cover"
-                  />
-                ) : (
-                  <UserIcon size={18} />
-                )} {t.account}
-              </a>
-            </li>
+            <>
+              <li>
+                <a href="/account" onClick={() => setOpen(false)} aria-current={current === "account" ? "page" : undefined} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold text-white/70 hover:text-white no-underline">
+                  {avatarPath ? (
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${avatarPath}`}
+                      alt=""
+                      width={18}
+                      height={18}
+                      className="rounded-full object-cover"
+                    />
+                  ) : (
+                    <UserIcon size={18} />
+                  )} {t.account}
+                </a>
+              </li>
+              <li>
+                <button type="button" onClick={handleLogout} className="w-full flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold text-[#ff8585] hover:text-[#ff6b6b] bg-transparent border-none cursor-pointer">
+                  <LogoutIcon size={18} /> {t.signOut}
+                </button>
+              </li>
+            </>
           ) : (
             <>
               <li>

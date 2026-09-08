@@ -186,6 +186,16 @@ export function TagIcon(props: Props) {
   );
 }
 
+export function LogoutIcon(props: Props) {
+  return (
+    <Icon {...props}>
+      <path d="M13 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7" />
+      <polyline points="14.5 8.5 19 12 14.5 15.5" />
+      <line x1="19" y1="12" x2="9" y2="12" />
+    </Icon>
+  );
+}
+
 export function PercentIcon(props: Props) {
   return (
     <Icon {...props}>

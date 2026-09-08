@@ -3831,11 +3831,16 @@ button.pixel-rank-dot:hover {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
   padding: 10px 12px;
+  border: 0;
   border-radius: 10px;
+  background: transparent;
   color: rgba(255, 255, 255, 0.85);
+  font: inherit;
   font-size: 0.92rem;
   font-weight: 600;
+  text-align: left;
   text-decoration: none;
   transition: background 0.15s, color 0.15s;
   cursor: pointer;
@@ -3844,6 +3849,15 @@ button.pixel-rank-dot:hover {
 .nav-dropdown-item:hover {
   background: rgba(255, 255, 255, 0.06);
   color: #fff;
+}
+
+.nav-dropdown-item.danger {
+  color: #ff8585;
+}
+
+.nav-dropdown-item.danger:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ff6b6b;
 }
 
 .nav-dropdown-item.premium {
