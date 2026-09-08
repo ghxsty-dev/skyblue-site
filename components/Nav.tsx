@@ -117,6 +117,9 @@ export default function Nav() {
     <UserIcon size={19} />
   );
 
+  // Admin panelinin kendi menüsü var; site topbar'ını orada gösterme.
+  if (pathname.startsWith("/admin")) return null;
+
   return (
     <nav className={`fixed top-0 left-0 right-0 z-[1000] px-6 transition-all duration-300 ${
       scrolled

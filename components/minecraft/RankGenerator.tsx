@@ -11,10 +11,12 @@ import {
 } from "./pixel-fonts";
 import {
   buildGradientGrid,
+  COLOR_FAMILIES,
   contrastRatio,
   GRADIENT_PRESETS,
   MAX_RANK_LENGTH,
   mixHex,
+  readableOn,
   type GradientDirection,
 } from "./rank-presets";
 
@@ -24,9 +26,6 @@ const TEXT_TOP = PADDING_Y;
 const DEFAULT_PRESET = GRADIENT_PRESETS[0];
 const DEFAULT_SOLID = "#59abfe";
 const BASE_PREVIEW_SCALE = 22;
-
-const TEXT_COLORS = ["#ffffff", "#0b0d10", "#ffd166", "#ff6b6b", "#68d391", "#c084fc", "#59abfe", "#f97316", "#ec4899", "#14b8a6", "#eab308", "#a855f7"];
-const SOLID_COLORS = ["#59abfe", "#2f80ed", "#0b0d10", "#4a5568", "#f1f4f7", "#7c3aed", "#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#ec4899"];
 
 const INITIAL_FONT_ID = "kare-5";
 const INITIAL_TEXT = "VIP";
@@ -84,6 +83,62 @@ function averageBgColor(grid: PixelGrid): string {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
+/** Aile bazlı renk seçici: her renk Açık / Normal / Koyu tonuyla, isimli büyük butonlar. */
+function FamilyColorPicker({
+  value,
+  onChange,
+  customLabel,
+  lang,
+}: {
+  value: string;
+  onChange: (color: string) => void;
+  customLabel: string;
+  lang: "tr" | "en";
+}) {
+  const isTurkish = lang === "tr";
+  const lower = value.toLowerCase();
+  return (
+    <div className="pixel-rank-families">
+      {COLOR_FAMILIES.map((family) => (
+        <div key={family.id} className="pixel-rank-family">
+          <span className="pixel-rank-family-name">{isTurkish ? family.nameTr : family.nameEn}</span>
+          <div className="pixel-rank-family-shades">
+            {family.shades.map((shade) => {
+              const active = lower === shade.value;
+              const label = isTurkish ? shade.labelTr : shade.labelEn;
+              return (
+                <button
+                  key={shade.value}
+                  type="button"
+                  className={`pixel-rank-shade ${active ? "is-active" : ""}`}
+                  style={{ backgroundColor: shade.value, color: readableOn(shade.value) }}
+                  onClick={() => onChange(shade.value)}
+                  aria-label={`${isTurkish ? family.nameTr : family.nameEn} ${label}`}
+                  title={`${isTurkish ? family.nameTr : family.nameEn} ${label} · ${shade.value}`}
+                  aria-pressed={active}
+                >
+                  <span>{label}</span>
+                  {active && <span aria-hidden="true"> ✓</span>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+      <label className="pixel-rank-custom-row" title={customLabel}>
+        <input
+          type="color"
+          value={/^#[0-9a-f]{6}$/i.test(value) ? value : "#ffffff"}
+          onChange={(event) => onChange(event.target.value)}
+          aria-label={customLabel}
+        />
+        <span>{customLabel}</span>
+        <code>{/^#[0-9a-f]{6}$/i.test(value) ? value : "—"}</code>
+      </label>
+    </div>
+  );
+}
+
 export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageWrapRef = useRef<HTMLDivElement>(null);
@@ -97,7 +152,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [projectName, setProjectName] = useState(INITIAL_TEXT);
   const [fontId, setFontId] = useState(INITIAL_FONT_ID);
   const [textColor, setTextColor] = useState(DEFAULT_PRESET.text);
-  const [extraTextColors, setExtraTextColors] = useState<string[]>([]);
 
   const [bgMode, setBgMode] = useState<BgMode>("gradient");
   const [presetId, setPresetId] = useState(DEFAULT_PRESET.id);
@@ -262,13 +316,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     setHistoryState({ canUndo: undoRef.current.length > 0, canRedo: withUndo ? false : redoRef.current.length > 0 });
   }, []);
 
-  const addTextColor = useCallback((color: string) => {
-    setExtraTextColors((prev) => {
-      if (prev.includes(color) || TEXT_COLORS.includes(color)) return prev;
-      return [...prev, color].slice(-6);
-    });
-  }, []);
-
   // --- Gradient / solid uygula ---
   const applyPreset = useCallback((id: string, autoText = true) => {
     const preset = GRADIENT_PRESETS.find((p) => p.id === id);
@@ -277,12 +324,9 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     setGradFrom(preset.from);
     setGradTo(preset.to);
     setBgMode("gradient");
-    if (autoText) {
-      setTextColor(preset.text);
-      addTextColor(preset.text);
-    }
+    if (autoText) setTextColor(preset.text);
     setGrid(buildGradientGrid(width, height, preset.from, preset.to, gradDir), true);
-  }, [addTextColor, gradDir, height, setGrid, width]);
+  }, [gradDir, height, setGrid, width]);
 
   const regenerateManagedBackground = useCallback(() => {
     if (bgMode === "gradient") {
@@ -610,7 +654,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
       setProjectName(project.name ?? project.text ?? "VIP");
       setFontId(project.font_id ?? PIXEL_FONTS[0].id);
       setTextColor(project.text_color ?? "#ffffff");
-      setExtraTextColors(Array.isArray(project.extra_text_colors) ? project.extra_text_colors : []);
       const bgModeLoaded = (project.bg_mode as BgMode) || null;
       if (bgModeLoaded === "gradient" && project.gradient_from && project.gradient_to) {
         setBgMode("gradient");
@@ -665,7 +708,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           gradientDir: gradDir,
           gradientPreset: presetId,
           solidColor,
-          extraTextColors,
         }),
       });
       if (response.status === 401) {
@@ -687,7 +729,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     } finally {
       setSavePending(false);
     }
-  }, [background, bgMode, currentProjectId, downloadState, extraTextColors, fontId, gradDir, gradFrom, gradTo, isTurkish, presetId, projectName, solidColor, text, textColor, trimmedEmpty]);
+  }, [background, bgMode, currentProjectId, downloadState, fontId, gradDir, gradFrom, gradTo, isTurkish, presetId, projectName, solidColor, text, textColor, trimmedEmpty]);
 
   const deleteProject = useCallback(async (projectId: string) => {
     try {
@@ -893,34 +935,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
             ))}
           </div>
           <span className="pixel-rank-label">{copy.textColor}</span>
-          <div className="pixel-rank-swatches">
-            {TEXT_COLORS.map((color) => (
-              <button
-                key={color}
-                type="button"
-                className={`pixel-rank-swatch ${textColor.toLowerCase() === color ? "is-active" : ""}`}
-                style={{ backgroundColor: color }}
-                onClick={() => setTextColor(color)}
-                aria-label={color}
-                title={color}
-              />
-            ))}
-            {extraTextColors.map((color) => (
-              <button
-                key={color}
-                type="button"
-                className={`pixel-rank-swatch ${textColor.toLowerCase() === color.toLowerCase() ? "is-active" : ""}`}
-                style={{ backgroundColor: color }}
-                onClick={() => setTextColor(color)}
-                aria-label={color}
-                title={color}
-              />
-            ))}
-            <label className="pixel-rank-custom-color" title={copy.customColor}>
-              <input type="color" value={textColor} onChange={(event) => { setTextColor(event.target.value); addTextColor(event.target.value); }} aria-label={copy.customColor} />
-              <span aria-hidden="true">+</span>
-            </label>
-          </div>
+          <FamilyColorPicker value={textColor} onChange={setTextColor} customLabel={copy.customColor} lang={lang} />
           {lowContrast && <p className="pixel-rank-contrast-warn" role="status">⚠ {copy.lowContrast} ({contrast.toFixed(1)}:1)</p>}
         </section>
 
@@ -990,23 +1005,12 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           {bgMode === "solid" && (
             <>
               <p className="pixel-rank-section-desc">{copy.solidHint}</p>
-              <div className="pixel-rank-swatches">
-                {SOLID_COLORS.map((color) => (
-                  <button
-                    key={color}
-                    type="button"
-                    className={`pixel-rank-swatch ${solidColor.toLowerCase() === color ? "is-active" : ""}`}
-                    style={{ backgroundColor: color }}
-                    onClick={() => { setSolidColor(color); setGrid(createGrid(width, height, color), true); }}
-                    aria-label={color}
-                    title={color}
-                  />
-                ))}
-                <label className="pixel-rank-custom-color" title={copy.customColor}>
-                  <input type="color" value={solidColor} onChange={(event) => { setSolidColor(event.target.value); setGrid(createGrid(width, height, event.target.value), true); }} aria-label={copy.customColor} />
-                  <span aria-hidden="true">+</span>
-                </label>
-              </div>
+              <FamilyColorPicker
+                value={solidColor}
+                onChange={(color) => { setSolidColor(color); setGrid(createGrid(width, height, color), true); }}
+                customLabel={copy.customColor}
+                lang={lang}
+              />
             </>
           )}
 
@@ -1024,23 +1028,12 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
                   <span>{copy.eraser}</span>
                 </button>
               </div>
-              <div className="pixel-rank-swatches">
-                {SOLID_COLORS.map((color) => (
-                  <button
-                    key={color}
-                    type="button"
-                    className={`pixel-rank-swatch ${brushColor.toLowerCase() === color && tool === "brush" ? "is-active" : ""}`}
-                    style={{ backgroundColor: color }}
-                    onClick={() => { setBrushColor(color); setTool("brush"); }}
-                    aria-label={color}
-                    title={color}
-                  />
-                ))}
-                <label className="pixel-rank-custom-color" title={copy.brushColor}>
-                  <input type="color" value={/^#[0-9a-f]{6}$/i.test(brushColor) ? brushColor : "#0b0d10"} onChange={(event) => { setBrushColor(event.target.value); setTool("brush"); }} aria-label={copy.brushColor} />
-                  <span aria-hidden="true">+</span>
-                </label>
-              </div>
+              <FamilyColorPicker
+                value={tool === "brush" ? brushColor : ""}
+                onChange={(color) => { setBrushColor(color); setTool("brush"); }}
+                customLabel={copy.brushColor}
+                lang={lang}
+              />
               <div className="pixel-rank-brush-row">
                 <span className="pixel-rank-label">{copy.brushSize}</span>
                 <div className="pixel-rank-size-buttons">

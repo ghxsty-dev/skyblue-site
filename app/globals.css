@@ -2052,77 +2052,96 @@ main {
   font-weight: 700;
 }
 
-.pixel-rank-swatches {
+.pixel-rank-families {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.pixel-rank-family {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  align-items: center;
   gap: 8px;
 }
 
-.pixel-rank-swatch,
-.pixel-rank-custom-color {
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-  border-radius: 5px;
-  border: 2px solid transparent;
-  box-sizing: border-box;
-}
-
-.pixel-rank-swatch {
-  cursor: pointer;
-  transition: transform var(--transition), border-color var(--transition);
-}
-
-.pixel-rank-swatch:hover,
-.pixel-rank-swatch.is-active {
-  border-color: var(--c2);
-  transform: scale(1.1);
-}
-
-.pixel-rank-custom-color {
-  position: relative;
-  display: grid;
-  place-items: center;
-  border: 1px dashed var(--text2);
+.pixel-rank-family-name {
   color: var(--text2);
-  cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.66rem;
   font-weight: 700;
-  overflow: hidden;
-  background: conic-gradient(#f43f5e, #f97316, #eab308, #22c55e, #06b6d4, #6366f1, #f43f5e);
+  line-height: 1.3;
 }
 
-.pixel-rank-custom-color input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: 0;
-  opacity: 0;
+.pixel-rank-family-shades {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+}
+
+.pixel-rank-shade {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 4px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.62rem;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.pixel-rank-shade:hover {
+  transform: translateY(-1px);
+}
+
+.pixel-rank-shade.is-active {
+  border-color: var(--c2);
+  box-shadow: 0 0 0 2px rgba(89, 171, 254, 0.3), 0 4px 10px var(--card-shadow);
+}
+
+.pixel-rank-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 2px;
+  padding: 8px 10px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  color: var(--text2);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition);
+}
+
+.pixel-rank-custom-row:hover {
+  border-color: var(--c2);
+  color: var(--text);
+}
+
+.pixel-rank-custom-row input[type="color"] {
+  width: 44px;
+  height: 30px;
+  flex-shrink: 0;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg2);
   cursor: pointer;
 }
 
-.pixel-rank-custom-color input::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
-
-.pixel-rank-custom-color input::-webkit-color-swatch {
-  border: 0;
-  border-radius: 3px;
-}
-
-.pixel-rank-custom-color span {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-  color: #fff;
-  font-size: 1.1rem;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-  pointer-events: none;
+.pixel-rank-custom-row code {
+  margin-left: auto;
+  font-size: 0.66rem;
+  text-transform: uppercase;
 }
 
 .pixel-rank-tools {
@@ -3626,6 +3645,13 @@ main {
   display: grid;
   grid-template-columns: 240px 1fr;
   min-height: 100vh;
+}
+
+/* Admin sayfalarında site topbar'ı gizli; kök layout'un 64px boşluğunu da kaldır. */
+main:has(> .admin-layout) {
+  margin-top: 0;
+  min-height: 100vh;
+  padding: 0;
 }
 
 .admin-sidebar {

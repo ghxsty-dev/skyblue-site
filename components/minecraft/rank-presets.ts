@@ -101,7 +101,124 @@ export function contrastRatio(a: string, b: string): number {
   }
 }
 
-/** Gradientin orta tonu ile yazı rengi arasındaki okunabilirlik. */
-export function gradientContrast(from: string, to: string, textColor: string): number {
-  return contrastRatio(mixHex(from, to, 0.5), textColor);
+/** Renk seçimini kolaylaştıran aile sistemi: her ailenin Açık / Normal / Koyu tonu. */
+export interface ColorShade {
+  labelTr: string;
+  labelEn: string;
+  value: string;
+}
+
+export interface ColorFamily {
+  id: string;
+  nameTr: string;
+  nameEn: string;
+  shades: ColorShade[];
+}
+
+const LIGHT = { labelTr: "Açık", labelEn: "Light" };
+const REGULAR = { labelTr: "Normal", labelEn: "Regular" };
+const DARK = { labelTr: "Koyu", labelEn: "Dark" };
+
+export const COLOR_FAMILIES: readonly ColorFamily[] = [
+  {
+    id: "neutral",
+    nameTr: "Beyaz / Siyah",
+    nameEn: "White / Black",
+    shades: [
+      { labelTr: "Beyaz", labelEn: "White", value: "#ffffff" },
+      { labelTr: "Gri", labelEn: "Gray", value: "#94a3b8" },
+      { labelTr: "Koyu Gri", labelEn: "Dark Gray", value: "#334155" },
+      { labelTr: "Siyah", labelEn: "Black", value: "#0b0d10" },
+    ],
+  },
+  {
+    id: "yellow",
+    nameTr: "Sarı",
+    nameEn: "Yellow",
+    shades: [
+      { ...LIGHT, value: "#fef08a" },
+      { ...REGULAR, value: "#eab308" },
+      { ...DARK, value: "#a16207" },
+    ],
+  },
+  {
+    id: "orange",
+    nameTr: "Turuncu",
+    nameEn: "Orange",
+    shades: [
+      { ...LIGHT, value: "#fed7aa" },
+      { ...REGULAR, value: "#f97316" },
+      { ...DARK, value: "#c2410c" },
+    ],
+  },
+  {
+    id: "red",
+    nameTr: "Kırmızı",
+    nameEn: "Red",
+    shades: [
+      { ...LIGHT, value: "#fecaca" },
+      { ...REGULAR, value: "#ef4444" },
+      { ...DARK, value: "#991b1b" },
+    ],
+  },
+  {
+    id: "pink",
+    nameTr: "Pembe",
+    nameEn: "Pink",
+    shades: [
+      { ...LIGHT, value: "#f9a8d4" },
+      { ...REGULAR, value: "#ec4899" },
+      { ...DARK, value: "#9d174d" },
+    ],
+  },
+  {
+    id: "purple",
+    nameTr: "Mor",
+    nameEn: "Purple",
+    shades: [
+      { ...LIGHT, value: "#c4b5fd" },
+      { ...REGULAR, value: "#8b5cf6" },
+      { ...DARK, value: "#5b21b6" },
+    ],
+  },
+  {
+    id: "blue",
+    nameTr: "Mavi",
+    nameEn: "Blue",
+    shades: [
+      { ...LIGHT, value: "#93c5fd" },
+      { labelTr: "Sky", labelEn: "Sky", value: "#59abfe" },
+      { ...REGULAR, value: "#3b82f6" },
+      { ...DARK, value: "#1e40af" },
+    ],
+  },
+  {
+    id: "green",
+    nameTr: "Yeşil",
+    nameEn: "Green",
+    shades: [
+      { ...LIGHT, value: "#86efac" },
+      { ...REGULAR, value: "#22c55e" },
+      { ...DARK, value: "#166534" },
+    ],
+  },
+  {
+    id: "teal",
+    nameTr: "Turkuaz",
+    nameEn: "Teal",
+    shades: [
+      { ...LIGHT, value: "#5eead4" },
+      { ...REGULAR, value: "#14b8a6" },
+      { ...DARK, value: "#115e59" },
+    ],
+  },
+];
+
+/** Verilen zeminde okunacak yazı rengi (beyaz/siyah). */
+export function readableOn(hex: string): string {
+  try {
+    return luminance(hex) > 0.35 ? "#0b0d10" : "#ffffff";
+  } catch {
+    return "#ffffff";
+  }
 }
