@@ -19,11 +19,22 @@ export async function GET(request: NextRequest) {
   if (loadId) {
     const { data } = await supabase
       .from("rank_projects")
-      .select("id, name, text, font_id, text_color, background, extra_brush_colors, extra_text_colors")
+      .select("id, name, text, font_id, text_color, background, extra_brush_colors, extra_text_colors, bg_mode, gradient_from, gradient_to, gradient_dir, gradient_preset, solid_color")
       .eq("id", loadId)
       .eq("user_id", user.id)
       .maybeSingle();
-    return NextResponse.json({ project: data || null }, { headers: { "Cache-Control": "no-store" } });
+    if (!data) return NextResponse.json({ project: null }, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json({
+      project: {
+        ...data,
+        bg_mode: (data as Record<string, unknown>).bg_mode ?? "custom",
+        gradient_from: (data as Record<string, unknown>).gradient_from ?? null,
+        gradient_to: (data as Record<string, unknown>).gradient_to ?? null,
+        gradient_dir: (data as Record<string, unknown>).gradient_dir ?? "vertical",
+        gradient_preset: (data as Record<string, unknown>).gradient_preset ?? "custom",
+        solid_color: (data as Record<string, unknown>).solid_color ?? null,
+      },
+    }, { headers: { "Cache-Control": "no-store" } });
   }
 
   const { data } = await supabase
@@ -49,23 +60,32 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
 
-  const { id, name, text, fontId, textColor, background, extraBrushColors, extraTextColors } = body;
+  const { id, name, text, fontId, textColor, background, extraBrushColors, extraTextColors, bgMode, gradientFrom, gradientTo, gradientDir, gradientPreset, solidColor } = body;
 
   if (!Array.isArray(background) || background.length > MAX_BACKGROUND_SIZE) {
     return NextResponse.json({ error: "Invalid background" }, { status: 400 });
   }
 
   const projectName = (typeof name === "string" ? name : "").slice(0, 64) || "Proje";
-  const rankText = (typeof text === "string" ? text : "VIP").slice(0, 32);
+  const rankText = (typeof text === "string" ? text : "VIP").slice(0, 24);
+
+  const cleanHex = (value: unknown, fallback: string) =>
+    typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value) ? value.toLowerCase() : fallback;
 
   const projectData = {
     name: projectName,
     text: rankText,
     font_id: (typeof fontId === "string" ? fontId : "block").slice(0, 32),
-    text_color: (typeof textColor === "string" ? textColor : "#ffffff").slice(0, 16),
+    text_color: cleanHex(textColor, "#ffffff"),
     background: background,
     extra_brush_colors: Array.isArray(extraBrushColors) ? extraBrushColors.slice(0, 6) : [],
     extra_text_colors: Array.isArray(extraTextColors) ? extraTextColors.slice(0, 6) : [],
+    bg_mode: bgMode === "solid" || bgMode === "custom" ? bgMode : "gradient",
+    gradient_from: cleanHex(gradientFrom, "#fff6a5"),
+    gradient_to: cleanHex(gradientTo, "#ffaa00"),
+    gradient_dir: gradientDir === "horizontal" ? "horizontal" : "vertical",
+    gradient_preset: (typeof gradientPreset === "string" ? gradientPreset : "custom").slice(0, 32),
+    solid_color: cleanHex(solidColor, "#59abfe"),
     updated_at: new Date().toISOString(),
   };
 

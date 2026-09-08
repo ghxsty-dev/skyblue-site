@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     const textColor = String(body.textColor || "").toLowerCase();
     const background = body.background as unknown;
 
-    if (!text || !HEX_RE.test(textColor) || width < 7 || width > 220 || !Array.isArray(background) || background.length !== height) {
+    if (!text || !HEX_RE.test(textColor) || width < 7 || width > 400 || !Array.isArray(background) || background.length !== height) {
       return NextResponse.json({ error: "INVALID_IMAGE" }, { status: 400 });
     }
     if (!background.every((row) => Array.isArray(row) && row.length === width && row.every((pixel) => pixel === null || (typeof pixel === "string" && HEX_RE.test(pixel))))) {
