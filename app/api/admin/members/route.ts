@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "@/lib/admin/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isTrustedMutation } from "@/lib/account/request";
+import { notifyPremiumActive } from "@/lib/discord-premium";
 import type { UserRole } from "@/lib/account/types";
 
 export const runtime = "nodejs";
@@ -121,6 +122,16 @@ export async function PUT(request: NextRequest) {
         .insert({ user_id: String(userId), tool_slug: toolSlug, expires_at: baseDate.toISOString() });
       if (error) return NextResponse.json({ error: "INSERT_FAILED" }, { status: 500 });
     }
+
+    const { data: discordLink } = await admin
+      .from("discord_links")
+      .select("discord_user_id")
+      .eq("user_id", String(userId))
+      .maybeSingle();
+    if (discordLink?.discord_user_id) {
+      notifyPremiumActive(discordLink.discord_user_id).catch(() => {});
+    }
+
     return NextResponse.json({ ok: true, expires_at: baseDate.toISOString() });
   }
 

@@ -46,9 +46,10 @@ export default function PackageDetail() {
         const products: ApiProduct[] = result.products || [];
         const found = products.find((p) => {
           if (p.category !== "package") return false;
-          const s = getStr(p.data, "en", "slug");
+          const rootSlug = String((p.data as Record<string, unknown>).slug || "");
+          const sEn = getStr(p.data, "en", "slug");
           const sTr = getStr(p.data, "tr", "slug");
-          return s === slug || sTr === slug || p.slug === slug;
+          return rootSlug === slug || sEn === slug || sTr === slug || p.slug === slug;
         });
         if (found) setPkg(found.data);
         setLoaded(true);

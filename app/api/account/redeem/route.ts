@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { hashLicenseCode } from "@/lib/account/security";
 import { isTrustedMutation } from "@/lib/account/request";
+import { notifyPremiumActive } from "@/lib/discord-premium";
 
 export const runtime = "nodejs";
 
@@ -22,6 +24,18 @@ export async function POST(request: NextRequest) {
       p_tool_slug: toolSlug,
     });
     if (error || !data) return NextResponse.json({ error: "INVALID_CODE" }, { status: 400 });
+
+    const admin = createSupabaseAdminClient();
+    if (admin) {
+      const { data: discordLink } = await admin
+        .from("discord_links")
+        .select("discord_user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (discordLink?.discord_user_id) {
+        notifyPremiumActive(discordLink.discord_user_id).catch(() => {});
+      }
+    }
 
     return NextResponse.json({ ok: true, expiresAt: data }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {

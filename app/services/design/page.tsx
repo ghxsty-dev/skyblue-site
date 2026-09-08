@@ -68,7 +68,7 @@ export default function DesignPage() {
     ? apiPackages.map((p) => ({
         title: getStr(p.data, lang, "title"),
         desc: getStr(p.data, lang, "desc"),
-        slug: getStr(p.data, lang, "slug") || p.slug || "",
+        slug: String((p.data as Record<string, unknown>).slug || p.slug || ""),
         basic: getNum(p.data, lang, "basic"),
         pro: getNum(p.data, lang, "pro"),
       }))
