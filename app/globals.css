@@ -1890,11 +1890,21 @@ main {
 }
 
 .pixel-rank-stage {
+  position: relative;
   min-width: max-content;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
+}
+
+.pixel-rank-grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
 }
 
 .pixel-rank-canvas {
@@ -2785,28 +2795,6 @@ main {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.pixel-rank-actual {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 14px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  background: var(--bg2);
-  color: var(--text2);
-  font-size: 0.68rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.pixel-rank-actual-canvas {
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  background: #11161c;
 }
 
 .pixel-rank-new {

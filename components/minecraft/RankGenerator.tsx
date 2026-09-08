@@ -177,7 +177,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         showGridLines: "Izgara çizgileri",
         customHint: "Sadece ince detaylar için — çoğu işi gradientler halleder.",
         previewTitle: "Canlı önizleme",
-        actualSize: "Gerçek boyut",
         zoomIn: "Yakınlaştır",
         zoomOut: "Uzaklaştır",
         zoomFit: "Sığdır",
@@ -232,7 +231,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         showGridLines: "Grid lines",
         customHint: "Only for fine details — gradients cover most jobs.",
         previewTitle: "Live preview",
-        actualSize: "Actual size",
         zoomIn: "Zoom in",
         zoomOut: "Zoom out",
         zoomFit: "Fit",
@@ -389,9 +387,16 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   }, [width, height]);
 
   const effectiveScale = Math.max(2, Math.min(40, autoScale * zoom));
+  // Tam piksel hizası için ekran boyutunu yuvarla; ızgara overlay aynı
+  // hücre ölçüsünü kullanır, böylece çizgiler her zoom'da keskin ve hizalı olur.
+  const displayW = Math.max(1, Math.round(width * effectiveScale));
+  const displayH = Math.max(1, Math.round(height * effectiveScale));
+  const cellW = displayW / width;
+  const cellH = displayH / height;
 
-  // --- Canvas çizimi ---
-  const drawToCanvas = useCallback((canvas: HTMLCanvasElement, grid: PixelGrid, withGrid: boolean) => {
+  // --- Canvas çizimi (sadece pikseller; ızgara CSS overlay ile çizilir,
+  // canvas içi 0.04px stroke her ölçekte yamuk görünüyordu) ---
+  const drawToCanvas = useCallback((canvas: HTMLCanvasElement, grid: PixelGrid) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     canvas.width = width;
@@ -402,10 +407,8 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
       for (let x = 0; x < width; x += 1) {
         const color = grid[y]?.[x];
         if (color === null || color === undefined) {
-          if (withGrid) {
-            ctx.fillStyle = (x + y) % 2 === 0 ? "#26313d" : "#1d252f";
-            ctx.fillRect(x, y, 1, 1);
-          }
+          ctx.fillStyle = (x + y) % 2 === 0 ? "#26313d" : "#1d252f";
+          ctx.fillRect(x, y, 1, 1);
         } else {
           ctx.fillStyle = color;
           ctx.fillRect(x, y, 1, 1);
@@ -418,18 +421,10 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         if (layout.rows[y]?.[x] === "1") ctx.fillRect(PADDING_X + x, TEXT_TOP + y, 1, 1);
       }
     }
-    if (withGrid && showGrid) {
-      ctx.strokeStyle = "rgba(255,255,255,0.22)";
-      ctx.lineWidth = 0.04;
-      ctx.beginPath();
-      for (let x = 0; x <= width; x += 1) { ctx.moveTo(x, 0); ctx.lineTo(x, height); }
-      for (let y = 0; y <= height; y += 1) { ctx.moveTo(0, y); ctx.lineTo(width, y); }
-      ctx.stroke();
-    }
-  }, [height, layout, showGrid, textColor, width]);
+  }, [height, layout, textColor, width]);
 
   useEffect(() => {
-    if (canvasRef.current) drawToCanvas(canvasRef.current, background, true);
+    if (canvasRef.current) drawToCanvas(canvasRef.current, background);
   }, [background, drawToCanvas]);
 
   // --- Fırça (stroke bazlı undo: sürükleme artık tek hamle) ---
@@ -717,13 +712,13 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         </div>
 
         <div ref={stageWrapRef} className="pixel-rank-stage-wrap">
-          <div className="pixel-rank-stage" style={{ width: `${width * effectiveScale}px`, height: `${height * effectiveScale}px` }}>
+          <div className="pixel-rank-stage" style={{ width: `${displayW}px`, height: `${displayH}px` }}>
             <canvas
               ref={canvasRef}
               width={width}
               height={height}
               className="pixel-rank-canvas"
-              style={{ width: `${width * effectiveScale}px`, height: `${height * effectiveScale}px` }}
+              style={{ width: `${displayW}px`, height: `${displayH}px` }}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={stopPainting}
@@ -731,6 +726,13 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
               onPointerLeave={stopPainting}
               aria-label={isTurkish ? "Rank önizleme ve fırça alanı" : "Rank preview and brush area"}
             />
+            {showGrid && (
+              <div
+                className="pixel-rank-grid-overlay"
+                style={{ backgroundSize: `${cellW}px ${cellH}px` }}
+                aria-hidden="true"
+              />
+            )}
           </div>
         </div>
 
@@ -744,21 +746,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
               {bgMode === "gradient" ? (activePreset ? (isTurkish ? activePreset.nameTr : activePreset.nameEn) : `${gradFrom} → ${gradTo}`) : solidColor}
             </span>
           )}
-        </div>
-
-        {/* Gerçek boyut */}
-        <div className="pixel-rank-actual">
-          <span>{copy.actualSize} (1× · {copy.dimensions})</span>
-          <canvas
-            width={width}
-            height={height}
-            ref={(node) => {
-              if (node) drawToCanvas(node, background, false);
-            }}
-            className="pixel-rank-actual-canvas"
-            style={{ width: `${width}px`, height: `${height}px` }}
-            aria-hidden="true"
-          />
         </div>
 
         <div className="pixel-rank-action-row">
