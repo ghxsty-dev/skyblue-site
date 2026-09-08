@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { avatarApiUrl, type ProfileRecord } from "@/lib/account/types";
+import { avatarApiUrl, bannerApiUrl, type ProfileRecord } from "@/lib/account/types";
 import ProfileBadges from "@/components/account/ProfileBadges";
 import StyledUsername from "@/components/account/StyledUsername";
 import { DiscordIcon, StarIcon } from "@/lib/icons";
@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 async function getProfile(username: string) {
   const admin = createSupabaseAdminClient();
   if (!admin) return null;
-  const { data } = await admin.from("profiles").select("id, username, avatar_path, role, created_at, updated_at, name_font, name_color_from, name_color_to").eq("username", username.toLowerCase()).maybeSingle();
+  const { data } = await admin.from("profiles").select("id, username, avatar_path, role, created_at, updated_at, name_font, name_color_from, name_color_to, banner_path").eq("username", username.toLowerCase()).maybeSingle();
   if (!data) return null;
   const [{ data: premium }, { data: discord }] = await Promise.all([
     admin.from("tool_entitlements").select("id").eq("user_id", data.id).gt("expires_at", new Date().toISOString()).limit(1),
@@ -36,8 +36,10 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
     from: profile.name_color_from || "#ffffff",
     to: profile.name_color_to || null,
   };
-  const bannerStyle =
-    premium && nameStyle.to
+  const bannerUrl = premium ? bannerApiUrl(profile) : null;
+  const bannerStyle = bannerUrl
+    ? { backgroundImage: `url("${bannerUrl}")` }
+    : premium && nameStyle.to
       ? { backgroundImage: `linear-gradient(120deg, ${nameStyle.from}, ${nameStyle.to})` }
       : undefined;
   const joined = new Date(profile.created_at).toLocaleDateString("tr-TR", { year: "numeric", month: "long" });
@@ -45,7 +47,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
   return (
     <div className="page-inner public-profile-page">
       <section className="public-profile-card">
-        <div className="public-profile-banner" style={bannerStyle} aria-hidden="true" />
+        <div className={`public-profile-banner${bannerUrl ? " has-image" : ""}`} style={bannerStyle} aria-hidden="true" />
         <div className="public-profile-body">
           <Image src={avatarApiUrl(profile)} alt={`${profile.username} avatar`} width={128} height={128} unoptimized className="public-profile-avatar" />
           <div className="public-profile-head">

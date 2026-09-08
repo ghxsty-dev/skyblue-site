@@ -36,6 +36,7 @@ export interface ProfileRecord {
   name_font: string | null;
   name_color_from: string | null;
   name_color_to: string | null;
+  banner_path: string | null;
 }
 
 export interface ToolEntitlement {
@@ -53,4 +54,9 @@ export interface DiscordLink {
 export function avatarApiUrl(profile: Pick<ProfileRecord, "id" | "avatar_path" | "updated_at">): string {
   if (!profile.avatar_path) return "/process-logo-blue.webp";
   return `/api/users/avatar/${profile.id}?v=${encodeURIComponent(profile.updated_at)}`;
+}
+
+export function bannerApiUrl(profile: Pick<ProfileRecord, "id" | "banner_path" | "updated_at">): string | null {
+  if (!profile.banner_path) return null;
+  return `/api/users/banner/${profile.id}?v=${encodeURIComponent(profile.updated_at)}`;
 }

@@ -3532,6 +3532,26 @@ button.pixel-rank-dot:hover {
   line-height: 1.6;
 }
 
+.account-banner-preview {
+  margin: 18px 0 4px;
+  height: 120px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--bg2);
+}
+
+.avatar-crop-dialog.avatar-crop-dialog-wide {
+  width: min(720px, calc(100vw - 32px));
+}
+
+.avatar-crop-area-wide {
+  aspect-ratio: 5 / 1;
+  height: auto;
+  min-height: 120px;
+}
+
 .account-form-ok {
   color: #22c55e;
   font-size: 0.78rem;
@@ -3672,6 +3692,15 @@ button.pixel-rank-dot:hover {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 45%, rgba(0, 0, 0, 0.22));
+}
+
+.public-profile-banner.has-image {
+  background-size: cover;
+  background-position: center;
+}
+
+.public-profile-banner.has-image::before {
+  display: none;
 }
 
 .public-profile-body {

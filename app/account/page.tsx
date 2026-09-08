@@ -3,10 +3,11 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import AccountLogoutButton from "@/components/account/AccountLogoutButton";
 import AvatarEditor from "@/components/account/AvatarEditor";
+import BannerEditor from "@/components/account/BannerEditor";
 import NameStyleEditor from "@/components/account/NameStyleEditor";
 import ProfileBadges from "@/components/account/ProfileBadges";
 import StyledUsername from "@/components/account/StyledUsername";
-import { avatarApiUrl, type DiscordLink, type ProfileRecord, type ToolEntitlement } from "@/lib/account/types";
+import { avatarApiUrl, bannerApiUrl, type DiscordLink, type ProfileRecord, type ToolEntitlement } from "@/lib/account/types";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -26,7 +27,7 @@ export default async function AccountPage() {
   if (!user) redirect("/login");
 
   const [{ data: profileData }, { data: entitlementData }, { data: discordData }] = await Promise.all([
-    supabase.from("profiles").select("id, username, avatar_path, role, created_at, updated_at, name_font, name_color_from, name_color_to").eq("id", user.id).single(),
+    supabase.from("profiles").select("id, username, avatar_path, role, created_at, updated_at, name_font, name_color_from, name_color_to, banner_path").eq("id", user.id).single(),
     supabase.from("tool_entitlements").select("tool_slug, expires_at").eq("user_id", user.id),
     supabase.from("discord_links").select("discord_user_id, discord_username, discord_avatar, verified_at").eq("user_id", user.id).maybeSingle(),
   ]);
@@ -70,6 +71,8 @@ export default async function AccountPage() {
       </section>
 
       <NameStyleEditor username={profile.username} initial={nameStyle} premium={namePremium} />
+
+      <BannerEditor current={bannerApiUrl(profile)} premium={namePremium} />
     </div>
   );
 }
