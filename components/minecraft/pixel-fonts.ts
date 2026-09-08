@@ -1,5 +1,7 @@
 export type Glyph = readonly string[];
 
+import { DAYDREAM_GLYPHS, DETERMINATION_GLYPHS, KIWISODA_GLYPHS } from "./dafont-fonts";
+
 export interface PixelFont {
   id: string;
   name: string;
@@ -239,6 +241,9 @@ const RETRO_7_GLYPHS: Record<string, Glyph> = {
 export const PIXEL_FONTS: readonly PixelFont[] = [
   { id: "kare-5", name: "Kare 5", height: 5, descTr: "Köşeli · 5px · kalın blok", descEn: "Square · 5px · bold block", glyphs: KARE_5_GLYPHS },
   { id: "retro-7", name: "Retro 7", height: 7, descTr: "Oyun tarzı · 7px · yuvarlak hatlar", descEn: "Arcade · 7px · rounded strokes", glyphs: RETRO_7_GLYPHS },
+  { id: "kiwisoda", name: "Kiwisoda", height: 23, descTr: "Yuvarlak · 23px · tatlı piksel", descEn: "Rounded · 23px · cute pixels", glyphs: KIWISODA_GLYPHS },
+  { id: "daydream", name: "Daydream", height: 31, descTr: "Kalın · 31px · balon piksel", descEn: "Bold · 31px · bubbly pixels", glyphs: DAYDREAM_GLYPHS },
+  { id: "determination", name: "Determination", height: 22, descTr: "Tek aralıklı · 22px · keskin piksel", descEn: "Monospace · 22px · crisp pixels", glyphs: DETERMINATION_GLYPHS },
   { id: "block", name: "Block 5", height: 5, descTr: "Klasik · 5px · kalın ve net", descEn: "Classic · 5px · bold and crisp", glyphs: BASE_GLYPHS },
   { id: "minecraft-ten", name: "Minecraft Ten", height: 7, descTr: "Modern · 7px · ince ve detaylı", descEn: "Modern · 7px · slim and detailed", glyphs: MINECRAFT_TEN_GLYPHS },
 ];
