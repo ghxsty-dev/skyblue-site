@@ -51,7 +51,7 @@ export default async function AccountPage() {
         <AccountLogoutButton />
       </header>
 
-      <section className="account-profile-layout">
+      <section className="account-profile-layout account-card">
         <AvatarEditor src={avatarApiUrl(profile)} username={profile.username} />
         <div className="account-profile-summary">
           <div className="account-profile-name"><h2><StyledUsername username={profile.username} style={nameStyle} enabled={namePremium} /></h2><ProfileBadges premium={activePremium.length > 0} discordUsername={discord?.discord_username} role={profile.role} /></div>
@@ -60,19 +60,23 @@ export default async function AccountPage() {
         </div>
       </section>
 
-      <section className="account-access-section">
-        <div className="account-section-heading"><div><span>Tool erişimi</span><h2>Minecraft Rank Generator</h2></div>{rankPremium ? <span className="account-badge premium"><img src="/premium.webp" alt="" width={12} height={12} />Premium aktif</span> : <Link href="/account/premium?tool=minecraft-rank" className="account-primary-button">Premium üyesi ol</Link>}</div>
-        <div className="account-access-grid">
-          <div><span>Premium</span><strong>{rankPremium ? "Aktif" : "Free"}</strong></div>
-          <div><span>Discord</span><strong>{discord ? `@${discord.discord_username}` : "Bağlı değil"}</strong></div>
-          <div><span>Günlük limit</span><strong>{rankPremium ? "Sınırsız" : discord ? "4 indirme" : "2 indirme"}</strong></div>
+      <div className="account-grid">
+        <section className="account-access-section account-card">
+          <div className="account-section-heading"><div><span>Tool erişimi</span><h2>Minecraft Rank Generator</h2></div>{rankPremium ? <span className="account-badge premium"><img src="/premium.webp" alt="" width={12} height={12} />Premium aktif</span> : <Link href="/account/premium?tool=minecraft-rank" className="account-primary-button">Premium üyesi ol</Link>}</div>
+          <div className="account-access-grid">
+            <div><span>Premium</span><strong>{rankPremium ? "Aktif" : "Free"}</strong></div>
+            <div><span>Discord</span><strong>{discord ? `@${discord.discord_username}` : "Bağlı değil"}</strong></div>
+            <div><span>Günlük limit</span><strong>{rankPremium ? "Sınırsız" : discord ? "4 indirme" : "2 indirme"}</strong></div>
+          </div>
+          {!discord && <Link href="/account/discord" className="account-text-link">Discord hesabını doğrula ve günlük +2 indirme kazan</Link>}
+        </section>
+
+        <NameStyleEditor username={profile.username} initial={nameStyle} premium={namePremium} />
+
+        <div className="account-grid-full">
+          <BannerEditor current={bannerApiUrl(profile)} premium={namePremium} />
         </div>
-        {!discord && <Link href="/account/discord" className="account-text-link">Discord hesabını doğrula ve günlük +2 indirme kazan</Link>}
-      </section>
-
-      <NameStyleEditor username={profile.username} initial={nameStyle} premium={namePremium} />
-
-      <BannerEditor current={bannerApiUrl(profile)} premium={namePremium} />
+      </div>
     </div>
   );
 }

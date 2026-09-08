@@ -3176,10 +3176,26 @@ button.pixel-rank-dot:hover {
   grid-template-columns: 170px minmax(0, 1fr);
   gap: 32px;
   align-items: center;
-  margin-top: 34px;
-  padding: 28px 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  margin-top: 24px;
+}
+
+.account-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  margin-top: 16px;
+}
+
+.account-grid-full {
+  grid-column: 1 / -1;
+}
+
+.account-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card-bg);
+  padding: 22px;
 }
 
 .account-avatar-editor {
@@ -3328,7 +3344,7 @@ button.pixel-rank-dot:hover {
 }
 
 .account-access-section {
-  padding: 36px 0 24px;
+  padding: 0;
 }
 
 .account-section-heading h2 {
@@ -3360,8 +3376,8 @@ button.pixel-rank-dot:hover {
 }
 
 .account-name-style {
-  padding: 36px 0 24px;
-  border-top: 1px solid var(--border);
+  padding: 0;
+  border-top: 0;
 }
 
 .account-name-preview {
@@ -3543,13 +3559,13 @@ button.pixel-rank-dot:hover {
 }
 
 .avatar-crop-dialog.avatar-crop-dialog-wide {
-  width: min(720px, calc(100vw - 32px));
+  width: min(800px, calc(100vw - 32px));
 }
 
-.avatar-crop-area-wide {
-  aspect-ratio: 5 / 1;
+.avatar-crop-area.avatar-crop-area-wide {
   height: auto;
-  min-height: 120px;
+  aspect-ratio: 5 / 1;
+  min-height: 150px;
 }
 
 .account-form-ok {
@@ -4098,6 +4114,7 @@ button.pixel-rank-dot:hover {
   .auth-split-form { padding: 28px 20px; }
   .account-page-header, .account-section-heading { align-items: flex-start; flex-direction: column; }
   .account-profile-layout { grid-template-columns: 1fr; }
+  .account-grid { grid-template-columns: 1fr; }
   .account-profile-summary { text-align: center; }
   .account-profile-name, .account-badges { justify-content: center; }
   .account-profile-summary dl { grid-template-columns: 1fr; gap: 12px; }

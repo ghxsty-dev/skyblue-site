@@ -93,7 +93,7 @@ export default function BannerEditor({ current, premium }: BannerEditorProps) {
 
   if (!premium) {
     return (
-      <section className="account-name-style">
+      <section className="account-name-style account-card">
         <div className="account-section-heading">
           <div><span>Premium</span><h2>{tr ? "Profil Bannerı" : "Profile Banner"}</h2></div>
           <span className="account-badge">Premium özel</span>
@@ -171,7 +171,7 @@ export default function BannerEditor({ current, premium }: BannerEditorProps) {
   }
 
   return (
-    <section className="account-name-style">
+    <section className="account-name-style account-card">
       <div className="account-section-heading">
         <div><span>Premium</span><h2>{tr ? "Profil Bannerı" : "Profile Banner"}</h2></div>
         <span className="account-badge premium"><img src="/premium.webp" alt="" width={12} height={12} />{tr ? "Aktif" : "Active"}</span>
