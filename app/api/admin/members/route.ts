@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "@/lib/admin/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isTrustedMutation } from "@/lib/account/request";
 import { notifyPremiumActive, removePremiumRole } from "@/lib/discord-premium";
 import type { UserRole } from "@/lib/account/types";
@@ -8,6 +9,34 @@ import type { UserRole } from "@/lib/account/types";
 export const runtime = "nodejs";
 
 const VALID_ROLES: UserRole[] = ["user", "kurucu", "bas-gelirtici", "gelirtici", "k-gelirtici", "moderator", "rehber"];
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+async function getActorId(): Promise<string | null> {
+  try {
+    const supabase = await createSupabaseServerClient();
+    if (!supabase) return null;
+    const { data: { user } } = await supabase.auth.getUser();
+    return user?.id || null;
+  } catch {
+    return null;
+  }
+}
+
+async function auditLog(
+  admin: NonNullable<ReturnType<typeof createSupabaseAdminClient>>,
+  entry: { admin_id: string; target_user_id: string; action: string; detail?: string },
+) {
+  try {
+    await admin.from("admin_audit_logs").insert({
+      admin_id: entry.admin_id,
+      target_user_id: entry.target_user_id,
+      action: entry.action,
+      detail: (entry.detail || "").slice(0, 500),
+    });
+  } catch (error) {
+    console.error("[admin] audit log failed:", error instanceof Error ? error.message : error);
+  }
+}
 
 export async function GET() {
   if (!(await isAdmin())) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
@@ -23,6 +52,19 @@ export async function GET() {
 
   const userIds = (profiles || []).map((p) => p.id);
   const now = new Date().toISOString();
+
+  // Auth kullanıcıları (e-posta, son giriş) — sayfalı çekilir.
+  const authMap = new Map<string, { email: string | null; last_sign_in_at: string | null }>();
+  let page = 1;
+  for (;;) {
+    const { data: listData, error: listError } = await admin.auth.admin.listUsers({ page, perPage: 200 });
+    if (listError || !listData?.users?.length) break;
+    for (const u of listData.users) {
+      authMap.set(u.id, { email: u.email || null, last_sign_in_at: u.last_sign_in_at || null });
+    }
+    if (listData.users.length < 200 || page >= 10) break;
+    page += 1;
+  }
 
   const [{ data: discordLinks }, { data: entitlements }] = await Promise.all([
     admin.from("discord_links").select("user_id, discord_username").in("user_id", userIds),
@@ -48,6 +90,8 @@ export async function GET() {
     created_at: p.created_at,
     discord_username: discordMap.get(p.id as string) || null,
     premium_expires_at: premiumMap.get(p.id as string) || null,
+    email: authMap.get(p.id as string)?.email || null,
+    last_sign_in_at: authMap.get(p.id as string)?.last_sign_in_at || null,
   }));
 
   return NextResponse.json({ members }, { headers: { "Cache-Control": "no-store" } });
@@ -164,6 +208,51 @@ export async function PUT(request: NextRequest) {
       discordDmSent: discordResult.dmSent,
       discordError: discordResult.error,
     });
+  }
+
+  if (action === "set-password") {
+    // Hesap kurtarma: kullanıcı kimliğini (Discord vb.) doğruladıktan sonra
+    // bildirdiği yeni şifreyi ata. Şifre e-postayla gönderilmez, elden iletilir.
+    const password = String(body.password || "");
+    if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/\d/.test(password)) {
+      return NextResponse.json({ error: "WEAK_PASSWORD" }, { status: 400 });
+    }
+    const { error } = await admin.auth.admin.updateUserById(String(userId), { password });
+    if (error) {
+      const message = error.message.toLowerCase();
+      if (message.includes("not found") || message.includes("no user")) {
+        return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 404 });
+      }
+      return NextResponse.json({ error: "UPDATE_FAILED" }, { status: 500 });
+    }
+    const actorId = await getActorId();
+    if (actorId) {
+      await auditLog(admin, { admin_id: actorId, target_user_id: String(userId), action: "set-password" });
+    }
+    return NextResponse.json({ ok: true });
+  }
+
+  if (action === "set-email") {
+    // E-posta erişimini kaybeden hesaplar için adres değiştirme.
+    const email = String(body.email || "").trim().toLowerCase();
+    if (!EMAIL_RE.test(email)) return NextResponse.json({ error: "INVALID_EMAIL" }, { status: 400 });
+    const { data: current } = await admin.auth.admin.getUserById(String(userId));
+    if (!current?.user) return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 404 });
+    const oldEmail = current.user.email || "";
+    if (oldEmail === email) return NextResponse.json({ error: "EMAIL_UNCHANGED" }, { status: 400 });
+    const { error } = await admin.auth.admin.updateUserById(String(userId), { email, email_confirm: true });
+    if (error) {
+      const message = error.message.toLowerCase();
+      if (message.includes("already") || message.includes("registered") || message.includes("in use") || message.includes("exists")) {
+        return NextResponse.json({ error: "EMAIL_TAKEN" }, { status: 409 });
+      }
+      return NextResponse.json({ error: "UPDATE_FAILED" }, { status: 500 });
+    }
+    const actorId = await getActorId();
+    if (actorId) {
+      await auditLog(admin, { admin_id: actorId, target_user_id: String(userId), action: "set-email", detail: `${oldEmail} -> ${email}` });
+    }
+    return NextResponse.json({ ok: true, email });
   }
 
   return NextResponse.json({ error: "INVALID_ACTION" }, { status: 400 });

@@ -13,6 +13,8 @@ interface Member {
   created_at: string;
   discord_username: string | null;
   premium_expires_at: string | null;
+  email: string | null;
+  last_sign_in_at: string | null;
 }
 
 const ROLE_OPTIONS: UserRole[] = ["user", "rehber", "moderator", "k-gelirtici", "gelirtici", "bas-gelirtici", "kurucu"];
@@ -30,6 +32,10 @@ export default function MembersTab() {
   const [actionPending, setActionPending] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [premiumDuration, setPremiumDuration] = useState(1);
+  const [pwInput, setPwInput] = useState<Record<string, string>>({});
+  const [emailInput, setEmailInput] = useState<Record<string, string>>({});
+  const [recoveryMsg, setRecoveryMsg] = useState<Record<string, { ok: boolean; text: string }>>({});
+  const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
 
   const loadMembers = useCallback(async () => {
     try {
@@ -123,8 +129,85 @@ export default function MembersTab() {
     m.username.toLowerCase().includes(search.toLowerCase()) ||
     m.role.includes(search.toLowerCase()) ||
     m.discord_username?.toLowerCase().includes(search.toLowerCase()) ||
+    m.email?.toLowerCase().includes(search.toLowerCase()) ||
     m.signup_ip?.includes(search)
   );
+
+  function generatePassword(): string {
+    const chars = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789";
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      const bytes = new Uint8Array(14);
+      window.crypto.getRandomValues(bytes);
+      const pw = Array.from(bytes, (b) => chars[b % chars.length]).join("");
+      if (/[a-zA-Z]/.test(pw) && /\d/.test(pw)) return pw;
+    }
+    return `Sky-${Date.now().toString(36)}-9`;
+  }
+
+  async function copyEmail(email: string) {
+    try {
+      await navigator.clipboard.writeText(email);
+      setCopiedEmail(email);
+      window.setTimeout(() => setCopiedEmail((prev) => (prev === email ? null : prev)), 1800);
+    } catch {
+      setError("E-posta kopyalanamadı.");
+    }
+  }
+
+  async function setPassword(userId: string, username: string) {
+    const password = (pwInput[userId] || "").trim();
+    if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/\d/.test(password)) {
+      setRecoveryMsg((prev) => ({ ...prev, [userId]: { ok: false, text: "Şifre en az 8 karakter, bir harf ve bir rakam içermeli." } }));
+      return;
+    }
+    if (!window.confirm(`@${username} için şifre değiştirilsin mi? Eski şifre geçersiz olur. Bu işlem denetim kaydına işlenir.`)) return;
+    setActionPending(userId);
+    try {
+      const response = await fetch("/api/admin/members", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, action: "set-password", password }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || "UPDATE_FAILED");
+      setPwInput((prev) => ({ ...prev, [userId]: "" }));
+      setRecoveryMsg((prev) => ({ ...prev, [userId]: { ok: true, text: "Şifre güncellendi. Yeni şifreyi kullanıcıya güvenli kanaldan iletin." } }));
+    } catch {
+      setRecoveryMsg((prev) => ({ ...prev, [userId]: { ok: false, text: "Şifre güncellenemedi." } }));
+    } finally {
+      setActionPending(null);
+    }
+  }
+
+  async function setEmail(userId: string, username: string) {
+    const email = (emailInput[userId] || "").trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setRecoveryMsg((prev) => ({ ...prev, [userId]: { ok: false, text: "Geçerli bir e-posta girin." } }));
+      return;
+    }
+    if (!window.confirm(`@${username} hesabının e-postası ${email} olarak değiştirilsin mi? Bu işlem denetim kaydına işlenir.`)) return;
+    setActionPending(userId);
+    try {
+      const response = await fetch("/api/admin/members", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, action: "set-email", email }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (result.error === "EMAIL_TAKEN") throw new Error("Bu e-posta başka bir hesapta kullanılıyor.");
+        if (result.error === "EMAIL_UNCHANGED") throw new Error("E-posta zaten aynı.");
+        throw new Error("UPDATE_FAILED");
+      }
+      setMembers((prev) => prev.map((m) => (m.id === userId ? { ...m, email: result.email || email } : m)));
+      setEmailInput((prev) => ({ ...prev, [userId]: "" }));
+      setRecoveryMsg((prev) => ({ ...prev, [userId]: { ok: true, text: `E-posta güncellendi: ${result.email || email}` } }));
+    } catch (error) {
+      setRecoveryMsg((prev) => ({ ...prev, [userId]: { ok: false, text: error instanceof Error ? error.message : "E-posta güncellenemedi." } }));
+    } finally {
+      setActionPending(null);
+    }
+  }
 
   return (
     <>
@@ -135,7 +218,7 @@ export default function MembersTab() {
 
       <input
         type="text"
-        placeholder="Kullanıcı adı, rol, IP veya Discord ara..."
+        placeholder="Kullanıcı adı, e-posta, rol, IP veya Discord ara..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="admin-search"
@@ -235,6 +318,9 @@ export default function MembersTab() {
                           <span>Katılım: {new Date(member.created_at).toLocaleDateString("tr-TR")}</span>
                           <span>IP: {member.signup_ip || "—"}</span>
                           <span>Rol: {ROLE_LABELS[member.role]}</span>
+                          <span>
+                            Son giriş: {member.last_sign_in_at ? new Date(member.last_sign_in_at).toLocaleString("tr-TR") : "—"}
+                          </span>
                         </div>
                         <div className="admin-expanded-actions">
                           <div className="admin-premium-assign">
@@ -275,6 +361,80 @@ export default function MembersTab() {
                             {member.banned ? "Banı Kaldır" : "Banla"}
                           </button>
                         </div>
+                      </div>
+                      <div className="admin-recovery">
+                        <div className="admin-recovery-title">E-posta & Hesap Kurtarma</div>
+                        <div className="admin-recovery-row">
+                          <span className="admin-recovery-email">{member.email || "E-posta yok"}</span>
+                          {member.email && (
+                            <>
+                              <button
+                                type="button"
+                                className="admin-btn small"
+                                onClick={() => copyEmail(member.email as string)}
+                              >
+                                {copiedEmail === member.email ? "Kopyalandı" : "Kopyala"}
+                              </button>
+                              <a className="admin-btn small" href={`mailto:${member.email}`}>
+                                E-posta Gönder
+                              </a>
+                            </>
+                          )}
+                        </div>
+                        <div className="admin-recovery-row">
+                          <input
+                            type="text"
+                            autoComplete="off"
+                            spellCheck={false}
+                            placeholder="Yeni şifre (en az 8 karakter, harf + rakam)"
+                            value={pwInput[member.id] || ""}
+                            onChange={(e) => setPwInput((prev) => ({ ...prev, [member.id]: e.target.value }))}
+                            className="admin-search admin-recovery-input"
+                          />
+                          <button
+                            type="button"
+                            className="admin-btn small"
+                            onClick={() => setPwInput((prev) => ({ ...prev, [member.id]: generatePassword() }))}
+                          >
+                            Üret
+                          </button>
+                          <button
+                            type="button"
+                            className="admin-btn primary small"
+                            disabled={actionPending === member.id}
+                            onClick={() => setPassword(member.id, member.username)}
+                          >
+                            Şifreyi Kaydet
+                          </button>
+                        </div>
+                        <div className="admin-recovery-row">
+                          <input
+                            type="email"
+                            autoComplete="off"
+                            spellCheck={false}
+                            placeholder="Yeni e-posta adresi"
+                            value={emailInput[member.id] || ""}
+                            onChange={(e) => setEmailInput((prev) => ({ ...prev, [member.id]: e.target.value }))}
+                            className="admin-search admin-recovery-input"
+                          />
+                          <button
+                            type="button"
+                            className="admin-btn primary small"
+                            disabled={actionPending === member.id}
+                            onClick={() => setEmail(member.id, member.username)}
+                          >
+                            E-postayı Değiştir
+                          </button>
+                        </div>
+                        <p className="admin-hint">
+                          Önce Discord ({member.discord_username ? `@${member.discord_username}` : "bağlı değil"}) üzerinden
+                          kimliği doğrulayın. Şifre/e-posta işlemleri denetim kaydına işlenir.
+                        </p>
+                        {recoveryMsg[member.id] && (
+                          <p className={recoveryMsg[member.id].ok ? "admin-recovery-ok" : "admin-error"} role="status">
+                            {recoveryMsg[member.id].text}
+                          </p>
+                        )}
                       </div>
                     </td>
                   </tr>
