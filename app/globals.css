@@ -3256,6 +3256,56 @@ button.pixel-rank-dot:hover {
   color: #34d399;
 }
 
+.account-badge.role-kurucu {
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #ef4444;
+}
+
+.account-badge.role-bas-gelirtici {
+  border-color: rgba(192, 132, 252, 0.35);
+  color: #c084fc;
+}
+
+.account-badge.role-gelirtici {
+  border-color: rgba(34, 211, 238, 0.35);
+  color: #22d3ee;
+}
+
+.account-badge.role-k-gelirtici {
+  border-color: rgba(249, 115, 22, 0.35);
+  color: #f97316;
+}
+
+.account-badge.is-icon {
+  min-width: 26px;
+  min-height: 26px;
+  padding: 4px;
+  justify-content: center;
+}
+
+.account-badge[data-tip] {
+  position: relative;
+}
+
+.account-badge[data-tip]:hover::after,
+.account-badge[data-tip]:active::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: #161b22;
+  color: var(--text);
+  font-size: 0.66rem;
+  font-weight: 700;
+  white-space: nowrap;
+  z-index: 50;
+  pointer-events: none;
+}
+
 .account-profile-summary dl {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

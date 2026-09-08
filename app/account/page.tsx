@@ -4,8 +4,9 @@ import { redirect } from "next/navigation";
 import AccountLogoutButton from "@/components/account/AccountLogoutButton";
 import AvatarEditor from "@/components/account/AvatarEditor";
 import NameStyleEditor from "@/components/account/NameStyleEditor";
+import ProfileBadges from "@/components/account/ProfileBadges";
 import StyledUsername from "@/components/account/StyledUsername";
-import { avatarApiUrl, ROLE_LABELS, type DiscordLink, type ProfileRecord, type ToolEntitlement, type UserRole } from "@/lib/account/types";
+import { avatarApiUrl, type DiscordLink, type ProfileRecord, type ToolEntitlement } from "@/lib/account/types";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -52,7 +53,7 @@ export default async function AccountPage() {
       <section className="account-profile-layout">
         <AvatarEditor src={avatarApiUrl(profile)} username={profile.username} />
         <div className="account-profile-summary">
-          <div className="account-profile-name"><h2><StyledUsername username={profile.username} style={nameStyle} enabled={namePremium} /></h2><div className="account-badges">{activePremium.length > 0 && <span className="account-badge premium"><img src="/premium.webp" alt="" width={12} height={12} />Premium</span>}{discord && <span className="account-badge discord">Discord</span>}{profile.role !== "user" && <span className={`account-badge role-${profile.role}`}>{ROLE_LABELS[profile.role as UserRole]}</span>}</div></div>
+          <div className="account-profile-name"><h2><StyledUsername username={profile.username} style={nameStyle} enabled={namePremium} /></h2><ProfileBadges premium={activePremium.length > 0} discordUsername={discord?.discord_username} role={profile.role} /></div>
           <dl><div><dt>E-posta</dt><dd>{user.email}</dd></div><div><dt>Kullanıcı adı</dt><dd>Değiştirilemez</dd></div><div><dt>Katılım</dt><dd>{new Date(profile.created_at).toLocaleDateString("tr-TR")}</dd></div></dl>
           <Link href={`/users/${profile.username}`} className="account-text-link">Public profili görüntüle</Link>
         </div>
