@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useApp } from "@/lib/context";
-import { MenuIcon, UserIcon } from "@/lib/icons";
+import { MenuIcon, UserIcon, SettingsIcon, SparklesIcon } from "@/lib/icons";
 
 const links = ["home", "designs", "services", "contact"] as const;
 
@@ -190,7 +190,7 @@ export default function Nav() {
                     )}
                     <div className="nav-dropdown-divider" />
                     <a href="/account" onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
-                      <span className="nav-dropdown-icon">⚙</span>
+                      <span className="nav-dropdown-icon"><SettingsIcon size={16} /></span>
                       {t.accountSettings}
                     </a>
                   </>
@@ -201,7 +201,7 @@ export default function Nav() {
                       {t.signIn}
                     </a>
                     <a href="/register" onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
-                      <span className="nav-dropdown-icon">✦</span>
+                      <span className="nav-dropdown-icon"><SparklesIcon size={16} /></span>
                       {t.signUp}
                     </a>
                   </>

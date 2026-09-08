@@ -3513,6 +3513,110 @@ main {
   line-height: 1.4;
 }
 
+.admin-discount-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.admin-discount-card {
+  background: #0d1117;
+  border: 1px solid #1c2128;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.admin-discount-card.active {
+  border-color: #2ea043;
+}
+
+.admin-discount-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid #1c2128;
+}
+
+.admin-discount-icon {
+  font-size: 1.5rem;
+}
+
+.admin-discount-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.admin-discount-subtitle {
+  font-size: 0.72rem;
+  color: #8b949e;
+  margin: 2px 0 0;
+}
+
+.admin-discount-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-discount-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-discount-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #1c2128;
+  outline: none;
+}
+
+.admin-discount-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #59abfe;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.admin-discount-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #59abfe;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.admin-discount-value {
+  font-size: 1.2rem;
+  font-weight: 800;
+  min-width: 50px;
+  text-align: right;
+  background: linear-gradient(135deg, #97cdf2, #59abfe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.admin-discount-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid #1c2128;
+}
+
 .admin-error {
   padding: 10px 14px;
   border-radius: 8px;

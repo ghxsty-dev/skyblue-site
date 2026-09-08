@@ -43,6 +43,7 @@ export default function DesignPage() {
 
   const [apiPackages, setApiPackages] = useState<ApiProduct[]>([]);
   const [apiDesignItems, setApiDesignItems] = useState<ApiProduct[]>([]);
+  const [designDiscount, setDesignDiscount] = useState<{ percent: number; label: string | null }>({ percent: 0, label: null });
 
   useEffect(() => {
     fetch("/api/design-products", { cache: "no-store" })
@@ -53,7 +54,14 @@ export default function DesignPage() {
         setApiDesignItems(products.filter((p) => p.category === "design"));
       })
       .catch(() => {});
-  }, []);
+    fetch("/api/discounts", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((result) => {
+        const d = (result.discounts || []).find((x: { category: string }) => x.category === "design");
+        if (d) setDesignDiscount({ percent: d.percent, label: lang === "TR" ? d.label_tr : d.label_en });
+      })
+      .catch(() => {});
+  }, [lang]);
 
   const d = fallbackData[lang as "EN" | "TR"];
   const packages = apiPackages.length > 0
@@ -67,11 +75,16 @@ export default function DesignPage() {
     : d.packages;
 
   const allItems = apiDesignItems.length > 0
-    ? apiDesignItems.map((p) => ({
-        title: getStr(p.data, lang, "title"),
-        price: getNum(p.data, lang, "price"),
-        unit: getStr(p.data, lang, "unit") || undefined,
-      }))
+    ? apiDesignItems.map((p) => {
+        const basePrice = getNum(p.data, lang, "price");
+        const discounted = designDiscount.percent > 0 ? Math.round(basePrice * (1 - designDiscount.percent / 100)) : basePrice;
+        return {
+          title: getStr(p.data, lang, "title"),
+          price: discounted,
+          basePrice,
+          unit: getStr(p.data, lang, "unit") || undefined,
+        };
+      })
     : (d.design as Record<string, unknown>).all
       ? ((d.design as Record<string, Record<string, unknown>>).all.items as Array<Record<string, unknown>>)
       : [];
@@ -200,6 +213,11 @@ export default function DesignPage() {
             <h3 className="text-lg font-bold text-[var(--text)]">
               {t.createOwn}
             </h3>
+            {designDiscount.percent > 0 && (
+              <span className="admin-badge" style={{ background: "rgba(46, 160, 67, 0.15)", color: "#2ea043", border: "1px solid rgba(46, 160, 67, 0.3)" }}>
+                %{designDiscount.percent} {designDiscount.label || (lang === "TR" ? "İndirim" : "Off")}
+              </span>
+            )}
           </div>
           <p className="text-sm text-[var(--text2)] mb-5">{t.createOwnDesc}</p>
 
@@ -227,7 +245,10 @@ export default function DesignPage() {
                       >
                         <span className="text-sm font-medium text-[var(--text)]">{itemTitle}</span>
                         <div className="flex flex-col items-center mt-1">
-                          <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{price} TL</span>
+                          <span className="text-xs font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">{Number(item.price || 0)} TL</span>
+                          {designDiscount.percent > 0 && Number((item as Record<string, unknown>).basePrice || 0) > 0 && (
+                            <span className="text-[9px] text-[var(--text2)] line-through">{String((item as Record<string, unknown>).basePrice)} TL</span>
+                          )}
                           {Boolean(item.unit) && (
                             <span className="text-[9px] text-[var(--text2)]">/ {String(item.unit as string)}</span>
                           )}
