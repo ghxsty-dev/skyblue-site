@@ -29,6 +29,12 @@ const BASE_PREVIEW_SCALE = 22;
 const TEXT_COLORS = ["#ffffff", "#0b0d10", "#ffd166", "#ff6b6b", "#68d391", "#c084fc", "#59abfe", "#f97316", "#ec4899", "#14b8a6", "#eab308", "#a855f7"];
 const SOLID_COLORS = ["#59abfe", "#2f80ed", "#0b0d10", "#4a5568", "#f1f4f7", "#7c3aed", "#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#ec4899"];
 
+const INITIAL_FONT_ID = "kare-5";
+const INITIAL_TEXT = "VIP";
+const INITIAL_LAYOUT = buildPixelText(getPixelFont(INITIAL_FONT_ID), INITIAL_TEXT);
+const INITIAL_W = INITIAL_LAYOUT.width + PADDING_X * 2;
+const INITIAL_H = INITIAL_LAYOUT.height + PADDING_Y * 2;
+
 type Pixel = string | null;
 type PixelGrid = Pixel[][];
 type Tool = "brush" | "eraser";
@@ -81,17 +87,16 @@ function averageBgColor(grid: PixelGrid): string {
 
 export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const cleanPreviewRef = useRef<HTMLCanvasElement>(null);
   const stageWrapRef = useRef<HTMLDivElement>(null);
   const strokePushedRef = useRef(false);
 
-  const backgroundRef = useRef<PixelGrid>(buildGradientGrid(21, 9, DEFAULT_PRESET.from, DEFAULT_PRESET.to, "vertical"));
+  const backgroundRef = useRef<PixelGrid>(buildGradientGrid(INITIAL_W, INITIAL_H, DEFAULT_PRESET.from, DEFAULT_PRESET.to, "vertical"));
   const undoRef = useRef<PixelGrid[]>([]);
   const redoRef = useRef<PixelGrid[]>([]);
 
-  const [text, setText] = useState("VIP");
-  const [projectName, setProjectName] = useState("VIP");
-  const [fontId, setFontId] = useState(PIXEL_FONTS[0].id);
+  const [text, setText] = useState(INITIAL_TEXT);
+  const [projectName, setProjectName] = useState(INITIAL_TEXT);
+  const [fontId, setFontId] = useState(INITIAL_FONT_ID);
   const [textColor, setTextColor] = useState(DEFAULT_PRESET.text);
   const [extraTextColors, setExtraTextColors] = useState<string[]>([]);
 
@@ -108,7 +113,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [showGrid, setShowGrid] = useState(true);
 
   const [background, setBackground] = useState<PixelGrid>(() =>
-    buildGradientGrid(21, 9, DEFAULT_PRESET.from, DEFAULT_PRESET.to, "vertical"),
+    buildGradientGrid(INITIAL_W, INITIAL_H, DEFAULT_PRESET.from, DEFAULT_PRESET.to, "vertical"),
   );
   const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
   const [autoScale, setAutoScale] = useState(BASE_PREVIEW_SCALE);
@@ -146,8 +151,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         unsupportedHint: "Desteklenmeyen karakterler ? olarak görünür.",
         step2: "2 · Font ve yazı rengi",
         font: "Pixel font",
-        fontBlockDesc: "Klasik · 5px · kalın ve net",
-        fontTenDesc: "Modern · 7px · ince ve detaylı",
         textColor: "Yazı rengi",
         customColor: "Özel renk",
         lowContrast: "Yazı arka planda zor okunabilir. Daha zıt bir renk dene.",
@@ -174,7 +177,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         showGridLines: "Izgara çizgileri",
         customHint: "Sadece ince detaylar için — çoğu işi gradientler halleder.",
         previewTitle: "Canlı önizleme",
-        chatPreview: "Oyun içi (sohbet) önizleme",
         actualSize: "Gerçek boyut",
         zoomIn: "Yakınlaştır",
         zoomOut: "Uzaklaştır",
@@ -204,8 +206,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         unsupportedHint: "Unsupported characters render as ?.",
         step2: "2 · Font & text color",
         font: "Pixel font",
-        fontBlockDesc: "Classic · 5px · bold and crisp",
-        fontTenDesc: "Modern · 7px · slim and detailed",
         textColor: "Text color",
         customColor: "Custom color",
         lowContrast: "Text is hard to read on this background. Try a more contrasting color.",
@@ -232,7 +232,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         showGridLines: "Grid lines",
         customHint: "Only for fine details — gradients cover most jobs.",
         previewTitle: "Live preview",
-        chatPreview: "In-game (chat) preview",
         actualSize: "Actual size",
         zoomIn: "Zoom in",
         zoomOut: "Zoom out",
@@ -431,7 +430,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
 
   useEffect(() => {
     if (canvasRef.current) drawToCanvas(canvasRef.current, background, true);
-    if (cleanPreviewRef.current) drawToCanvas(cleanPreviewRef.current, background, false);
   }, [background, drawToCanvas]);
 
   // --- Fırça (stroke bazlı undo: sürükleme artık tek hamle) ---
@@ -748,34 +746,19 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           )}
         </div>
 
-        {/* Oyun içi önizleme */}
-        <div className="pixel-rank-chat">
-          <span className="pixel-rank-chat-label">{copy.chatPreview}</span>
-          <div className="pixel-rank-chat-box">
-            <span className="pixel-rank-chat-user">Steve:</span>
-            <canvas
-              ref={cleanPreviewRef}
-              width={width}
-              height={height}
-              className="pixel-rank-chat-canvas"
-              style={{ width: `${width * 4}px`, height: `${height * 4}px` }}
-              aria-hidden="true"
-            />
-            <span className="pixel-rank-chat-text">{isTurkish ? "selam millet!" : "hello everyone!"}</span>
-          </div>
-          <div className="pixel-rank-actual">
-            <span>{copy.actualSize} (1×)</span>
-            <canvas
-              width={width}
-              height={height}
-              ref={(node) => {
-                if (node) drawToCanvas(node, background, false);
-              }}
-              className="pixel-rank-actual-canvas"
-              style={{ width: `${width}px`, height: `${height}px` }}
-              aria-hidden="true"
-            />
-          </div>
+        {/* Gerçek boyut */}
+        <div className="pixel-rank-actual">
+          <span>{copy.actualSize} (1× · {copy.dimensions})</span>
+          <canvas
+            width={width}
+            height={height}
+            ref={(node) => {
+              if (node) drawToCanvas(node, background, false);
+            }}
+            className="pixel-rank-actual-canvas"
+            style={{ width: `${width}px`, height: `${height}px` }}
+            aria-hidden="true"
+          />
         </div>
 
         <div className="pixel-rank-action-row">
@@ -914,7 +897,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
               >
                 <span className="pixel-rank-font-preview">Ag</span>
                 <span className="pixel-rank-font-name">{item.name}</span>
-                <span className="pixel-rank-font-desc">{item.id === "block" ? copy.fontBlockDesc : copy.fontTenDesc}</span>
+                <span className="pixel-rank-font-desc">{isTurkish ? item.descTr : item.descEn}</span>
               </button>
             ))}
           </div>

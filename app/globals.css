@@ -2787,58 +2787,18 @@ main {
   white-space: nowrap;
 }
 
-.pixel-rank-chat {
-  margin-top: 14px;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  background: var(--bg2);
-}
-
-.pixel-rank-chat-label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--text2);
-  font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
-.pixel-rank-chat-box {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  flex-wrap: wrap;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: #14181d;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.pixel-rank-chat-user {
-  color: #9aa4b2;
-  font-size: 0.78rem;
-}
-
-.pixel-rank-chat-canvas {
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  border-radius: 2px;
-}
-
-.pixel-rank-chat-text {
-  color: #e6e9ee;
-  font-size: 0.78rem;
-}
-
 .pixel-rank-actual {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg2);
   color: var(--text2);
   font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .pixel-rank-actual-canvas {
