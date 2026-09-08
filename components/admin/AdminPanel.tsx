@@ -6,13 +6,15 @@ import Image from "next/image";
 import TransactionsTab from "./TransactionsTab";
 import PremiumCodesTab from "./PremiumCodesTab";
 import MembersTab from "./MembersTab";
+import DesignProductsTab from "./DesignProductsTab";
 
-type Tab = "gelir-gider" | "premium-kod" | "uyeler";
+type Tab = "gelir-gider" | "premium-kod" | "uyeler" | "urunler";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "gelir-gider", label: "Gelir / Gider" },
   { id: "premium-kod", label: "Premium Kodlar" },
   { id: "uyeler", label: "Üyeler" },
+  { id: "urunler", label: "Ürünler" },
 ];
 
 export default function AdminPanel() {
@@ -62,6 +64,7 @@ export default function AdminPanel() {
         {tab === "gelir-gider" && <TransactionsTab />}
         {tab === "premium-kod" && <PremiumCodesTab />}
         {tab === "uyeler" && <MembersTab />}
+        {tab === "urunler" && <DesignProductsTab />}
       </main>
     </div>
   );

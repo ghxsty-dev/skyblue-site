@@ -3369,6 +3369,48 @@ main {
   align-items: center;
 }
 
+.admin-filter-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.admin-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  background: #0d1117;
+  border: 1px solid #1c2128;
+  border-radius: 8px;
+}
+
+.admin-add-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.admin-add-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-add-row label span {
+  font-size: 0.72rem;
+  color: #8b949e;
+  font-weight: 600;
+}
+
+.admin-edit-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .admin-error {
   padding: 10px 14px;
   border-radius: 8px;
