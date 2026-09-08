@@ -35,10 +35,38 @@ const monocraft = localFont({
   display: "swap",
 });
 
+const minicomputer = localFont({
+  src: "../public/fonts/Minicomputer.otf",
+  variable: "--font-minicomputer",
+  display: "swap",
+});
+
+const pirataOne = localFont({
+  src: "../public/fonts/PirataOne.ttf",
+  variable: "--font-pirata",
+  display: "swap",
+});
+
+const penmanship = localFont({
+  src: "../public/fonts/KGPerfectPenmanship.ttf",
+  variable: "--font-penmanship",
+  display: "swap",
+});
+
+const typewriter = localFont({
+  src: "../public/fonts/MonospaceTypewriter.ttf",
+  variable: "--font-typewriter",
+  display: "swap",
+});
+
 export {
   pressStart2P,
   vt323,
   silkscreen,
   pixelifySans,
   monocraft,
+  minicomputer,
+  pirataOne,
+  penmanship,
+  typewriter,
 };

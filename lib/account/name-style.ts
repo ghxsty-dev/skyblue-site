@@ -9,12 +9,10 @@ export interface NameFontOption {
 
 export const NAME_FONTS: readonly NameFontOption[] = [
   { id: "default", label: "Varsayılan", css: null },
-  { id: "jakarta", label: "Jakarta", css: "var(--font-sans), sans-serif" },
-  { id: "press", label: "Press Start", css: "var(--font-pixel-heading), monospace" },
-  { id: "vt323", label: "VT323", css: "var(--font-pixel-body), monospace" },
-  { id: "silkscreen", label: "Silkscreen", css: "var(--font-pixel-ui), monospace" },
-  { id: "pixelify", label: "Pixelify", css: "var(--font-pixelify), monospace" },
-  { id: "monocraft", label: "Monocraft", css: "var(--font-monocraft), monospace" },
+  { id: "minicomputer", label: "Minicomputer", css: "var(--font-minicomputer), monospace" },
+  { id: "pirata", label: "Pirata One", css: "var(--font-pirata), serif" },
+  { id: "penmanship", label: "Penmanship", css: "var(--font-penmanship), cursive" },
+  { id: "typewriter", label: "Typewriter", css: "var(--font-typewriter), monospace" },
 ];
 
 export interface NameStyle {
