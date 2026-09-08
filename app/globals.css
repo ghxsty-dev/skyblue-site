@@ -3195,7 +3195,7 @@ button.pixel-rank-dot:hover {
   border: 1px solid var(--border);
   border-radius: 16px;
   background: var(--card-bg);
-  padding: 22px;
+  padding: 24px;
 }
 
 .account-avatar-editor {
@@ -3543,14 +3543,20 @@ button.pixel-rank-dot:hover {
 }
 
 .account-text-muted {
+  margin: 12px 0 16px;
   color: var(--text2);
   font-size: 0.84rem;
   line-height: 1.6;
 }
 
+.account-name-style .account-form-error,
+.account-name-style .account-form-ok {
+  margin: 12px 0 0;
+}
+
 .account-banner-preview {
   margin: 18px 0 4px;
-  height: 120px;
+  height: 150px;
   border: 1px solid var(--border);
   border-radius: 10px;
   background-size: cover;
