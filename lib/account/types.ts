@@ -33,6 +33,9 @@ export interface ProfileRecord {
   signup_ip: string | null;
   created_at: string;
   updated_at: string;
+  name_font: string | null;
+  name_color_from: string | null;
+  name_color_to: string | null;
 }
 
 export interface ToolEntitlement {
