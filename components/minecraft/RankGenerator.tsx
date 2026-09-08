@@ -15,7 +15,6 @@ import {
   GRADIENT_PRESETS,
   MAX_RANK_LENGTH,
   mixHex,
-  QUICK_RANKS,
   type GradientDirection,
 } from "./rank-presets";
 
@@ -144,7 +143,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         step1: "1 · Rank yazısı",
         rankName: "Rank adı",
         rankPlaceholder: "VIP, MVP, Admin...",
-        quick: "Hazır ranklar",
         clear: "Temizle",
         chars: "karakter",
         emptyHint: "Yazı boş — önizlemede VIP gösteriliyor. İndirmek için bir yazı yaz.",
@@ -198,7 +196,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         step1: "1 · Rank text",
         rankName: "Rank name",
         rankPlaceholder: "VIP, MVP, Admin...",
-        quick: "Quick ranks",
         clear: "Clear",
         chars: "chars",
         emptyHint: "Text is empty — previewing VIP. Type something to download.",
@@ -863,22 +860,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           <div className="pixel-rank-meta-row">
             <span className={text.length >= MAX_RANK_LENGTH ? "is-limit" : ""}>{text.length}/{MAX_RANK_LENGTH} {copy.chars}</span>
             {hasUnsupported && <span className="pixel-rank-warn">{copy.unsupportedHint}</span>}
-          </div>
-          <span className="pixel-rank-sublabel">{copy.quick}</span>
-          <div className="pixel-rank-chips">
-            {QUICK_RANKS.map((quick) => (
-              <button
-                key={quick}
-                type="button"
-                className={`pixel-rank-chip ${normalized === quick ? "is-active" : ""}`}
-                onClick={() => {
-                  setText(quick);
-                  if (!currentProjectId) setProjectName(quick);
-                }}
-              >
-                {quick}
-              </button>
-            ))}
           </div>
           <label className="pixel-rank-label" htmlFor="project-name">{copy.projectNameLabel}</label>
           <input

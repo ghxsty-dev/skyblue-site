@@ -25,8 +25,6 @@ export const GRADIENT_PRESETS: readonly GradientPreset[] = [
   { id: "snow", nameTr: "Kar Beyazı", nameEn: "Snow", from: "#ffffff", to: "#b8c4d4", text: "#0b0d10" },
 ];
 
-export const QUICK_RANKS = ["VIP", "VIP+", "MVP", "MVP+", "ADMIN", "MOD", "OWNER", "HELPER"] as const;
-
 export const MAX_RANK_LENGTH = 24;
 
 function clamp01(value: number): number {

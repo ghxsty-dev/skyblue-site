@@ -2460,14 +2460,6 @@ main {
   color: var(--text);
 }
 
-.pixel-rank-sublabel {
-  color: var(--text2);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 .pixel-rank-section-desc {
   margin: 0;
   color: var(--text2);
@@ -2524,38 +2516,6 @@ main {
 
 .pixel-rank-warn {
   color: #f97316;
-}
-
-.pixel-rank-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.pixel-rank-chip {
-  padding: 6px 11px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--bg2);
-  color: var(--text2);
-  font: inherit;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: border-color var(--transition), color var(--transition), background var(--transition), transform var(--transition);
-}
-
-.pixel-rank-chip:hover {
-  border-color: var(--c2);
-  color: var(--text);
-  transform: translateY(-1px);
-}
-
-.pixel-rank-chip.is-active {
-  border-color: var(--c2);
-  background: rgba(89, 171, 254, 0.14);
-  color: var(--text);
 }
 
 .pixel-rank-project-input {
