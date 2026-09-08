@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { avatarApiUrl, type ProfileRecord } from "@/lib/account/types";
 import ProfileBadges from "@/components/account/ProfileBadges";
 import StyledUsername from "@/components/account/StyledUsername";
+import { DiscordIcon, StarIcon } from "@/lib/icons";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
@@ -35,14 +36,41 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
     from: profile.name_color_from || "#ffffff",
     to: profile.name_color_to || null,
   };
+  const bannerStyle =
+    premium && nameStyle.to
+      ? { backgroundImage: `linear-gradient(120deg, ${nameStyle.from}, ${nameStyle.to})` }
+      : undefined;
+  const joined = new Date(profile.created_at).toLocaleDateString("tr-TR", { year: "numeric", month: "long" });
 
   return (
     <div className="page-inner public-profile-page">
-      <section className="public-profile-identity">
-        <Image src={avatarApiUrl(profile)} alt={`${profile.username} avatar`} width={160} height={160} unoptimized className="public-profile-avatar" />
-        <div><span>SkyBlue ID</span><h1><StyledUsername username={profile.username} style={nameStyle} enabled={premium} /></h1><ProfileBadges premium={premium} discordUsername={discordUsername} role={profile.role} /><p>{new Date(profile.created_at).toLocaleDateString("tr-TR", { year: "numeric", month: "long" })} tarihinde katıldı.</p></div>
+      <section className="public-profile-card">
+        <div className="public-profile-banner" style={bannerStyle} aria-hidden="true" />
+        <div className="public-profile-body">
+          <Image src={avatarApiUrl(profile)} alt={`${profile.username} avatar`} width={128} height={128} unoptimized className="public-profile-avatar" />
+          <div className="public-profile-head">
+            <div>
+              <span className="public-profile-kicker">SkyBlue ID</span>
+              <h1><StyledUsername username={profile.username} style={nameStyle} enabled={premium} /></h1>
+            </div>
+            <ProfileBadges premium={premium} discordUsername={discordUsername} role={profile.role} />
+          </div>
+          <div className="public-profile-stats">
+            <div className="public-profile-stat">
+              <span className="public-profile-stat-icon"><img src="/premium.webp" alt="" width={16} height={16} /></span>
+              <div><span>Premium</span><strong className={premium ? "is-on" : ""}>{premium ? "Aktif" : "Free"}</strong></div>
+            </div>
+            <div className="public-profile-stat">
+              <span className="public-profile-stat-icon is-discord"><DiscordIcon size={16} /></span>
+              <div><span>Discord</span><strong className={discordUsername ? "is-on" : ""}>{discordUsername ? `@${discordUsername}` : "Doğrulanmadı"}</strong></div>
+            </div>
+            <div className="public-profile-stat">
+              <span className="public-profile-stat-icon"><StarIcon size={16} /></span>
+              <div><span>Üyelik</span><strong>{joined}</strong></div>
+            </div>
+          </div>
+        </div>
       </section>
-      <section className="public-profile-status"><div><span>Premium</span><strong>{premium ? "Aktif" : "Free"}</strong></div><div><span>Discord</span><strong>{discordUsername ? "Doğrulandı" : "Doğrulanmadı"}</strong></div></section>
     </div>
   );
 }
