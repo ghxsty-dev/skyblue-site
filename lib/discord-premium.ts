@@ -58,7 +58,11 @@ export async function notifyPremiumActive(discordUserId: string): Promise<Premiu
         const messageRes = await fetch(`${DISCORD_API}/channels/${dm.id}/messages`, {
           method: "POST",
           headers: botHeaders(),
-          body: JSON.stringify({ content: "Premium üyeliğiniz aktif edilmiştir ve rolünüz verilmiştir." }),
+          body: JSON.stringify({
+            content: roleAssigned
+              ? "Premium üyeliğiniz aktif edilmiştir ve rolünüz verilmiştir."
+              : "Premium üyeliğiniz aktif edilmiştir. Discord rolü atanamadı; yönetici bilgilendirildi.",
+          }),
         });
         if (messageRes.ok) {
           dmSent = true;
