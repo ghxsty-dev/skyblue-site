@@ -88,6 +88,7 @@ export default function AdSidebar() {
     pathname.startsWith("/admin") ||
     pathname.startsWith("/account") ||
     pathname.startsWith("/users") ||
+    pathname.startsWith("/tools") ||
     pathname === "/login" ||
     pathname === "/register" ||
     pathname === "/" ||

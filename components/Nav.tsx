@@ -17,6 +17,7 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [indicator, setIndicator] = useState({ left: 0, width: 0, measured: false });
   const [isAdminUser, setIsAdminUser] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [avatarPath, setAvatarPath] = useState<string | null>(null);
   const [premiumActive, setPremiumActive] = useState(false);
   const [premiumExpiresAt, setPremiumExpiresAt] = useState<string | null>(null);
@@ -73,7 +74,8 @@ export default function Nav() {
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (d?.user) {
-          if (d.user.role === "admin") setIsAdminUser(true);
+          setIsLoggedIn(true);
+          if (d.user.role === "admin" || d.user.role === "kurucu") setIsAdminUser(true);
           if (d.user.avatar_path) setAvatarPath(d.user.avatar_path);
         }
       })
@@ -172,23 +174,38 @@ export default function Nav() {
             </button>
             {accountOpen && (
               <div className="nav-dropdown">
-                {premiumActive ? (
-                  <a href="/account/premium?tool=minecraft-rank" onClick={() => setAccountOpen(false)} className="nav-dropdown-item premium">
-                    <span className="nav-dropdown-icon"><Image src="/premium.webp" alt="" width={18} height={18} unoptimized /></span>
-                    <span className="premium-gradient-text font-semibold">Premium</span>
-                    <span className="ml-auto text-white/50 text-[0.68rem]">{premiumExpiresAt ? formatRemaining(premiumExpiresAt) : ""}</span>
-                  </a>
+                {isLoggedIn ? (
+                  <>
+                    {premiumActive ? (
+                      <a href="/account/premium?tool=minecraft-rank" onClick={() => setAccountOpen(false)} className="nav-dropdown-item premium">
+                        <span className="nav-dropdown-icon"><Image src="/premium.webp" alt="" width={18} height={18} unoptimized /></span>
+                        <span className="premium-gradient-text font-semibold">Premium</span>
+                        <span className="ml-auto text-white/50 text-[0.68rem]">{premiumExpiresAt ? formatRemaining(premiumExpiresAt) : ""}</span>
+                      </a>
+                    ) : (
+                      <a href="/account/premium?tool=minecraft-rank" onClick={() => setAccountOpen(false)} className="nav-dropdown-item premium">
+                        <span className="nav-dropdown-icon"><Image src="/premium.webp" alt="" width={18} height={18} unoptimized /></span>
+                        Premium üyesi ol
+                      </a>
+                    )}
+                    <div className="nav-dropdown-divider" />
+                    <a href="/account" onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
+                      <span className="nav-dropdown-icon">⚙</span>
+                      Hesap ayarları
+                    </a>
+                  </>
                 ) : (
-                  <a href="/account/premium?tool=minecraft-rank" onClick={() => setAccountOpen(false)} className="nav-dropdown-item premium">
-                    <span className="nav-dropdown-icon"><Image src="/premium.webp" alt="" width={18} height={18} unoptimized /></span>
-                    Premium üyesi ol
-                  </a>
+                  <>
+                    <a href="/login" onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
+                      <span className="nav-dropdown-icon">→</span>
+                      Giriş yap
+                    </a>
+                    <a href="/register" onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
+                      <span className="nav-dropdown-icon">✦</span>
+                      Kayıt ol
+                    </a>
+                  </>
                 )}
-                <div className="nav-dropdown-divider" />
-                <a href="/account" onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
-                  <span className="nav-dropdown-icon">⚙</span>
-                  Hesap ayarları
-                </a>
               </div>
             )}
           </div>
@@ -197,10 +214,10 @@ export default function Nav() {
             <a
               href="/admin"
               className="ml-1 flex items-center justify-center text-white/70 hover:text-white no-underline text-[0.82rem] font-semibold px-2 py-1 rounded-md"
-              aria-label="Admin"
-              title="Admin Panel"
+              aria-label="Kurucu"
+              title="SkyBlue Kurucu Paneli"
             >
-              Admin
+              Kurucu
             </a>
           )}
         </div>
@@ -229,21 +246,36 @@ export default function Nav() {
               ) : "Premium üyesi ol"}
             </a>
           </li>
-          <li>
-            <a href="/account" onClick={() => setOpen(false)} aria-current={current === "account" ? "page" : undefined} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold text-white/70 hover:text-white no-underline">
-              {avatarPath ? (
-                <img
-                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${avatarPath}`}
-                  alt=""
-                  width={18}
-                  height={18}
-                  className="rounded-full object-cover"
-                />
-              ) : (
-                <UserIcon size={18} />
-              )} {t.account}
-            </a>
-          </li>
+          {isLoggedIn ? (
+            <li>
+              <a href="/account" onClick={() => setOpen(false)} aria-current={current === "account" ? "page" : undefined} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold text-white/70 hover:text-white no-underline">
+                {avatarPath ? (
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${avatarPath}`}
+                    alt=""
+                    width={18}
+                    height={18}
+                    className="rounded-full object-cover"
+                  />
+                ) : (
+                  <UserIcon size={18} />
+                )} {t.account}
+              </a>
+            </li>
+          ) : (
+            <>
+              <li>
+                <a href="/login" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold text-white/70 hover:text-white no-underline">
+                  Giriş yap
+                </a>
+              </li>
+              <li>
+                <a href="/register" onClick={() => setOpen(false)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[15px] font-semibold text-white/70 hover:text-white no-underline">
+                  Kayıt ol
+                </a>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </nav>

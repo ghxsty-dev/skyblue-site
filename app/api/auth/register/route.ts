@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { getClientIp, hashSignupIp } from "@/lib/account/security";
 import { isTrustedMutation } from "@/lib/account/request";
+import { verifyTurnstile } from "@/lib/account/captcha";
 
 export const runtime = "nodejs";
 
@@ -21,6 +22,15 @@ export async function POST(request: NextRequest) {
     const username = String(body.username || "").trim().toLowerCase();
     const email = String(body.email || "").trim().toLowerCase();
     const password = String(body.password || "");
+    const turnstileToken = body.turnstileToken;
+
+    const ip = getClientIp(request);
+    if (!ip) return json({ error: "IP_UNAVAILABLE" }, 400);
+
+    if (process.env.TURNSTILE_SECRET_KEY) {
+      const captchaValid = await verifyTurnstile(String(turnstileToken || ""), ip);
+      if (!captchaValid) return json({ error: "CAPTCHA_FAILED" }, 400);
+    }
 
     if (!USERNAME_RE.test(username)) {
       return json({ error: "INVALID_USERNAME" }, 400);
@@ -31,9 +41,6 @@ export async function POST(request: NextRequest) {
     if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/\d/.test(password)) {
       return json({ error: "WEAK_PASSWORD" }, 400);
     }
-
-    const ip = getClientIp(request);
-    if (!ip) return json({ error: "IP_UNAVAILABLE" }, 400);
 
     const admin = createSupabaseAdminClient();
     if (!admin) {

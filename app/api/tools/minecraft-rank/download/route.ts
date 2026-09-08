@@ -51,6 +51,9 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: "LOGIN_REQUIRED" }, { status: 401 });
 
+    const { data: profile } = await supabase.from("profiles").select("banned").eq("id", user.id).maybeSingle();
+    if (profile?.banned) return NextResponse.json({ error: "BANNED" }, { status: 403 });
+
     const body = await request.json();
     const text = normalizeRankText(String(body.text || ""));
     const font = getPixelFont(String(body.fontId || ""));

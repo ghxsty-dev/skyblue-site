@@ -10,14 +10,16 @@ import {
   type PixelFont,
 } from "./pixel-fonts";
 
+const STORAGE_KEY = "skyblue-rank-projects";
+
 const PADDING_X = 3;
 const PADDING_Y = 2;
 const TEXT_TOP = PADDING_Y;
 const DEFAULT_BACKGROUND = "#59abfe";
 const PREVIEW_SCALE = 28;
 
-const TEXT_COLORS = ["#ffffff", "#000000", "#ffd166", "#ff6b6b", "#68d391", "#c084fc", "#59abfe"];
-const BACKGROUND_COLORS = ["#59abfe", "#97cdf2", "#0b0d10", "#1c2128", "#173c62", "#f1f4f7", "#7c3aed", "#ef4444"];
+const TEXT_COLORS = ["#ffffff", "#000000", "#ffd166", "#ff6b6b", "#68d391", "#c084fc", "#59abfe", "#f97316", "#ec4899", "#14b8a6", "#eab308", "#a855f7", "#f43f5e", "#06b6d4"];
+const BACKGROUND_COLORS = ["#59abfe", "#97cdf2", "#0b0d10", "#1c2128", "#173c62", "#f1f4f7", "#7c3aed", "#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#ec4899", "#6366f1", "#14b8a6", "#f43f5e"];
 
 type Pixel = string | null;
 type PixelGrid = Pixel[][];
@@ -54,6 +56,7 @@ const INITIAL_DIMENSIONS = getInitialDimensions();
 export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageWrapRef = useRef<HTMLDivElement>(null);
+  const textInputRef = useRef<HTMLInputElement>(null);
   const paintingRef = useRef(false);
   const backgroundRef = useRef<PixelGrid>(createGrid(INITIAL_DIMENSIONS.width, INITIAL_DIMENSIONS.height, DEFAULT_BACKGROUND));
   const undoRef = useRef<PixelGrid[]>([]);
@@ -61,8 +64,10 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [text, setText] = useState("VIP");
   const [fontId, setFontId] = useState(PIXEL_FONTS[0].id);
   const [textColor, setTextColor] = useState("#ffffff");
+  const [extraTextColors, setExtraTextColors] = useState<string[]>([]);
   const [brushColor, setBrushColor] = useState("#0b0d10");
   const [customBrushColor, setCustomBrushColor] = useState("");
+  const [extraBrushColors, setExtraBrushColors] = useState<string[]>([]);
   const [tool, setTool] = useState<Tool>("brush");
   const [brushSize, setBrushSize] = useState(1);
   const [background, setBackground] = useState<PixelGrid>(() => createGrid(INITIAL_DIMENSIONS.width, INITIAL_DIMENSIONS.height, DEFAULT_BACKGROUND));
@@ -71,6 +76,8 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [downloadState, setDownloadState] = useState<{ authenticated: boolean; premium: boolean; remaining: number } | null>(null);
   const [downloadPending, setDownloadPending] = useState(false);
   const [downloadError, setDownloadError] = useState("");
+  const [panelWidth, setPanelWidth] = useState<number | null>(null);
+  const resizingRef = useRef(false);
 
   const font = getPixelFont(fontId);
   const layout = buildPixelText(font, text);
@@ -78,6 +85,22 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const height = layout.height + PADDING_Y * 2;
   const activeBrushColor = customBrushColor || brushColor;
   const isTurkish = lang === "tr";
+
+  const addTextColor = useCallback((color: string) => {
+    setExtraTextColors((prev) => {
+      if (prev.includes(color) || TEXT_COLORS.includes(color)) return prev;
+      const next = [...prev, color];
+      return next.slice(-6);
+    });
+  }, []);
+
+  const addBrushColor = useCallback((color: string) => {
+    setExtraBrushColors((prev) => {
+      if (prev.includes(color) || BACKGROUND_COLORS.includes(color)) return prev;
+      const next = [...prev, color];
+      return next.slice(-6);
+    });
+  }, []);
 
   const copy = isTurkish
     ? {
@@ -261,6 +284,31 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     paintingRef.current = false;
   }, []);
 
+  const handleCanvasDoubleClick = useCallback(() => {
+    textInputRef.current?.focus();
+    textInputRef.current?.select();
+  }, []);
+
+  const handleResizeStart = useCallback((e: React.PointerEvent) => {
+    e.preventDefault();
+    resizingRef.current = true;
+    const startX = e.clientX;
+    const startWidth = (e.target as HTMLElement).closest(".pixel-rank-editor")?.getBoundingClientRect().width || 0;
+    const onMove = (ev: PointerEvent) => {
+      if (!resizingRef.current) return;
+      const diff = ev.clientX - startX;
+      const newWidth = Math.max(600, Math.min(1400, startWidth + diff));
+      setPanelWidth(newWidth);
+    };
+    const onUp = () => {
+      resizingRef.current = false;
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  }, []);
+
   const undo = useCallback(() => {
     const previous = undoRef.current.pop();
     if (!previous) return;
@@ -384,6 +432,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
               onPointerMove={handlePointerMove}
               onPointerUp={stopPainting}
               onPointerCancel={stopPainting}
+              onDoubleClick={handleCanvasDoubleClick}
               aria-label={isTurkish ? "Rank arka plan pixel editörü" : "Rank background pixel editor"}
             />
           </div>
@@ -450,8 +499,18 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
                 aria-label={color}
               />
             ))}
+            {extraTextColors.map((color) => (
+              <button
+                key={color}
+                type="button"
+                className={`pixel-rank-swatch ${textColor === color ? "is-active" : ""}`}
+                style={{ backgroundColor: color }}
+                onClick={() => setTextColor(color)}
+                aria-label={color}
+              />
+            ))}
             <label className="pixel-rank-custom-color" title={copy.textColor}>
-              <input type="color" value={textColor} onChange={(event) => setTextColor(event.target.value)} aria-label={copy.textColor} />
+              <input type="color" value={textColor} onChange={(event) => { setTextColor(event.target.value); addTextColor(event.target.value); }} aria-label={copy.textColor} />
               <span>+</span>
             </label>
           </div>
@@ -480,8 +539,18 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
                 aria-label={color}
               />
             ))}
+            {extraBrushColors.map((color) => (
+              <button
+                key={color}
+                type="button"
+                className={`pixel-rank-swatch ${activeBrushColor === color && tool === "brush" ? "is-active" : ""}`}
+                style={{ backgroundColor: color }}
+                onClick={() => { setBrushColor(color); setCustomBrushColor(""); setTool("brush"); }}
+                aria-label={color}
+              />
+            ))}
             <label className="pixel-rank-custom-color" title={copy.background}>
-              <input type="color" value={activeBrushColor} onChange={(event) => { setCustomBrushColor(event.target.value); setTool("brush"); }} aria-label={copy.background} />
+              <input type="color" value={activeBrushColor} onChange={(event) => { setCustomBrushColor(event.target.value); setTool("brush"); addBrushColor(event.target.value); }} aria-label={copy.background} />
               <span>+</span>
             </label>
           </div>

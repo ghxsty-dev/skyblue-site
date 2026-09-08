@@ -30,8 +30,8 @@ export default function AdminPanel() {
         <div className="admin-sidebar-brand">
           <Image src="/logo.webp" alt="SkyBlue" width={32} height={32} unoptimized className="admin-sidebar-logo" />
           <div>
-            <strong>Admin Panel</strong>
-            <span>SkyBlue Yönetim</span>
+            <strong>SkyBlue Kurucu Paneli</strong>
+            <span>Yönetim</span>
           </div>
         </div>
 

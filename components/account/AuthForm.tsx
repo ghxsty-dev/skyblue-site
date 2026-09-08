@@ -2,8 +2,15 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import Script from "next/script";
+import { useState, useRef, useEffect } from "react";
 import { useApp } from "@/lib/context";
+
+declare global {
+  interface Window {
+    turnstile?: { render: (container: string | HTMLElement, options: Record<string, unknown>) => string; reset: (widgetId: string) => void; getResponse: (widgetId: string) => string | undefined };
+  }
+}
 
 const ERROR_MESSAGES: Record<string, { tr: string; en: string }> = {
   INVALID_USERNAME: { tr: "Kullanıcı adı 3-20 karakter olmalı; yalnızca küçük harf, rakam ve _ kullanılabilir.", en: "Username must be 3-20 characters and use only lowercase letters, numbers, and _." },
@@ -17,6 +24,7 @@ const ERROR_MESSAGES: Record<string, { tr: string; en: string }> = {
   CONFIRMATION_FAILED: { tr: "Doğrulama e-postası gönderilemedi. Lütfen tekrar deneyin.", en: "Could not send the confirmation email. Please try again." },
   REGISTER_FAILED: { tr: "Hesap oluşturulamadı. Lütfen tekrar deneyin.", en: "The account could not be created. Please try again." },
   LOGIN_FAILED: { tr: "Giriş yapılamadı. Lütfen tekrar deneyin.", en: "Unable to sign in. Please try again." },
+  CAPTCHA_FAILED: { tr: "Captcha doğrulanamadı. Lütfen tekrar deneyin.", en: "Captcha verification failed. Please try again." },
 };
 
 export default function AuthForm({ mode }: { mode: "login" | "register" }) {
@@ -25,6 +33,24 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [capsLock, setCapsLock] = useState(false);
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const turnstileWidgetRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+    if (!siteKey || !turnstileRef.current || turnstileWidgetRef.current) return;
+    const tryRender = () => {
+      if (!window.turnstile || !turnstileRef.current || turnstileWidgetRef.current) return;
+      turnstileWidgetRef.current = window.turnstile.render(turnstileRef.current, {
+        sitekey: siteKey,
+        theme: "dark",
+        callback: () => {},
+      });
+    };
+    if (window.turnstile) { tryRender(); return; }
+    const interval = setInterval(() => { if (window.turnstile) { clearInterval(interval); tryRender(); } }, 200);
+    return () => clearInterval(interval);
+  }, []);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -33,6 +59,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
     const form = new FormData(event.currentTarget);
 
     try {
+      const turnstileToken = window.turnstile?.getResponse(turnstileWidgetRef.current || "") || "";
       const response = await fetch(`/api/auth/${mode}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -40,6 +67,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
           username: form.get("username"),
           email: form.get("email"),
           password: form.get("password"),
+          turnstileToken,
         }),
       });
       const result = await response.json();
@@ -58,6 +86,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
 
   return (
     <div className="auth-split">
+      <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" strategy="afterInteractive" />
       <div className="auth-split-image">
         <Image src="/login.webp" alt="" fill priority className="auth-split-img" />
       </div>
@@ -93,6 +122,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
             />
             {capsLock && <small className="account-form-warning">{tr ? "Caps Lock açık" : "Caps Lock is on"}</small>}
           </label>
+          {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && <div ref={turnstileRef} className="account-captcha" />}
           {error && <p className="account-form-error" role="alert">{error}</p>}
           <button type="submit" disabled={pending}>
             {pending ? (tr ? "İşleniyor..." : "Processing...") : mode === "register" ? (tr ? "Hesap oluştur" : "Create account") : (tr ? "Giriş yap" : "Sign in")}

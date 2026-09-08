@@ -1,17 +1,36 @@
-export type UserRole = "user" | "admin" | "moderator" | "rehber";
+export type UserRole = "user" | "kurucu" | "bas-gelirtici" | "gelirtici" | "k-gelirtici" | "moderator" | "rehber";
 
 export const ROLE_LABELS: Record<UserRole, string> = {
   user: "Kullanıcı",
-  admin: "Admin",
+  kurucu: "Kurucu",
+  "bas-gelirtici": "Baş Geliştirici",
+  gelirtici: "Geliştirici",
+  "k-gelirtici": "K. Geliştirici",
   moderator: "Moderatör",
   rehber: "Rehber",
 };
+
+export const ROLE_ADMIN_LEVELS: Record<UserRole, number> = {
+  kurucu: 100,
+  "bas-gelirtici": 80,
+  gelirtici: 60,
+  "k-gelirtici": 40,
+  moderator: 20,
+  rehber: 10,
+  user: 0,
+};
+
+export function hasAdminAccess(role: UserRole): boolean {
+  return ROLE_ADMIN_LEVELS[role] >= 40;
+}
 
 export interface ProfileRecord {
   id: string;
   username: string;
   avatar_path: string | null;
   role: UserRole;
+  banned: boolean;
+  signup_ip: string | null;
   created_at: string;
   updated_at: string;
 }

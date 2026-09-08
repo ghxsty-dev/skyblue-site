@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { hasAdminAccess, type UserRole } from "@/lib/account/types";
 
 export async function isAdmin(): Promise<boolean> {
   const supabase = await createSupabaseServerClient();
@@ -10,5 +11,5 @@ export async function isAdmin(): Promise<boolean> {
     .select("role")
     .eq("id", user.id)
     .maybeSingle();
-  return profile?.role === "admin";
+  return hasAdminAccess((profile?.role as UserRole) || "user");
 }
