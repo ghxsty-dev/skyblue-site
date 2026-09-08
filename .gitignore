@@ -47,3 +47,4 @@ public/*.exe
 
 # Discord bot (calisma dizini olarak ayrildi)
 discord-bot/node_modules/
+supabase/migrations/.~lock*
