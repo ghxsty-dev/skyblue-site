@@ -4,13 +4,11 @@ import { redirect } from "next/navigation";
 import AccountLogoutButton from "@/components/account/AccountLogoutButton";
 import AccountSettingsMenu, { type AccountTab } from "@/components/account/AccountSettingsMenu";
 import AvatarEditor from "@/components/account/AvatarEditor";
-import BannerEditor from "@/components/account/BannerEditor";
-import BioEditor from "@/components/account/BioEditor";
 import DeleteAccountForm from "@/components/account/DeleteAccountForm";
 import DiscordVerificationPanel from "@/components/account/DiscordVerificationPanel";
 import EmailChangeForm from "@/components/account/EmailChangeForm";
-import NameStyleEditor from "@/components/account/NameStyleEditor";
 import PasswordChangeForm from "@/components/account/PasswordChangeForm";
+import ProfileEditors from "@/components/account/ProfileEditors";
 import PremiumRedeemForm from "@/components/account/PremiumRedeemForm";
 import ProfileBadges from "@/components/account/ProfileBadges";
 import StyledUsername from "@/components/account/StyledUsername";
@@ -79,16 +77,13 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
                 </div>
               </section>
 
-              <section className="account-access-section">
-                <div className="account-section-heading"><div><span>Profil</span><h2>Hakkında</h2></div></div>
-                <BioEditor initial={profile.bio || ""} />
-              </section>
-
-              <div className="account-profile-edit-grid">
-                <NameStyleEditor username={profile.username} initial={nameStyle} premium={namePremium} />
-
-                <BannerEditor current={bannerApiUrl(profile)} premium={namePremium} />
-              </div>
+              <ProfileEditors
+                username={profile.username}
+                initialBio={profile.bio || ""}
+                initialStyle={nameStyle}
+                premium={namePremium}
+                bannerCurrent={bannerApiUrl(profile)}
+              />
             </>
           )}
 
