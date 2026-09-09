@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/lib/context";
 import BannerEditor from "./BannerEditor";
@@ -31,7 +31,7 @@ function errorText(code: string | undefined, tr: boolean): string {
   return known ? (tr ? known.tr : known.en) : (tr ? "Kaydedilemedi. Lütfen tekrar deneyin." : "Could not save. Please try again.");
 }
 
-/** Hakkında + isim görünümü tek formda; değişiklik olunca altta kayıt çubuğu çıkar. */
+/** Hakkında + isim görünümü tek formda; değişiklik olunca yüzen kayıt çubuğu çıkar. */
 export default function ProfileEditors({ username, initialBio, initialStyle, premium, bannerCurrent }: ProfileEditorsProps) {
   const { lang } = useApp();
   const router = useRouter();
@@ -44,11 +44,28 @@ export default function ProfileEditors({ username, initialBio, initialStyle, pre
   const [to, setTo] = useState<string | null>(initialStyle.to);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const [shown, setShown] = useState(false);
+  const [leaving, setLeaving] = useState(false);
 
   const bioDirty = bio !== initialBio;
   const styleDirty =
     font !== initialStyle.font || from !== initialStyle.from || (to ?? null) !== (initialStyle.to ?? null);
   const dirty = bioDirty || (premium && styleDirty);
+
+  useEffect(() => {
+    if (dirty) {
+      setShown(true);
+      setLeaving(false);
+      return;
+    }
+    if (!shown) return;
+    setLeaving(true);
+    const timer = window.setTimeout(() => {
+      setShown(false);
+      setLeaving(false);
+    }, 220);
+    return () => window.clearTimeout(timer);
+  }, [dirty, shown]);
 
   function resetAll() {
     setBio(initialBio);
@@ -152,8 +169,8 @@ export default function ProfileEditors({ username, initialBio, initialStyle, pre
         </p>
       )}
 
-      {dirty && (
-        <div className="profile-save-bar" role="region" aria-label={tr ? "Kaydedilmemiş değişiklikler" : "Unsaved changes"}>
+      {shown && (
+        <div className={`profile-save-bar${leaving ? " is-leaving" : ""}`} role="region" aria-label={tr ? "Kaydedilmemiş değişiklikler" : "Unsaved changes"}>
           <span>{tr ? "Değişiklikler kaydedilsin mi?" : "Save changes?"}</span>
           <div className="profile-save-bar-actions">
             <button type="button" className="account-secondary-button" onClick={resetAll} disabled={pending}>

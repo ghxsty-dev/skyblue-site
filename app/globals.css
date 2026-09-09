@@ -3319,6 +3319,13 @@ button.pixel-rank-dot:hover {
 }
 
 .profile-save-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  width: max-content;
+  max-width: calc(100vw - 32px);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3329,6 +3336,33 @@ button.pixel-rank-dot:hover {
   border-radius: 14px;
   background: var(--card-bg);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  animation: profile-save-bar-in 0.28s ease-out;
+}
+
+.profile-save-bar.is-leaving {
+  animation: profile-save-bar-out 0.22s ease-in forwards;
+}
+
+@keyframes profile-save-bar-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 24px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes profile-save-bar-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, 24px);
+  }
 }
 
 .profile-save-bar > span {
