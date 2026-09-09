@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import AccountLogoutButton from "@/components/account/AccountLogoutButton";
 import AvatarEditor from "@/components/account/AvatarEditor";
 import BannerEditor from "@/components/account/BannerEditor";
+import EmailChangeForm from "@/components/account/EmailChangeForm";
 import NameStyleEditor from "@/components/account/NameStyleEditor";
 import ProfileBadges from "@/components/account/ProfileBadges";
 import StyledUsername from "@/components/account/StyledUsername";
@@ -55,7 +56,7 @@ export default async function AccountPage() {
         <AvatarEditor src={avatarApiUrl(profile)} username={profile.username} />
         <div className="account-profile-summary">
           <div className="account-profile-name"><h2><StyledUsername username={profile.username} style={nameStyle} enabled={namePremium} /></h2><ProfileBadges premium={activePremium.length > 0} discordUsername={discord?.discord_username} role={profile.role} /></div>
-          <dl><div><dt>E-posta</dt><dd>{user.email}</dd></div><div><dt>Kullanıcı adı</dt><dd>Değiştirilemez</dd></div><div><dt>Katılım</dt><dd>{new Date(profile.created_at).toLocaleDateString("tr-TR")}</dd></div></dl>
+          <dl><div><dt>E-posta</dt><dd>{user.email}</dd></div><div><dt>Katılım</dt><dd>{new Date(profile.created_at).toLocaleDateString("tr-TR")}</dd></div></dl>
           <Link href={`/users/${profile.username}`} className="account-text-link">Public profili görüntüle</Link>
         </div>
       </section>
@@ -72,6 +73,11 @@ export default async function AccountPage() {
         </section>
 
         <NameStyleEditor username={profile.username} initial={nameStyle} premium={namePremium} />
+
+        <section className="account-access-section">
+          <div className="account-section-heading"><div><span>Hesap</span><h2>E-posta Değiştir</h2></div></div>
+          <EmailChangeForm currentEmail={user.email ?? ""} />
+        </section>
       </div>
 
       <BannerEditor current={bannerApiUrl(profile)} premium={namePremium} />
