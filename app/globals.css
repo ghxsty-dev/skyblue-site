@@ -3236,6 +3236,100 @@ button.pixel-rank-dot:hover {
   grid-column: 1 / -1;
 }
 
+.account-settings-layout {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.account-settings-menu {
+  position: sticky;
+  top: 76px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.account-settings-menu a {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card-bg);
+  color: var(--text2);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.account-settings-menu a:hover {
+  border-color: var(--c2);
+  color: var(--text);
+}
+
+.account-settings-menu a.is-active {
+  border-color: var(--c2);
+  background: rgba(89, 171, 254, 0.1);
+  color: var(--text);
+}
+
+.account-settings-content {
+  min-width: 0;
+}
+
+.account-settings-content > * + * {
+  margin-top: 12px;
+}
+
+.account-section-desc {
+  margin: 8px 0 0;
+  color: var(--text2);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.account-danger-section {
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 12px;
+  padding: 16px;
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.account-danger-text {
+  margin: 10px 0 12px;
+  color: var(--text2);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.account-danger-button {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: #fff;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.account-danger-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.account-danger-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .account-name-style + .account-name-style {
   margin-top: 8px;
 }
@@ -4160,6 +4254,9 @@ button.pixel-rank-dot:hover {
   .account-section-heading { flex-direction: column; align-items: flex-start; gap: 8px; }
   .account-profile-layout { grid-template-columns: 1fr; justify-items: center; text-align: center; }
   .account-grid { grid-template-columns: 1fr; }
+  .account-settings-layout { grid-template-columns: 1fr; }
+  .account-settings-menu { position: static; flex-direction: row; overflow-x: auto; }
+  .account-settings-menu a { white-space: nowrap; }
   .account-profile-name, .account-badges { justify-content: center; }
   .account-profile-summary dl { grid-template-columns: 1fr; gap: 8px; }
   .account-access-grid { grid-template-columns: 1fr; }
