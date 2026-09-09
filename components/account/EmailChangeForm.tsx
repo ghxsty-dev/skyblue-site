@@ -10,6 +10,8 @@ const ERROR_MESSAGES: Record<string, { tr: string; en: string }> = {
   WRONG_PASSWORD: { tr: "Şifre hatalı.", en: "Incorrect password." },
   EMAIL_TAKEN: { tr: "Bu e-posta adresi başka bir hesapta kullanılıyor.", en: "This email address is already used by another account." },
   LOGIN_REQUIRED: { tr: "Devam etmek için tekrar giriş yapın.", en: "Please sign in again to continue." },
+  SESSION_REVOKED: { tr: "Oturumun kapatıldı. Tekrar giriş yap.", en: "Your session was revoked. Please sign in again." },
+  RATE_LIMITED: { tr: "Çok fazla deneme. Lütfen birkaç dakika bekleyin.", en: "Too many attempts. Please wait a few minutes." },
   AUTH_NOT_CONFIGURED: { tr: "Hesap sistemi henüz yapılandırılmadı.", en: "The account system is not configured yet." },
   UPDATE_FAILED: { tr: "E-posta değiştirilemedi. Lütfen tekrar deneyin.", en: "Could not change the email. Please try again." },
 };
@@ -38,6 +40,7 @@ export default function EmailChangeForm({ currentEmail }: { currentEmail: string
       if (!response.ok) {
         const known = ERROR_MESSAGES[result.error];
         setMessage({ type: "error", text: known ? (tr ? known.tr : known.en) : (tr ? "Bir hata oluştu." : "Something went wrong.") });
+        if (result.error === "SESSION_REVOKED") window.setTimeout(() => window.location.assign("/login"), 1500);
         return;
       }
       setNewEmail("");

@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getSessionUser } from "@/lib/account/session";
 import { isTrustedMutation } from "@/lib/account/request";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +11,7 @@ const MAX_BACKGROUND_SIZE = 200 * 200;
 export async function GET(request: NextRequest) {
   const supabase = await createSupabaseServerClient();
   if (!supabase) return NextResponse.json({ projects: [] });
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user } = await getSessionUser(supabase);
   if (!user) return NextResponse.json({ projects: [] });
 
   const url = new URL(request.url);
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
 
   const supabase = await createSupabaseServerClient();
   if (!supabase) return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user } = await getSessionUser(supabase);
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await request.json().catch(() => null);
@@ -141,7 +142,7 @@ export async function DELETE(request: NextRequest) {
 
   const supabase = await createSupabaseServerClient();
   if (!supabase) return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user } = await getSessionUser(supabase);
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await request.json().catch(() => null);

@@ -9,6 +9,8 @@ const ERROR_MESSAGES: Record<string, { tr: string; en: string }> = {
   PASSWORD_MISMATCH: { tr: "Yeni şifreler birbiriyle eşleşmiyor.", en: "The new passwords do not match." },
   WRONG_PASSWORD: { tr: "Mevcut şifre hatalı.", en: "Incorrect current password." },
   LOGIN_REQUIRED: { tr: "Devam etmek için tekrar giriş yapın.", en: "Please sign in again to continue." },
+  SESSION_REVOKED: { tr: "Oturumun kapatıldı. Tekrar giriş yap.", en: "Your session was revoked. Please sign in again." },
+  RATE_LIMITED: { tr: "Çok fazla deneme. Lütfen birkaç dakika bekleyin.", en: "Too many attempts. Please wait a few minutes." },
   AUTH_NOT_CONFIGURED: { tr: "Hesap sistemi henüz yapılandırılmadı.", en: "The account system is not configured yet." },
   UPDATE_FAILED: { tr: "Şifre değiştirilemedi. Lütfen tekrar deneyin.", en: "Could not change the password. Please try again." },
 };
@@ -46,12 +48,16 @@ export default function PasswordChangeForm() {
       if (!response.ok) {
         const known = ERROR_MESSAGES[result.error];
         setMessage({ type: "error", text: known ? (tr ? known.tr : known.en) : (tr ? "Bir hata oluştu." : "Something went wrong.") });
+        if (result.error === "SESSION_REVOKED") window.setTimeout(() => window.location.assign("/login"), 1500);
         return;
       }
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      setMessage({ type: "success", text: tr ? "Şifren güncellendi." : "Your password was updated." });
+      setMessage({ type: "success", text: tr ? "Şifren güncellendi. Güvenlik için çıkış yapılıyor, tekrar giriş yapmalısın." : "Password updated. Signing you out for security, please sign in again." });
+      window.setTimeout(() => {
+        fetch("/api/auth/logout", { method: "POST" }).catch(() => {}).finally(() => window.location.assign("/login"));
+      }, 1800);
     } catch {
       setMessage({ type: "error", text: tr ? "Bağlantı kurulamadı." : "Could not connect." });
     } finally {

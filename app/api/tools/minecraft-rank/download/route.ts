@@ -3,6 +3,7 @@ import { PNG } from "pngjs";
 import { buildRankLayout, getPixelFont, normalizeRankText } from "@/components/minecraft/pixel-fonts";
 import { isKnownSlot, resolveSlot } from "@/components/minecraft/rank-icons";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getSessionUser } from "@/lib/account/session";
 import { isTrustedMutation } from "@/lib/account/request";
 
 export const runtime = "nodejs";
@@ -35,7 +36,7 @@ async function quotaStatus(supabase: NonNullable<Awaited<ReturnType<typeof creat
 export async function GET() {
   const supabase = await createSupabaseServerClient();
   if (!supabase) return NextResponse.json({ configured: false }, { status: 503, headers: { "Cache-Control": "no-store" } });
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user } = await getSessionUser(supabase);
   if (!user) return NextResponse.json({ authenticated: false }, { status: 401, headers: { "Cache-Control": "no-store" } });
   const quota = await quotaStatus(supabase, user.id);
   return NextResponse.json({ authenticated: true, ...quota }, { headers: { "Cache-Control": "no-store" } });
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient();
     if (!supabase) return NextResponse.json({ error: "AUTH_NOT_CONFIGURED" }, { status: 503 });
-    const { data: { user } } = await supabase.auth.getUser();
+    const { user } = await getSessionUser(supabase);
     if (!user) return NextResponse.json({ error: "LOGIN_REQUIRED" }, { status: 401 });
 
     const { data: profile } = await supabase.from("profiles").select("banned").eq("id", user.id).maybeSingle();

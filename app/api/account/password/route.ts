@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { getSessionUser } from "@/lib/account/session";
+import { checkRateLimit } from "@/lib/account/rate-limit";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 import { isTrustedMutation } from "@/lib/account/request";
 
@@ -17,8 +19,12 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient();
     if (!supabase) return NextResponse.json({ error: "AUTH_NOT_CONFIGURED" }, { status: 503 });
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || !user.email) return NextResponse.json({ error: "LOGIN_REQUIRED" }, { status: 401 });
+    const session = await getSessionUser(supabase);
+    const user = session.user;
+    if (!user || !user.email) return NextResponse.json({ error: session.stale ? "SESSION_REVOKED" : "LOGIN_REQUIRED" }, { status: 401 });
+    if (!(await checkRateLimit(`account-security:${user.id}`, 15, 600_000))) {
+      return NextResponse.json({ error: "RATE_LIMITED" }, { status: 429 });
+    }
 
     const body = await request.json().catch(() => null);
     const currentPassword = String(body?.currentPassword || "");
@@ -49,6 +55,9 @@ export async function POST(request: NextRequest) {
       console.error("[account-password] update failed:", updateError.message);
       return NextResponse.json({ error: "UPDATE_FAILED" }, { status: 500 });
     }
+
+    // Diğer oturumları iptal et; istemci çıkış yapıp girişe yönlendirir.
+    await admin.from("profiles").update({ force_logout_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq("id", user.id);
 
     return NextResponse.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {

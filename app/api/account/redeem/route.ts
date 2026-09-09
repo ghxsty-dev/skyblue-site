@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { getSessionUser } from "@/lib/account/session";
 import { hashLicenseCode } from "@/lib/account/security";
 import { isTrustedMutation } from "@/lib/account/request";
 import { notifyPremiumActive } from "@/lib/discord-premium";
@@ -16,8 +17,8 @@ export async function POST(request: NextRequest) {
     }
     const supabase = await createSupabaseServerClient();
     if (!supabase) return NextResponse.json({ error: "AUTH_NOT_CONFIGURED" }, { status: 503 });
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+    const { user, stale } = await getSessionUser(supabase);
+    if (!user) return NextResponse.json({ error: stale ? "SESSION_REVOKED" : "UNAUTHORIZED" }, { status: 401 });
 
     const { data, error } = await supabase.rpc("redeem_license_code", {
       p_code_hash: hashLicenseCode(String(code)),

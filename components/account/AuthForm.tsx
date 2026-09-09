@@ -25,6 +25,7 @@ const ERROR_MESSAGES: Record<string, { tr: string; en: string }> = {
   REGISTER_FAILED: { tr: "Hesap oluşturulamadı. Lütfen tekrar deneyin.", en: "The account could not be created. Please try again." },
   LOGIN_FAILED: { tr: "Giriş yapılamadı. Lütfen tekrar deneyin.", en: "Unable to sign in. Please try again." },
   CAPTCHA_FAILED: { tr: "Captcha doğrulanamadı. Lütfen tekrar deneyin.", en: "Captcha verification failed. Please try again." },
+  RATE_LIMITED: { tr: "Çok fazla deneme. Lütfen birkaç dakika bekleyin.", en: "Too many attempts. Please wait a few minutes." },
 };
 
 export default function AuthForm({ mode }: { mode: "login" | "register" }) {
@@ -137,6 +138,11 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
               {tr ? "Caps Lock açık" : "Caps Lock is on"}
             </small>
           </label>
+          {mode === "login" && (
+            <div className="account-auth-aux">
+              <Link href="/forgot-password">{tr ? "Şifremi unuttum" : "Forgot password"}</Link>
+            </div>
+          )}
           {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && <div ref={turnstileRef} className="account-captcha" />}
           {error && <p className="account-form-error" role="alert">{error}</p>}
           {(!captchaEnabled || captchaVerified) && (

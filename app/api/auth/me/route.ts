@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getSessionUser } from "@/lib/account/session";
 
 export async function GET() {
   const supabase = await createSupabaseServerClient();
   if (!supabase) return NextResponse.json({ user: null }, { headers: { "Cache-Control": "no-store" } });
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user } = await getSessionUser(supabase);
   if (!user) return NextResponse.json({ user: null }, { headers: { "Cache-Control": "no-store" } });
 
   const { data: profile } = await supabase

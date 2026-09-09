@@ -62,10 +62,11 @@ export default function MembersTab() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, action: "role", role }),
       });
-      if (!response.ok) throw new Error("UPDATE_FAILED");
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || "UPDATE_FAILED");
       setMembers((prev) => prev.map((m) => m.id === userId ? { ...m, role } : m));
-    } catch {
-      setError("Rol güncellenemedi.");
+    } catch (error) {
+      setError(error instanceof Error && error.message === "SELF_ACTION" ? "Kendi rolünü değiştiremezsin." : "Rol güncellenemedi.");
     } finally {
       setActionPending(null);
     }
@@ -79,10 +80,11 @@ export default function MembersTab() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, action: "ban", banned }),
       });
-      if (!response.ok) throw new Error("UPDATE_FAILED");
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || "UPDATE_FAILED");
       setMembers((prev) => prev.map((m) => m.id === userId ? { ...m, banned } : m));
-    } catch {
-      setError("Ban durumu güncellenemedi.");
+    } catch (error) {
+      setError(error instanceof Error && error.message === "SELF_ACTION" ? "Kendini banlayamazsın." : "Ban durumu güncellenemedi.");
     } finally {
       setActionPending(null);
     }

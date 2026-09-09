@@ -21,7 +21,7 @@ export const ROLE_ADMIN_LEVELS: Record<UserRole, number> = {
 };
 
 export function hasAdminAccess(role: UserRole): boolean {
-  return ROLE_ADMIN_LEVELS[role] >= 40;
+  return role === "kurucu";
 }
 
 export interface ProfileRecord {

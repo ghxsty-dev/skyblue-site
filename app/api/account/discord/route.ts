@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createDiscordCode, hashDiscordCode } from "@/lib/account/security";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getSessionUser } from "@/lib/account/session";
+import { checkRateLimit } from "@/lib/account/rate-limit";
 import { isTrustedMutation } from "@/lib/account/request";
 
 export const runtime = "nodejs";
@@ -9,7 +11,7 @@ export const runtime = "nodejs";
 async function currentUser() {
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { supabase: null, user: null };
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user } = await getSessionUser(supabase);
   return { supabase, user };
 }
 
@@ -30,6 +32,10 @@ export async function POST(request: NextRequest) {
     const admin = createSupabaseAdminClient();
     if (!admin) return NextResponse.json({ error: "AUTH_NOT_CONFIGURED" }, { status: 503 });
 
+    if (!(await checkRateLimit(`discord-code:${user.id}`, 10, 600_000))) {
+      return NextResponse.json({ error: "RATE_LIMITED" }, { status: 429 });
+    }
+
     const { data: linked } = await admin.from("discord_links").select("user_id").eq("user_id", user.id).maybeSingle();
     if (linked) return NextResponse.json({ error: "ALREADY_LINKED" }, { status: 409 });
 
@@ -46,5 +52,26 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("[discord] verification code error:", error);
     return NextResponse.json({ error: "CODE_FAILED" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    if (!isTrustedMutation(request)) return NextResponse.json({ error: "INVALID_ORIGIN" }, { status: 403 });
+    const { supabase, user } = await currentUser();
+    if (!supabase) return NextResponse.json({ error: "AUTH_NOT_CONFIGURED" }, { status: 503 });
+    if (!user) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+    const admin = createSupabaseAdminClient();
+    if (!admin) return NextResponse.json({ error: "AUTH_NOT_CONFIGURED" }, { status: 503 });
+
+    const { error } = await admin.from("discord_links").delete().eq("user_id", user.id);
+    if (error) {
+      console.error("[discord] unlink failed:", error.message);
+      return NextResponse.json({ error: "UNLINK_FAILED" }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
+  } catch (error) {
+    console.error("[discord] unlink error:", error);
+    return NextResponse.json({ error: "UNLINK_FAILED" }, { status: 500 });
   }
 }

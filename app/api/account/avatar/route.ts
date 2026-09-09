@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getSessionUser } from "@/lib/account/session";
+import { isValidWebPImage } from "@/lib/account/image";
 import { isTrustedMutation } from "@/lib/account/request";
 
 export const runtime = "nodejs";
@@ -12,8 +14,8 @@ export async function POST(request: NextRequest) {
     const supabase = await createSupabaseServerClient();
     const admin = createSupabaseAdminClient();
     if (!supabase || !admin) return NextResponse.json({ error: "AUTH_NOT_CONFIGURED" }, { status: 503 });
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+    const { user, stale } = await getSessionUser(supabase);
+    if (!user) return NextResponse.json({ error: stale ? "SESSION_REVOKED" : "UNAUTHORIZED" }, { status: 401 });
 
     const form = await request.formData();
     const file = form.get("avatar");
@@ -22,6 +24,9 @@ export async function POST(request: NextRequest) {
     }
 
     const input = Buffer.from(await file.arrayBuffer());
+    if (!isValidWebPImage(new Uint8Array(input), 2048, 2048)) {
+      return NextResponse.json({ error: "INVALID_IMAGE" }, { status: 400 });
+    }
 
     const path = `${user.id}.webp`;
     const { error: uploadError } = await admin.storage.from("avatars").upload(path, input, {

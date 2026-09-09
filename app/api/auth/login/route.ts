@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isTrustedMutation } from "@/lib/account/request";
 import { verifyTurnstile } from "@/lib/account/captcha";
+import { checkRateLimit } from "@/lib/account/rate-limit";
 import { getClientIp } from "@/lib/account/security";
 
 function json(body: object, status = 200) {
@@ -14,7 +15,8 @@ export async function POST(request: NextRequest) {
   if (!isTrustedMutation(request, "json")) return json({ error: "INVALID_ORIGIN" }, 403);
   try {
     const { email, password, turnstileToken } = await request.json();
-    const ip = getClientIp(request) || "";
+    const ip = getClientIp(request) || "unknown";
+    if (!(await checkRateLimit(`login:${ip}`, 10, 600_000))) return json({ error: "RATE_LIMITED" }, 429);
     if (process.env.TURNSTILE_SECRET_KEY) {
       const captchaValid = await verifyTurnstile(String(turnstileToken || ""), ip);
       if (!captchaValid) return json({ error: "CAPTCHA_FAILED" }, 400);

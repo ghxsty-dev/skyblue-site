@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { getSessionUser } from "@/lib/account/session";
 import { isTrustedMutation } from "@/lib/account/request";
 import { normalizeNameStyle } from "@/lib/account/name-style";
 
@@ -12,8 +13,8 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient();
     if (!supabase) return NextResponse.json({ error: "AUTH_NOT_CONFIGURED" }, { status: 503 });
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: "LOGIN_REQUIRED" }, { status: 401 });
+    const { user, stale } = await getSessionUser(supabase);
+    if (!user) return NextResponse.json({ error: stale ? "SESSION_REVOKED" : "LOGIN_REQUIRED" }, { status: 401 });
 
     const { data: entitlement } = await supabase
       .from("tool_entitlements")

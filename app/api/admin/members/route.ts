@@ -109,6 +109,14 @@ export async function PUT(request: NextRequest) {
   const admin = createSupabaseAdminClient();
   if (!admin) return NextResponse.json({ error: "AUTH_NOT_CONFIGURED" }, { status: 503 });
 
+  // Kurucu kendinin rolünü değiştiremez / kendini banlayamaz (panel kilitlenmesin).
+  if (action === "role" || action === "ban") {
+    const actorId = await getActorId();
+    if (actorId && actorId === String(userId)) {
+      return NextResponse.json({ error: "SELF_ACTION" }, { status: 400 });
+    }
+  }
+
   if (action === "role") {
     const { role } = body;
     if (!VALID_ROLES.includes(role)) return NextResponse.json({ error: "INVALID_ROLE" }, { status: 400 });
@@ -225,6 +233,7 @@ export async function PUT(request: NextRequest) {
       }
       return NextResponse.json({ error: "UPDATE_FAILED" }, { status: 500 });
     }
+    await admin.from("profiles").update({ force_logout_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq("id", String(userId));
     const actorId = await getActorId();
     if (actorId) {
       await auditLog(admin, { admin_id: actorId, target_user_id: String(userId), action: "set-password" });

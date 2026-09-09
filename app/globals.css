@@ -3330,6 +3330,31 @@ button.pixel-rank-dot:hover {
   flex-wrap: wrap;
 }
 
+.account-auth-aux {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -10px;
+}
+
+.account-auth-aux a {
+  color: var(--text2);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.account-auth-aux a:hover {
+  color: #59abfe;
+  text-decoration: underline;
+}
+
+.discord-verification-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .account-name-style + .account-name-style {
   margin-top: 8px;
 }
@@ -4086,6 +4111,7 @@ button.pixel-rank-dot:hover {
 
 .discord-verification-success h2 { font-size: 0.95rem; }
 .discord-verification-success p { color: var(--text2); font-size: 0.72rem; }
+.discord-verification-success .account-form-error { grid-column: 1 / -1; }
 
 /* Admin premium codes */
 .admin-codes-page {
@@ -4262,7 +4288,7 @@ button.pixel-rank-dot:hover {
   .account-access-grid { grid-template-columns: 1fr; }
   .discord-verification-steps { grid-template-columns: 1fr; }
   .discord-verification-success { grid-template-columns: auto 1fr; }
-  .discord-verification-success a { grid-column: 1 / -1; }
+  .discord-verification-success .discord-verification-actions { grid-column: 1 / -1; }
   .admin-code-generator { grid-template-columns: 1fr 1fr; }
   .admin-code-generator > button { grid-column: 1 / -1; }
 }

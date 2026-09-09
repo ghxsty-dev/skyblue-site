@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { checkRateLimit } from "@/lib/account/rate-limit";
 import { getClientIp, hashSignupIp } from "@/lib/account/security";
 import { isTrustedMutation } from "@/lib/account/request";
 import { verifyTurnstile } from "@/lib/account/captcha";
@@ -26,6 +28,7 @@ export async function POST(request: NextRequest) {
 
     const ip = getClientIp(request);
     if (!ip) return json({ error: "IP_UNAVAILABLE" }, 400);
+    if (!(await checkRateLimit(`register:${ip}`, 5, 3_600_000))) return json({ error: "RATE_LIMITED" }, 429);
 
     if (process.env.TURNSTILE_SECRET_KEY) {
       const captchaValid = await verifyTurnstile(String(turnstileToken || ""), ip);
@@ -80,6 +83,18 @@ export async function POST(request: NextRequest) {
       }
       console.error("[auth] create user failed:", error?.message);
       return json({ error: "REGISTER_FAILED" }, 500);
+    }
+
+    // Kaydolan kullanıcıyı bekletmeden içeri al: tarayıcı oturumunu kur.
+    // Başarısız olursa kullanıcı yine de oluşmuştur, normal girişe düşer.
+    try {
+      const sessionClient = await createSupabaseServerClient();
+      if (sessionClient) {
+        const { error: sessionError } = await sessionClient.auth.signInWithPassword({ email, password });
+        if (sessionError) console.error("[auth] auto sign-in failed:", sessionError.message);
+      }
+    } catch (error) {
+      console.error("[auth] auto sign-in error:", error);
     }
 
     return json({ ok: true, username }, 201);

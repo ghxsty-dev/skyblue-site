@@ -11,7 +11,9 @@ export default function DiscordVerificationPanel() {
   const [linked, setLinked] = useState(false);
   const [username, setUsername] = useState("");
   const [pending, setPending] = useState(false);
+  const [unlinking, setUnlinking] = useState(false);
   const [error, setError] = useState("");
+  const [unlinkError, setUnlinkError] = useState("");
   const [expiresAt, setExpiresAt] = useState(0);
 
   useEffect(() => {
@@ -74,8 +76,39 @@ export default function DiscordVerificationPanel() {
     }
   }
 
+  async function unlink() {
+    if (!window.confirm(tr ? "Discord bağlantısı kaldırılsın mı? Günlük indirme limitin düşer." : "Remove the Discord link? Your daily download limit will drop.")) return;
+    setUnlinking(true);
+    setUnlinkError("");
+    try {
+      const response = await fetch("/api/account/discord", { method: "DELETE" });
+      if (response.ok) {
+        setLinked(false);
+        setUsername("");
+      } else {
+        setUnlinkError(tr ? "Bağlantı kaldırılamadı." : "Could not remove the link.");
+      }
+    } catch {
+      setUnlinkError(tr ? "Bağlantı kaldırılamadı." : "Could not remove the link.");
+    } finally {
+      setUnlinking(false);
+    }
+  }
+
   if (linked) {
-    return <div className="discord-verification-success"><span>✓</span><div><h2>{tr ? "Discord doğrulandı" : "Discord verified"}</h2><p>{username ? `@${username}` : (tr ? "Hesabın başarıyla bağlandı." : "Your account was linked successfully.")}</p></div><Link href="/account">{tr ? "Hesabıma dön" : "Back to account"}</Link></div>;
+    return (
+      <div className="discord-verification-success">
+        <span>✓</span>
+        <div><h2>{tr ? "Discord doğrulandı" : "Discord verified"}</h2><p>{username ? `@${username}` : (tr ? "Hesabın başarıyla bağlandı." : "Your account was linked successfully.")}</p></div>
+        <div className="discord-verification-actions">
+          <Link href="/account">{tr ? "Hesabıma dön" : "Back to account"}</Link>
+          <button type="button" className="account-secondary-button" onClick={unlink} disabled={unlinking}>
+            {unlinking ? (tr ? "Kaldırılıyor..." : "Removing...") : (tr ? "Bağlantıyı kaldır" : "Unlink")}
+          </button>
+        </div>
+        {unlinkError && <p className="account-form-error" role="alert">{unlinkError}</p>}
+      </div>
+    );
   }
 
   return (

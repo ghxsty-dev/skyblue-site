@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSupabaseConfig } from "@/lib/supabase/config";
+import { getSessionUser } from "@/lib/account/session";
 
 function addSecurityHeaders(response: NextResponse): NextResponse {
   response.headers.set("X-Frame-Options", "DENY");
@@ -54,10 +55,25 @@ export async function proxy(request: NextRequest) {
       },
     });
 
-    await supabase.auth.getUser();
+    const guardedPath = ["/account", "/admin"].some(
+      (prefix) => request.nextUrl.pathname === prefix || request.nextUrl.pathname.startsWith(`${prefix}/`)
+    );
+    if (guardedPath) {
+      // Şifre değişikliğiyle iptal edilmiş oturumları kapıdan çevir.
+      const { user, stale } = await getSessionUser(supabase);
+      if (stale || !user) {
+        if (stale) await supabase.auth.signOut().catch(() => {});
+        const loginUrl = new URL("/login", request.url);
+        const redirect = addSecurityHeaders(NextResponse.redirect(loginUrl));
+        redirect.headers.set("Cache-Control", "private, no-store");
+        return redirect;
+      }
+    } else {
+      await supabase.auth.getUser();
+    }
   }
 
-  const privatePath = ["/account", "/login", "/register", "/admin"].some(
+  const privatePath = ["/account", "/login", "/register", "/forgot-password", "/admin"].some(
     (prefix) => request.nextUrl.pathname === prefix || request.nextUrl.pathname.startsWith(`${prefix}/`)
   );
   if (sessionChanged || privatePath) response.headers.set("Cache-Control", "private, no-store");
