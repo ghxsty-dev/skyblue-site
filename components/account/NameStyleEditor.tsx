@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import ColorPicker from "./ColorPicker";
 import StyledUsername from "./StyledUsername";
 import { NAME_FONTS, type NameStyle } from "@/lib/account/name-style";
-
-const PRESETS = ["#ffffff", "#0b0d10", "#59abfe", "#eab308", "#ef4444", "#22c55e", "#8b5cf6", "#f97316"];
 
 interface NameStyleEditorProps {
   username: string;
@@ -120,32 +119,16 @@ export default function NameStyleEditor({ username, initial, premium }: NameStyl
       </div>
 
       <div className="account-color-row">
-        <label>
+        <div className="account-color-field">
           <span>{gradient ? "Başlangıç" : "Renk"}</span>
-          <input type="color" value={from} onChange={(e) => setFrom(e.target.value.toLowerCase())} />
-          <code>{from}</code>
-        </label>
+          <ColorPicker value={from} onChange={(hex) => setFrom(hex)} />
+        </div>
         {gradient && (
-          <label>
+          <div className="account-color-field">
             <span>Bitiş</span>
-            <input type="color" value={to ?? "#59abfe"} onChange={(e) => setTo(e.target.value.toLowerCase())} />
-            <code>{to}</code>
-          </label>
+            <ColorPicker value={to ?? "#59abfe"} onChange={(hex) => setTo(hex)} />
+          </div>
         )}
-      </div>
-
-      <div className="account-color-presets">
-        {PRESETS.map((color) => (
-          <button
-            key={color}
-            type="button"
-            className="account-color-dot"
-            style={{ backgroundColor: color }}
-            onClick={() => setFrom(color)}
-            aria-label={color}
-            title={color}
-          />
-        ))}
       </div>
 
       <div className="account-name-actions">
