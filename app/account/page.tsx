@@ -5,6 +5,7 @@ import AccountLogoutButton from "@/components/account/AccountLogoutButton";
 import AccountSettingsMenu, { type AccountTab } from "@/components/account/AccountSettingsMenu";
 import AvatarEditor from "@/components/account/AvatarEditor";
 import BannerEditor from "@/components/account/BannerEditor";
+import BioEditor from "@/components/account/BioEditor";
 import DeleteAccountForm from "@/components/account/DeleteAccountForm";
 import DiscordVerificationPanel from "@/components/account/DiscordVerificationPanel";
 import EmailChangeForm from "@/components/account/EmailChangeForm";
@@ -35,7 +36,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   if (!user) redirect("/login");
 
   const [{ data: profileData }, { data: entitlementData }, { data: discordData }] = await Promise.all([
-    supabase.from("profiles").select("id, username, avatar_path, role, created_at, updated_at, name_font, name_color_from, name_color_to, banner_path").eq("id", user.id).single(),
+    supabase.from("profiles").select("id, username, avatar_path, bio, role, created_at, updated_at, name_font, name_color_from, name_color_to, banner_path").eq("id", user.id).single(),
     supabase.from("tool_entitlements").select("tool_slug, expires_at").eq("user_id", user.id),
     supabase.from("discord_links").select("discord_user_id, discord_username, discord_avatar, verified_at").eq("user_id", user.id).maybeSingle(),
   ]);
@@ -76,6 +77,11 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
                   <dl><div><dt>E-posta</dt><dd>{user.email}</dd></div><div><dt>Katılım</dt><dd>{new Date(profile.created_at).toLocaleDateString("tr-TR")}</dd></div></dl>
                   <Link href={`/users/${profile.username}`} className="account-text-link">Public profili görüntüle</Link>
                 </div>
+              </section>
+
+              <section className="account-access-section">
+                <div className="account-section-heading"><div><span>Profil</span><h2>Hakkında</h2></div></div>
+                <BioEditor initial={profile.bio || ""} />
               </section>
 
               <div className="account-profile-edit-grid">

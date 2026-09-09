@@ -28,6 +28,7 @@ export interface ProfileRecord {
   id: string;
   username: string;
   avatar_path: string | null;
+  bio: string;
   role: UserRole;
   banned: boolean;
   signup_ip: string | null;

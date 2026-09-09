@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 async function getProfile(username: string) {
   const admin = createSupabaseAdminClient();
   if (!admin) return null;
-  const { data } = await admin.from("profiles").select("id, username, avatar_path, role, created_at, updated_at, name_font, name_color_from, name_color_to, banner_path").eq("username", username.toLowerCase()).maybeSingle();
+  const { data } = await admin.from("profiles").select("id, username, avatar_path, bio, role, created_at, updated_at, name_font, name_color_from, name_color_to, banner_path").eq("username", username.toLowerCase()).maybeSingle();
   if (!data) return null;
   const [{ data: premium }, { data: discord }] = await Promise.all([
     admin.from("tool_entitlements").select("id").eq("user_id", data.id).gt("expires_at", new Date().toISOString()).limit(1),
@@ -56,6 +56,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
               <h1><StyledUsername username={profile.username} style={nameStyle} enabled={premium} /></h1>
             </div>
             <ProfileBadges premium={premium} discordUsername={discordUsername} role={profile.role} />
+            {profile.bio && <p className="public-profile-bio">{profile.bio}</p>}
           </div>
           <div className="public-profile-stats">
             <div className="public-profile-stat">
