@@ -3231,6 +3231,10 @@ button.pixel-rank-dot:hover {
   grid-column: 1 / -1;
 }
 
+.account-name-style + .account-name-style {
+  margin-top: 8px;
+}
+
 .account-avatar-editor {
   display: flex;
   flex-direction: column;

@@ -72,11 +72,9 @@ export default async function AccountPage() {
         </section>
 
         <NameStyleEditor username={profile.username} initial={nameStyle} premium={namePremium} />
-
-        <div className="account-grid-full">
-          <BannerEditor current={bannerApiUrl(profile)} premium={namePremium} />
-        </div>
       </div>
+
+      <BannerEditor current={bannerApiUrl(profile)} premium={namePremium} />
     </div>
   );
 }
