@@ -13,7 +13,8 @@ interface NameStyleEditorProps {
 }
 
 export default function NameStyleEditor({ username, initial, premium }: NameStyleEditorProps) {
-  const [font, setFont] = useState(initial.font);
+  // Kayıtlı font listeden kaldırılmışsa (eski veri) varsayılana düş.
+  const [font, setFont] = useState(NAME_FONTS.some((f) => f.id === initial.font) ? initial.font : "default");
   const [from, setFrom] = useState(initial.from);
   const [to, setTo] = useState<string | null>(initial.to);
   const [pending, setPending] = useState(false);

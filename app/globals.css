@@ -3337,6 +3337,46 @@ button.pixel-rank-dot:hover {
   flex-wrap: wrap;
 }
 
+.premium-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 32px;
+  align-items: center;
+  padding: 32px 0;
+}
+
+.premium-hero-image {
+  display: flex;
+  justify-content: center;
+}
+
+.premium-hero-img {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+}
+
+.premium-hero-text h1 {
+  margin: 0;
+  font-size: 2.6rem;
+  line-height: 1.1;
+}
+
+.premium-hero-text p {
+  margin: 12px 0 0;
+  color: var(--text2);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.premium-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
 .account-auth-aux {
   display: flex;
   justify-content: flex-end;
@@ -4357,6 +4397,8 @@ button.pixel-rank-dot:hover {
   .account-grid { grid-template-columns: 1fr; }
   .account-settings-layout { grid-template-columns: 1fr; }
   .account-profile-edit-grid { grid-template-columns: 1fr; }
+  .premium-hero { grid-template-columns: 1fr; text-align: center; }
+  .premium-hero-actions { justify-content: center; }
   .account-settings-menu { position: static; flex-direction: row; overflow-x: auto; }
   .account-settings-menu a { white-space: nowrap; }
   .account-profile-name, .account-badges { justify-content: center; }
