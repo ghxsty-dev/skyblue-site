@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import AccountLogoutButton from "@/components/account/AccountLogoutButton";
 import AccountSettingsMenu, { type AccountTab } from "@/components/account/AccountSettingsMenu";
-import AvatarEditor from "@/components/account/AvatarEditor";
 import DeleteAccountForm from "@/components/account/DeleteAccountForm";
 import DiscordVerificationPanel from "@/components/account/DiscordVerificationPanel";
 import EmailChangeForm from "@/components/account/EmailChangeForm";
@@ -69,7 +69,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           {tab === "profil" && (
             <>
               <section className="account-profile-layout">
-                <AvatarEditor src={avatarApiUrl(profile)} username={profile.username} />
+                <Image src={avatarApiUrl(profile)} alt={`${profile.username} avatar`} width={128} height={128} unoptimized className="account-avatar-image" />
                 <div className="account-profile-summary">
                   <div className="account-profile-name"><h2><StyledUsername username={profile.username} style={nameStyle} enabled={namePremium} /></h2><ProfileBadges premium={activePremium.length > 0} discordUsername={discord?.discord_username} role={profile.role} /></div>
                   <Link href={`/users/${profile.username}`} className="account-text-link">Public profili görüntüle</Link>
@@ -81,6 +81,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
                 initialBio={profile.bio || ""}
                 initialStyle={nameStyle}
                 premium={namePremium}
+                avatarSrc={avatarApiUrl(profile)}
                 bannerCurrent={bannerApiUrl(profile)}
               />
             </>

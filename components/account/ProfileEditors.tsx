@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/lib/context";
+import AvatarEditor from "./AvatarEditor";
 import BannerEditor from "./BannerEditor";
 import NameStyleEditor from "./NameStyleEditor";
 import { NAME_FONTS, type NameStyle } from "@/lib/account/name-style";
@@ -14,6 +15,7 @@ interface ProfileEditorsProps {
   initialBio: string;
   initialStyle: NameStyle;
   premium: boolean;
+  avatarSrc: string;
   bannerCurrent: string | null;
 }
 
@@ -32,7 +34,7 @@ function errorText(code: string | undefined, tr: boolean): string {
 }
 
 /** Hakkında + isim görünümü tek formda; değişiklik olunca yüzen kayıt çubuğu çıkar. */
-export default function ProfileEditors({ username, initialBio, initialStyle, premium, bannerCurrent }: ProfileEditorsProps) {
+export default function ProfileEditors({ username, initialBio, initialStyle, premium, avatarSrc, bannerCurrent }: ProfileEditorsProps) {
   const { lang } = useApp();
   const router = useRouter();
   const tr = lang === "TR";
@@ -149,19 +151,24 @@ export default function ProfileEditors({ username, initialBio, initialStyle, pre
       </section>
 
       <div className="account-profile-edit-grid">
-        <NameStyleEditor
-          username={username}
-          premium={premium}
-          font={font}
-          from={from}
-          to={to}
-          onFontChange={setFont}
-          onFromChange={setFrom}
-          onToChange={setTo}
-          onResetDefaults={resetDefaults}
-        />
+        <section className="account-access-section">
+          <div className="account-section-heading"><div><span>Profil</span><h2>{tr ? "Profil Fotoğrafı" : "Profile photo"}</h2></div></div>
+          <AvatarEditor src={avatarSrc} username={username} />
+        </section>
         <BannerEditor current={bannerCurrent} premium={premium} />
       </div>
+
+      <NameStyleEditor
+        username={username}
+        premium={premium}
+        font={font}
+        from={from}
+        to={to}
+        onFontChange={setFont}
+        onFromChange={setFrom}
+        onToChange={setTo}
+        onResetDefaults={resetDefaults}
+      />
 
       {message && (
         <p className={message.ok ? "account-form-ok" : "account-form-error"} role="status">
