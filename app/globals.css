@@ -3319,9 +3319,6 @@ button.pixel-rank-dot:hover {
 }
 
 .profile-save-bar {
-  position: sticky;
-  bottom: 16px;
-  z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
