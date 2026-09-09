@@ -6,10 +6,12 @@ import {
   silkscreen,
   pixelifySans,
   monocraft,
-  minicomputer,
   pirataOne,
-  penmanship,
   typewriter,
+  blackChancery,
+  magicSchool,
+  ghiyaStrokes,
+  oxanium,
 } from "./fonts";
 import "./globals.css";
 import { AppProvider } from "@/lib/context";
@@ -87,7 +89,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme="dark"
-      className={`${plusJakarta.variable} ${pressStart2P.variable} ${vt323.variable} ${silkscreen.variable} ${pixelifySans.variable} ${monocraft.variable} ${minicomputer.variable} ${pirataOne.variable} ${penmanship.variable} ${typewriter.variable} h-full antialiased`}
+      className={`${plusJakarta.variable} ${pressStart2P.variable} ${vt323.variable} ${silkscreen.variable} ${pixelifySans.variable} ${monocraft.variable} ${pirataOne.variable} ${typewriter.variable} ${blackChancery.variable} ${magicSchool.variable} ${ghiyaStrokes.variable} ${oxanium.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <script

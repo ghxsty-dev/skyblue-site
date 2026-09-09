@@ -9,10 +9,12 @@ export interface NameFontOption {
 
 export const NAME_FONTS: readonly NameFontOption[] = [
   { id: "default", label: "Varsayılan", css: null },
-  { id: "minicomputer", label: "Minicomputer", css: "var(--font-minicomputer), monospace" },
   { id: "pirata", label: "Pirata One", css: "var(--font-pirata), serif" },
-  { id: "penmanship", label: "Penmanship", css: "var(--font-penmanship), cursive" },
   { id: "typewriter", label: "Typewriter", css: "var(--font-typewriter), monospace" },
+  { id: "black-chancery", label: "Black Chancery", css: "var(--font-black-chancery), serif" },
+  { id: "magic-school", label: "Magic School", css: "var(--font-magic-school), serif" },
+  { id: "ghiya-strokes", label: "Ghiya Strokes", css: "var(--font-ghiya-strokes), cursive" },
+  { id: "oxanium", label: "Oxanium", css: "var(--font-oxanium), sans-serif" },
 ];
 
 export interface NameStyle {
