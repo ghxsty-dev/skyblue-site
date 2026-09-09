@@ -78,9 +78,11 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
                 </div>
               </section>
 
-              <NameStyleEditor username={profile.username} initial={nameStyle} premium={namePremium} />
+              <div className="account-profile-edit-grid">
+                <NameStyleEditor username={profile.username} initial={nameStyle} premium={namePremium} />
 
-              <BannerEditor current={bannerApiUrl(profile)} premium={namePremium} />
+                <BannerEditor current={bannerApiUrl(profile)} premium={namePremium} />
+              </div>
             </>
           )}
 

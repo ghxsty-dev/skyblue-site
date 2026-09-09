@@ -3282,6 +3282,13 @@ button.pixel-rank-dot:hover {
   margin-top: 12px;
 }
 
+.account-profile-edit-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
 .account-section-desc {
   margin: 8px 0 0;
   color: var(--text2);
@@ -4281,6 +4288,7 @@ button.pixel-rank-dot:hover {
   .account-profile-layout { grid-template-columns: 1fr; justify-items: center; text-align: center; }
   .account-grid { grid-template-columns: 1fr; }
   .account-settings-layout { grid-template-columns: 1fr; }
+  .account-profile-edit-grid { grid-template-columns: 1fr; }
   .account-settings-menu { position: static; flex-direction: row; overflow-x: auto; }
   .account-settings-menu a { white-space: nowrap; }
   .account-profile-name, .account-badges { justify-content: center; }

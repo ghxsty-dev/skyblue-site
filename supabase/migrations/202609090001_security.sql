@@ -34,6 +34,9 @@ alter table public.profiles
   add column if not exists force_logout_at timestamptz;
 
 -- Oturum tazelik kontrolü sunucu istemcisiyle okunur; sütünü izne ekle.
+-- NOT: revoke, 0011/0012 migration'larinin sütun izinlerini silmemesi icin
+-- tum sütunlari kapsayan tek grant olarak yazildi.
 revoke all on table public.profiles from anon, authenticated;
-grant select (id, username, avatar_path, role, created_at, updated_at, force_logout_at)
+grant select (id, username, avatar_path, role, banned, created_at, updated_at,
+  force_logout_at, name_font, name_color_from, name_color_to, banner_path)
   on public.profiles to authenticated;
