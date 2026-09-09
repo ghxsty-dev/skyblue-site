@@ -72,7 +72,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
                 <AvatarEditor src={avatarApiUrl(profile)} username={profile.username} />
                 <div className="account-profile-summary">
                   <div className="account-profile-name"><h2><StyledUsername username={profile.username} style={nameStyle} enabled={namePremium} /></h2><ProfileBadges premium={activePremium.length > 0} discordUsername={discord?.discord_username} role={profile.role} /></div>
-                  <dl><div><dt>E-posta</dt><dd>{user.email}</dd></div><div><dt>Katılım</dt><dd>{new Date(profile.created_at).toLocaleDateString("tr-TR")}</dd></div></dl>
                   <Link href={`/users/${profile.username}`} className="account-text-link">Public profili görüntüle</Link>
                 </div>
               </section>
@@ -109,6 +108,11 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
 
           {tab === "hesap" && (
             <>
+              <section className="account-access-section">
+                <div className="account-section-heading"><div><span>Hesap</span><h2>Hesap Bilgileri</h2></div></div>
+                <dl className="account-info-list"><div><dt>E-posta</dt><dd>{user.email}</dd></div><div><dt>Katılım</dt><dd>{new Date(profile.created_at).toLocaleDateString("tr-TR")}</dd></div></dl>
+              </section>
+
               <section className="account-access-section">
                 <div className="account-section-heading"><div><span>Hesap</span><h2>E-posta Değiştir</h2></div></div>
                 <EmailChangeForm currentEmail={user.email ?? ""} />

@@ -3582,7 +3582,8 @@ button.pixel-rank-dot:hover {
   pointer-events: none;
 }
 
-.account-profile-summary dl {
+.account-profile-summary dl,
+.account-info-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
@@ -3590,6 +3591,7 @@ button.pixel-rank-dot:hover {
 }
 
 .account-profile-summary dt,
+.account-info-list dt,
 .account-access-grid span {
   color: var(--text2);
   font-size: 0.62rem;
@@ -3597,7 +3599,8 @@ button.pixel-rank-dot:hover {
   text-transform: uppercase;
 }
 
-.account-profile-summary dd {
+.account-profile-summary dd,
+.account-info-list dd {
   margin: 2px 0 0;
   color: var(--text);
   font-size: 0.78rem;
@@ -4462,7 +4465,7 @@ button.pixel-rank-dot:hover {
   .account-settings-menu { position: static; flex-direction: row; overflow-x: auto; }
   .account-settings-menu a { white-space: nowrap; }
   .account-profile-name, .account-badges { justify-content: center; }
-  .account-profile-summary dl { grid-template-columns: 1fr; gap: 8px; }
+  .account-profile-summary dl, .account-info-list { grid-template-columns: 1fr; gap: 8px; }
   .account-access-grid { grid-template-columns: 1fr; }
   .discord-verification-steps { grid-template-columns: 1fr; }
   .discord-verification-success { grid-template-columns: auto 1fr; }
