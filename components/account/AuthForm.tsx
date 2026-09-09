@@ -33,6 +33,8 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [capsLock, setCapsLock] = useState(false);
+  const captchaEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  const [captchaVerified, setCaptchaVerified] = useState(!captchaEnabled);
   const turnstileRef = useRef<HTMLDivElement>(null);
   const turnstileWidgetRef = useRef<string | null>(null);
 
@@ -44,7 +46,9 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
       turnstileWidgetRef.current = window.turnstile.render(turnstileRef.current, {
         sitekey: siteKey,
         theme: "dark",
-        callback: () => {},
+        callback: () => setCaptchaVerified(true),
+        "expired-callback": () => setCaptchaVerified(false),
+        "error-callback": () => setCaptchaVerified(false),
       });
     };
     if (window.turnstile) { tryRender(); return; }
@@ -54,6 +58,11 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (captchaEnabled && !captchaVerified) {
+      const message = ERROR_MESSAGES.CAPTCHA_FAILED;
+      setError(tr ? message.tr : message.en);
+      return;
+    }
     setPending(true);
     setError("");
     const form = new FormData(event.currentTarget);
@@ -74,6 +83,10 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
       if (!response.ok) {
         const message = ERROR_MESSAGES[result.error];
         setError(message ? (tr ? message.tr : message.en) : (tr ? "Bir hata oluştu." : "Something went wrong."));
+        if (result.error === "CAPTCHA_FAILED" && window.turnstile && turnstileWidgetRef.current) {
+          window.turnstile.reset(turnstileWidgetRef.current);
+          setCaptchaVerified(false);
+        }
         return;
       }
       window.location.assign("/account");
@@ -120,13 +133,17 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
               onKeyDown={(event) => setCapsLock(event.getModifierState("CapsLock"))}
               onKeyUp={(event) => setCapsLock(event.getModifierState("CapsLock"))}
             />
-            {capsLock && <small className="account-form-warning">{tr ? "Caps Lock açık" : "Caps Lock is on"}</small>}
+            <small className="account-form-warning" aria-live="polite" style={{ visibility: capsLock ? "visible" : "hidden" }}>
+              {tr ? "Caps Lock açık" : "Caps Lock is on"}
+            </small>
           </label>
           {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && <div ref={turnstileRef} className="account-captcha" />}
           {error && <p className="account-form-error" role="alert">{error}</p>}
-          <button type="submit" disabled={pending}>
-            {pending ? (tr ? "İşleniyor..." : "Processing...") : mode === "register" ? (tr ? "Hesap oluştur" : "Create account") : (tr ? "Giriş yap" : "Sign in")}
-          </button>
+          {(!captchaEnabled || captchaVerified) && (
+            <button type="submit" disabled={pending}>
+              {pending ? (tr ? "İşleniyor..." : "Processing...") : mode === "register" ? (tr ? "Hesap oluştur" : "Create account") : (tr ? "Giriş yap" : "Sign in")}
+            </button>
+          )}
         </form>
 
         <p className="account-auth-switch">
