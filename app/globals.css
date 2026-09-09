@@ -3296,7 +3296,7 @@ button.pixel-rank-dot:hover {
   line-height: 1.5;
 }
 
-.account-danger-section {
+.account-access-section.account-danger-section {
   border: 1px solid rgba(239, 68, 68, 0.25);
   border-radius: 12px;
   padding: 16px;
