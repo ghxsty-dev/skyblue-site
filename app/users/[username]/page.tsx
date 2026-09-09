@@ -53,10 +53,12 @@ export default async function UserProfilePage({ params }: { params: Promise<{ us
           <div className="public-profile-head">
             <div>
               <span className="public-profile-kicker">SkyBlue ID</span>
-              <h1><StyledUsername username={profile.username} style={nameStyle} enabled={premium} /></h1>
+              <div className="public-profile-nameline">
+                <h1><StyledUsername username={profile.username} style={nameStyle} enabled={premium} /></h1>
+                <ProfileBadges premium={premium} discordUsername={discordUsername} role={profile.role} />
+              </div>
+              {profile.bio && <p className="public-profile-bio">{profile.bio}</p>}
             </div>
-            <ProfileBadges premium={premium} discordUsername={discordUsername} role={profile.role} />
-            {profile.bio && <p className="public-profile-bio">{profile.bio}</p>}
           </div>
           <div className="public-profile-stats">
             <div className="public-profile-stat">

@@ -4068,6 +4068,13 @@ button.pixel-rank-dot:hover {
   overflow-wrap: anywhere;
 }
 
+.public-profile-nameline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .public-profile-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
