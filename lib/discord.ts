@@ -1,7 +1,7 @@
 const DISCORD_API = "https://discord.com/api/v10";
 const CHANNEL_ID = "1516801166627831949";
 const MESSAGE_PAGE_SIZE = 100;
-const MAX_MESSAGE_PAGES = 100;
+const MAX_MESSAGE_PAGES = 10;
 const discordUserCache = new Map<string, DiscordUser>();
 
 export interface DiscordReview {

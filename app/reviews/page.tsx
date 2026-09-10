@@ -18,28 +18,46 @@ export default function ReviewsPage() {
   const { t, lang } = useApp();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loadedLang, setLoadedLang] = useState<typeof lang | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
   const loading = loadedLang !== lang;
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 25000);
 
-    fetch(`/api/reviews?lang=${lang}`, { cache: "no-store" })
-      .then((res) => res.json())
+    fetch(`/api/reviews?lang=${lang}`, { cache: "no-store", signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`reviews ${res.status}`);
+        return res.json();
+      })
       .then((data: { reviews: Review[] }) => {
         if (!active) return;
-        setReviews(data.reviews);
+        setReviews(Array.isArray(data.reviews) ? data.reviews : []);
+        setFailed(false);
         setLoadedLang(lang);
       })
       .catch(() => {
         if (!active) return;
         setReviews([]);
+        setFailed(true);
         setLoadedLang(lang);
-      });
+      })
+      .finally(() => window.clearTimeout(timer));
 
     return () => {
       active = false;
+      controller.abort();
+      window.clearTimeout(timer);
     };
-  }, [lang]);
+  }, [lang, retryKey]);
+
+  function retry() {
+    setFailed(false);
+    setLoadedLang(null);
+    setRetryKey((k) => k + 1);
+  }
 
   return (
     <div className="page-inner">
@@ -57,6 +75,13 @@ export default function ReviewsPage() {
       {loading ? (
         <div className="flex justify-center py-16">
           <div className="w-8 h-8 border-2 border-[#59abfe] border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : failed && reviews.length === 0 ? (
+        <div className="flex flex-col items-center gap-4 py-16">
+          <p className="text-center text-[var(--text2)]">{lang === "TR" ? "Yorumlar yüklenemedi." : "Could not load reviews."}</p>
+          <button type="button" onClick={retry} className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white font-medium hover:opacity-80 transition-opacity">
+            {lang === "TR" ? "Tekrar dene" : "Retry"}
+          </button>
         </div>
       ) : reviews.length === 0 ? (
         <p className="text-center text-[var(--text2)] py-16">{lang === "TR" ? "Henüz yorum bulunmuyor." : "No reviews yet."}</p>

@@ -51,16 +51,32 @@ export default function HomePage() {
   const info = contactData[lang as "EN" | "TR"];
 
   useEffect(() => {
-    fetch(`/api/reviews?lang=${lang}`, { cache: "no-store" })
-      .then((res) => res.json())
+    let active = true;
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 25000);
+
+    fetch(`/api/reviews?lang=${lang}`, { cache: "no-store", signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`reviews ${res.status}`);
+        return res.json();
+      })
       .then((data: { reviews: Review[] }) => {
-        setReviews(data.reviews);
+        if (!active) return;
+        setReviews(Array.isArray(data.reviews) ? data.reviews : []);
         setReviewsLang(lang);
       })
       .catch(() => {
+        if (!active) return;
         setReviews([]);
         setReviewsLang(lang);
-      });
+      })
+      .finally(() => window.clearTimeout(timer));
+
+    return () => {
+      active = false;
+      controller.abort();
+      window.clearTimeout(timer);
+    };
   }, [lang]);
 
   const [isMobile, setIsMobile] = useState(false);

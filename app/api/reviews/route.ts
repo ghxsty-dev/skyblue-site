@@ -5,7 +5,19 @@ import fallback from "@/data/reviews.json";
 export const dynamic = "force-dynamic";
 
 const translationCache = new Map<string, string>();
-const TRANSLATION_CONCURRENCY = 3;
+const TRANSLATION_CONCURRENCY = 5;
+const MAX_REVIEWS = 24;
+const TRANSLATION_BUDGET_MS = 15000;
+
+// Dil başına kısa süreli önbellek: her sayfa açılışında Discord +
+// çeviri zincirini baştan koşturmamak için (zaman aşımının ana nedeni).
+interface ReviewsCache {
+  key: string;
+  data: { source: string; reviews: unknown[] };
+  timestamp: number;
+}
+let cached: ReviewsCache | null = null;
+const CACHE_TTL_MS = 300_000;
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -22,7 +34,7 @@ async function translateText(text: string, targetLang: "tr" | "en"): Promise<str
   try {
     const { translate } = await import("@vitalets/google-translate-api");
 
-    for (let attempt = 0; attempt < 3; attempt += 1) {
+    for (let attempt = 0; attempt < 2; attempt += 1) {
       try {
         const res = await translate(normalized, { to: targetLang });
         const translated = res.text?.trim();
@@ -34,7 +46,7 @@ async function translateText(text: string, targetLang: "tr" | "en"): Promise<str
           return translated;
         }
       } catch {
-        if (attempt < 2) await wait(250 * (attempt + 1));
+        if (attempt < 1) await wait(250);
       }
     }
   } catch {
@@ -71,11 +83,24 @@ export async function GET(request: NextRequest) {
   const requestedLang = request.nextUrl.searchParams.get("lang")?.toUpperCase();
   const lang = requestedLang === "TR" ? "TR" : "EN";
 
+  if (cached && cached.key === lang && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+    const response = NextResponse.json(cached.data);
+    response.headers.set("Cache-Control", "private, no-store");
+    return response;
+  }
+
   try {
     const discordReviews = await fetchDiscordReviews();
     if (discordReviews.length > 0) {
-      const translatedReviews = await translateReviews(discordReviews, lang === "EN" ? "en" : "tr");
-      const response = NextResponse.json({ source: "discord", reviews: translatedReviews });
+      const latest = discordReviews.slice(0, MAX_REVIEWS);
+      // Çeviri takılırsa orijinal metinlerle dön (boş sayfa yerine).
+      const translatedReviews = await Promise.race([
+        translateReviews(latest, lang === "EN" ? "en" : "tr"),
+        wait(TRANSLATION_BUDGET_MS).then(() => null),
+      ]);
+      const data = { source: "discord", reviews: translatedReviews ?? latest };
+      cached = { key: lang, data, timestamp: Date.now() };
+      const response = NextResponse.json(data);
       response.headers.set("Cache-Control", "private, no-store");
       return response;
     }
