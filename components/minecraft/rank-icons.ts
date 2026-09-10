@@ -60,6 +60,8 @@ export interface ResolvedSlot {
   width: number;
   /** null = sadece boşluk (zemin uzar, simge çizilmez) */
   rows: Glyph | null;
+  /** Simge kare zemini (varsayılan "same") */
+  bg?: string;
 }
 
 /**

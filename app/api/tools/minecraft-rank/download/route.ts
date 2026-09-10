@@ -8,6 +8,7 @@ import {
   getPixelFont,
   isCornerStyle,
   isValidCustomIcon,
+  normalizeIconBg,
   normalizeRankText,
   type CornerStyle,
   type RankSlotInput,
@@ -75,11 +76,14 @@ export async function POST(request: NextRequest) {
     if ((leftSlotId === SLOT_CUSTOM && !isValidCustomIcon(body.customLeft)) || (rightSlotId === SLOT_CUSTOM && !isValidCustomIcon(body.customRight))) {
       return NextResponse.json({ error: "INVALID_CUSTOM_ICON" }, { status: 400 });
     }
-    const toSlotInput = (slotId: string, custom: unknown): RankSlotInput | null => {
-      if (slotId === SLOT_CUSTOM) return customSlotInput(custom as Parameters<typeof customSlotInput>[0]);
-      return resolveSlot(slotId, font.height);
+    const toSlotInput = (slotId: string, custom: unknown, bg: unknown): RankSlotInput | null => {
+      const input = slotId === SLOT_CUSTOM
+        ? customSlotInput(custom as Parameters<typeof customSlotInput>[0])
+        : resolveSlot(slotId, font.height);
+      if (input) input.bg = normalizeIconBg(bg);
+      return input;
     };
-    const layout = buildRankLayout(font, text, toSlotInput(leftSlotId, body.customLeft), toSlotInput(rightSlotId, body.customRight), {
+    const layout = buildRankLayout(font, text, toSlotInput(leftSlotId, body.customLeft, body.iconBgLeft), toSlotInput(rightSlotId, body.customRight, body.iconBgRight), {
       iconGap: Math.max(0, Math.min(MAX_ICON_GAP, Math.floor(Number(body.iconGap) || 0))),
     });
     const cornerStyle: CornerStyle = isCornerStyle(body.cornerStyle) ? body.cornerStyle : "square";
@@ -120,6 +124,19 @@ export async function POST(request: NextRequest) {
 
     for (let y = 0; y < height; y += 1) {
       for (let x = 0; x < width; x += 1) setPixel(x, y, background[y][x]);
+    }
+    for (const icon of layout.icons) {
+      if (!icon.bg || icon.bg === "same") continue;
+      const iconW = icon.rows[0]?.length ?? 0;
+      for (let y = 0; y < icon.rows.length; y += 1) {
+        for (let x = 0; x < iconW; x += 1) {
+          if (icon.bg === "transparent") {
+            pixels[((icon.dy + y) * width + (icon.dx + x)) * 4 + 3] = 0;
+          } else {
+            setPixel(icon.dx + x, icon.dy + y, icon.bg);
+          }
+        }
+      }
     }
     for (let y = 0; y < layout.textRows.length; y += 1) {
       const row = layout.textRows[y] ?? "";

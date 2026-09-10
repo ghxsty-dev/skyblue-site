@@ -10,6 +10,7 @@ import {
   getPixelFont,
   isValidCustomIcon,
   MAX_ICON_GAP,
+  normalizeIconBg,
   normalizeRankText,
   PIXEL_FONTS,
   CORNER_STYLES,
@@ -19,6 +20,7 @@ import {
 } from "./pixel-fonts";
 import {
   RANK_ICONS,
+  isKnownSlot,
   resolveSlot,
   SLOT_CUSTOM,
   SLOT_NONE,
@@ -230,6 +232,15 @@ function IconPainter({
     painting.current = false;
   }
 
+  function paintFromPointer(clientX: number, clientY: number, grid: HTMLDivElement) {
+    const rect = grid.getBoundingClientRect();
+    const pitch = 28;
+    const total = size * pitch - 2;
+    const col = Math.floor((clientX - rect.left - (rect.width - total) / 2) / pitch);
+    const row = Math.floor((clientY - rect.top - (rect.height - total) / 2) / pitch);
+    paint(col, row);
+  }
+
   return (
     <div className="pixel-icon-painter-backdrop" role="dialog" aria-modal="true" aria-label={title}>
       <div className="pixel-icon-painter">
@@ -243,6 +254,7 @@ function IconPainter({
           onPointerUp={stopPainting}
           onPointerCancel={stopPainting}
           onPointerLeave={stopPainting}
+          onPointerMove={(e) => { if (painting.current) paintFromPointer(e.clientX, e.clientY, e.currentTarget); }}
         >
           {cells.flatMap((row, y) =>
             row.map((cell, x) => (
@@ -405,6 +417,61 @@ function SlotPicker({
   );
 }
 
+/** Simge kare zemini: metinle aynı / saydam / özel renk. */
+function IconBgPicker({
+  value,
+  onChange,
+  title,
+  sameLabel,
+  transparentLabel,
+  colorLabel,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  title: string;
+  sameLabel: string;
+  transparentLabel: string;
+  colorLabel: string;
+}) {
+  const isHex = value !== "same" && value !== "transparent";
+  return (
+    <div className="pixel-rank-iconbg">
+      <span className="pixel-rank-label">{title}</span>
+      <div className="pixel-rank-slot-options">
+        <button
+          type="button"
+          className={`pixel-rank-slot-option is-text ${value === "same" ? "is-active" : ""}`}
+          onClick={() => onChange("same")}
+          aria-pressed={value === "same"}
+        >
+          {sameLabel}
+        </button>
+        <button
+          type="button"
+          className={`pixel-rank-slot-option is-text ${value === "transparent" ? "is-active" : ""}`}
+          onClick={() => onChange("transparent")}
+          aria-pressed={value === "transparent"}
+        >
+          {transparentLabel}
+        </button>
+        <label
+          className={`pixel-rank-slot-option is-text is-color ${isHex ? "is-active" : ""}`}
+          title={colorLabel}
+        >
+          <input
+            type="color"
+            value={isHex ? value : "#59abfe"}
+            onChange={(event) => onChange(event.target.value.toLowerCase())}
+            aria-label={colorLabel}
+          />
+          <span className="pixel-rank-iconbg-swatch" style={{ backgroundColor: isHex ? value : "transparent" }} aria-hidden="true" />
+          {colorLabel}
+        </label>
+      </div>
+    </div>
+  );
+}
+
 export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageWrapRef = useRef<HTMLDivElement>(null);
@@ -422,12 +489,12 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [rightSlot, setRightSlot] = useState<string>(SLOT_NONE);
   const [iconColor, setIconColor] = useState("#ffffff");
   const [iconGap, setIconGap] = useState(0);
+  const [leftIconBg, setLeftIconBg] = useState("same");
+  const [rightIconBg, setRightIconBg] = useState("same");
   const [cornerStyle, setCornerStyle] = useState<CornerStyle>("square");
   const [customLeft, setCustomLeft] = useState<CustomIconCells | null>(null);
   const [customRight, setCustomRight] = useState<CustomIconCells | null>(null);
   const [painterSide, setPainterSide] = useState<"left" | "right" | null>(null);
-  const [aiPending, setAiPending] = useState(false);
-  const [aiError, setAiError] = useState("");
 
   const [bgMode, setBgMode] = useState<BgMode>("gradient");
   const [presetId, setPresetId] = useState(DEFAULT_PRESET.id);
@@ -463,13 +530,19 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const font = getPixelFont(fontId);
   const normalized = normalizeRankText(text);
   const leftSlotInput = useMemo(() => {
-    if (leftSlot === SLOT_CUSTOM) return customLeft ? customSlotInput(customLeft) : null;
-    return resolveSlot(leftSlot, font.height);
-  }, [leftSlot, customLeft, font.height]);
+    const input = leftSlot === SLOT_CUSTOM
+      ? (customLeft ? customSlotInput(customLeft) : null)
+      : resolveSlot(leftSlot, font.height);
+    if (input) input.bg = normalizeIconBg(leftIconBg);
+    return input;
+  }, [leftSlot, customLeft, leftIconBg, font.height]);
   const rightSlotInput = useMemo(() => {
-    if (rightSlot === SLOT_CUSTOM) return customRight ? customSlotInput(customRight) : null;
-    return resolveSlot(rightSlot, font.height);
-  }, [rightSlot, customRight, font.height]);
+    const input = rightSlot === SLOT_CUSTOM
+      ? (customRight ? customSlotInput(customRight) : null)
+      : resolveSlot(rightSlot, font.height);
+    if (input) input.bg = normalizeIconBg(rightIconBg);
+    return input;
+  }, [rightSlot, customRight, rightIconBg, font.height]);
   const layout = useMemo(
     () => buildRankLayout(font, text, leftSlotInput, rightSlotInput, { iconGap }),
     [font, text, leftSlotInput, rightSlotInput, iconGap],
@@ -540,12 +613,14 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         cancel: "Vazgeç",
         loginToSave: "Kaydetmek için giriş yap",
         customIcon: "Özel",
+        iconBgTitle: "Simge zemini",
+        bgSame: "Metinle aynı",
+        bgTransparent: "Saydam",
+        bgCustom: "Renk",
         paintTitle: "Simge çiz",
         gapLabel: "Simge boşluğu",
         cornerStep: "5 · Kenar",
         surprise: "Beni şaşırt",
-        aiSuggest: "Yapay zeka",
-        aiWorking: "Düşünüyor...",
         lockTitle: "İndirmek için kayıt ol",
         lockDesc: "Ücretsiz hesap aç, indirmeye hemen başla. Tasarımın kaybolmaz.",
         lockBenefits: ["Günde 2 bedava indirme", "Discord bağla, 4'e çıkar", "Projelerin bulutta saklanır"],
@@ -613,12 +688,14 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         cancel: "Cancel",
         loginToSave: "Sign in to save",
         customIcon: "Custom",
+        iconBgTitle: "Icon background",
+        bgSame: "Same as text",
+        bgTransparent: "Transparent",
+        bgCustom: "Color",
         paintTitle: "Draw icon",
         gapLabel: "Icon gap",
         cornerStep: "5 · Corners",
         surprise: "Surprise me",
-        aiSuggest: "AI Suggest",
-        aiWorking: "Thinking...",
         lockTitle: "Sign up to download",
         lockDesc: "Create a free account and start downloading. Your design is kept.",
         lockBenefits: ["2 free downloads daily", "Link Discord to raise it to 4", "Projects saved in the cloud"],
@@ -790,6 +867,21 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         }
       }
     }
+    for (const icon of layout.icons) {
+      if (!icon.bg || icon.bg === "same") continue;
+      const iconW = icon.rows[0]?.length ?? 0;
+      for (let y = 0; y < icon.rows.length; y += 1) {
+        for (let x = 0; x < iconW; x += 1) {
+          if (icon.bg === "transparent") {
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = (icon.dx + x + (icon.dy + y)) % 2 === 0 ? "#26313d" : "#1d252f";
+            ctx.fillRect(icon.dx + x, icon.dy + y, 1, 1);
+          } else {
+            paintPixel(icon.dx + x, icon.dy + y, icon.bg);
+          }
+        }
+      }
+    }
     for (let y = 0; y < layout.textRows.length; y += 1) {
       const row = layout.textRows[y] ?? "";
       for (let x = 0; x < row.length; x += 1) {
@@ -950,6 +1042,10 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     setIconColor("#ffffff");
     setIconGap(0);
     setCornerStyle("square");
+    setCustomLeft(null);
+    setCustomRight(null);
+    setLeftIconBg("same");
+    setRightIconBg("same");
     setCurrentProjectId(null);
     resetAll();
   }, [resetAll]);
@@ -978,66 +1074,16 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     setRightSlot(pick(rightPool));
     setIconGap(Math.floor(Math.random() * 5));
     setCornerStyle(pick(CORNER_STYLES).id);
-    setAiError("");
+    const rollBg = () => {
+      const r = Math.random();
+      if (r < 0.7) return "same";
+      if (r < 0.85) return "transparent";
+      return `#${Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, "0")}`;
+    };
+    setLeftIconBg(rollBg());
+    setRightIconBg(rollBg());
   }, [applyPreset, customLeft, customRight, height, setGrid, width]);
 
-  // --- Yapay zeka önerisi (premium): yazıya göre uyumlu stil ---
-  const aiSuggest = useCallback(async () => {
-    if (!downloadState?.premium) {
-      setAiError(isTurkish ? "Yapay zeka önerisi premium üyelere özel." : "AI suggestions are for premium members.");
-      return;
-    }
-    if (!text.trim()) {
-      setAiError(isTurkish ? "Önce bir rank yazısı yaz." : "Type a rank name first.");
-      return;
-    }
-    setAiPending(true);
-    setAiError("");
-    try {
-      const response = await fetch("/api/tools/minecraft-rank/suggest", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
-      });
-      const result = await response.json().catch(() => ({}));
-      if (response.status === 401) {
-        setShowLock(true);
-        return;
-      }
-      if (response.status === 403) {
-        setAiError(isTurkish ? "Yapay zeka önerisi premium üyelere özel." : "AI suggestions are for premium members.");
-        return;
-      }
-      if (response.status === 429) {
-        setAiError(isTurkish ? "Günlük yapay zeka hakkın doldu, yarın tekrar dene." : "Daily AI suggestion limit reached, try again tomorrow.");
-        return;
-      }
-      if (!response.ok || !result.suggestion) throw new Error("AI_FAILED");
-      const s = result.suggestion;
-      setFontId(s.fontId);
-      setTextColor(s.textColor);
-      if (s.bgMode === "solid") {
-        setBgMode("solid");
-        setSolidColor(s.solidColor);
-        setPresetId("custom");
-        setGrid(createGrid(width, height, s.solidColor), true);
-      } else {
-        setBgMode("gradient");
-        setPresetId("custom");
-        setGradFrom(s.gradientFrom);
-        setGradTo(s.gradientTo);
-        setGrid(buildGradientGrid(width, height, s.gradientFrom, s.gradientTo, gradDir), true);
-      }
-      setLeftSlot(s.iconLeft);
-      setRightSlot(s.iconRight);
-      setIconGap(s.iconGap);
-      setCornerStyle(s.cornerStyle);
-    } catch {
-      setAiError(isTurkish ? "Öneri alınamadı, tekrar dene." : "Could not get a suggestion, try again.");
-    } finally {
-      setAiPending(false);
-    }
-  }, [downloadState, gradDir, height, isTurkish, setGrid, text, width]);
 
   // --- İndirme / kaydetme ---
   const download = useCallback(async () => {
@@ -1056,6 +1102,8 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           iconGap, cornerStyle,
           customLeft: leftSlot === SLOT_CUSTOM ? customLeft : null,
           customRight: rightSlot === SLOT_CUSTOM ? customRight : null,
+          iconBgLeft: leftIconBg,
+          iconBgRight: rightIconBg,
         }),
       });
       if (response.status === 401) {
@@ -1085,7 +1133,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     } finally {
       setDownloadPending(false);
     }
-  }, [background, cornerStyle, customLeft, customRight, fontId, iconColor, iconGap, isTurkish, leftSlot, rightSlot, text, textColor, trimmedEmpty]);
+  }, [background, cornerStyle, customLeft, customRight, fontId, iconColor, iconGap, isTurkish, leftIconBg, leftSlot, rightIconBg, rightSlot, text, textColor, trimmedEmpty]);
 
   const loadProject = useCallback(async (projectId: string) => {
     try {
@@ -1095,15 +1143,21 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
       if (!project) return;
       setText(project.text ?? "VIP");
       setProjectName(project.name ?? project.text ?? "VIP");
-      setFontId(project.font_id ?? PIXEL_FONTS[0].id);
+      setFontId(typeof project.font_id === "string" && PIXEL_FONTS.some((f) => f.id === project.font_id) ? project.font_id : "block");
       setTextColor(project.text_color ?? "#ffffff");
-      setLeftSlot(typeof project.icon_left === "string" ? project.icon_left : SLOT_NONE);
-      setRightSlot(typeof project.icon_right === "string" ? project.icon_right : SLOT_NONE);
+      const loadedLeft = typeof project.icon_left === "string" && isKnownSlot(project.icon_left) ? project.icon_left : SLOT_NONE;
+      const loadedRight = typeof project.icon_right === "string" && isKnownSlot(project.icon_right) ? project.icon_right : SLOT_NONE;
+      const loadedLeftCells = isValidCustomIcon(project.custom_left) ? project.custom_left : null;
+      const loadedRightCells = isValidCustomIcon(project.custom_right) ? project.custom_right : null;
+      setLeftSlot(loadedLeft === SLOT_CUSTOM && !loadedLeftCells ? SLOT_NONE : loadedLeft);
+      setRightSlot(loadedRight === SLOT_CUSTOM && !loadedRightCells ? SLOT_NONE : loadedRight);
       setIconColor(typeof project.icon_color === "string" && /^#[0-9a-f]{6}$/i.test(project.icon_color) ? project.icon_color.toLowerCase() : "#ffffff");
       setIconGap(typeof project.icon_gap === "number" ? Math.max(0, Math.min(MAX_ICON_GAP, Math.floor(project.icon_gap))) : 0);
       setCornerStyle(project.corner_style === "rounded" || project.corner_style === "soft" ? project.corner_style : "square");
-      setCustomLeft(isValidCustomIcon(project.custom_left) ? project.custom_left : null);
-      setCustomRight(isValidCustomIcon(project.custom_right) ? project.custom_right : null);
+      setCustomLeft(loadedLeftCells);
+      setCustomRight(loadedRightCells);
+      setLeftIconBg(normalizeIconBg(project.icon_bg_left));
+      setRightIconBg(normalizeIconBg(project.icon_bg_right));
       const bgModeLoaded = (project.bg_mode as BgMode) || null;
       if (bgModeLoaded === "gradient" && project.gradient_from && project.gradient_to) {
         setBgMode("gradient");
@@ -1165,6 +1219,8 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           cornerStyle,
           customLeft: leftSlot === SLOT_CUSTOM ? customLeft : null,
           customRight: rightSlot === SLOT_CUSTOM ? customRight : null,
+          iconBgLeft: leftIconBg,
+          iconBgRight: rightIconBg,
         }),
       });
       if (response.status === 401) {
@@ -1186,7 +1242,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
     } finally {
       setSavePending(false);
     }
-  }, [background, bgMode, cornerStyle, currentProjectId, customLeft, customRight, downloadState, fontId, gradDir, gradFrom, gradTo, iconColor, iconGap, isTurkish, leftSlot, presetId, projectName, rightSlot, solidColor, text, textColor, trimmedEmpty]);
+  }, [background, bgMode, cornerStyle, currentProjectId, customLeft, customRight, downloadState, fontId, gradDir, gradFrom, gradTo, iconColor, iconGap, isTurkish, leftIconBg, leftSlot, presetId, projectName, rightIconBg, rightSlot, solidColor, text, textColor, trimmedEmpty]);
 
   const deleteProject = useCallback(async (projectId: string) => {
     try {
@@ -1291,11 +1347,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           <button type="button" className="pixel-rank-fun-btn" onClick={surprise} title={copy.surprise}>
             <span aria-hidden="true">🎲</span> {copy.surprise}
           </button>
-          <button type="button" className="pixel-rank-fun-btn is-ai" onClick={aiSuggest} disabled={aiPending} title={copy.aiSuggest}>
-            <span aria-hidden="true">✨</span> {aiPending ? copy.aiWorking : copy.aiSuggest}
-          </button>
         </div>
-        {aiError && <p className="pixel-rank-download-error" role="alert">{aiError}</p>}
         {painterSide && (
           <IconPainter
             size={font.height}
@@ -1585,6 +1637,14 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
             iconColor={iconColor}
             lang={lang}
           />
+          <IconBgPicker
+            value={leftIconBg}
+            onChange={setLeftIconBg}
+            title={copy.iconBgTitle}
+            sameLabel={copy.bgSame}
+            transparentLabel={copy.bgTransparent}
+            colorLabel={copy.bgCustom}
+          />
           <SlotPicker
             value={rightSlot}
             onChange={setRightSlot}
@@ -1597,6 +1657,14 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
             iconRows={(id) => resolveSlot(id, font.height)?.rows ?? []}
             iconColor={iconColor}
             lang={lang}
+          />
+          <IconBgPicker
+            value={rightIconBg}
+            onChange={setRightIconBg}
+            title={copy.iconBgTitle}
+            sameLabel={copy.bgSame}
+            transparentLabel={copy.bgTransparent}
+            colorLabel={copy.bgCustom}
           />
           <span className="pixel-rank-label">{copy.iconColor}</span>
           <CompactColorPicker

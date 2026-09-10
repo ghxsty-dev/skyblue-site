@@ -1,7 +1,5 @@
 export type Glyph = readonly string[];
 
-import { CHLORENF_GLYPHS, DATCUB_GLYPHS, VISITOR_GLYPHS } from "./rank-bitmap-fonts";
-
 export interface PixelFont {
   id: string;
   name: string;
@@ -243,9 +241,7 @@ export const PIXEL_FONTS: readonly PixelFont[] = [
   { id: "retro-7", name: "Retro 7", height: 7, descTr: "Oyun tarzı · 7px · yuvarlak hatlar", descEn: "Arcade · 7px · rounded strokes", glyphs: RETRO_7_GLYPHS },
   { id: "block", name: "Block 5", height: 5, descTr: "Klasik · 5px · kalın ve net", descEn: "Classic · 5px · bold and crisp", glyphs: BASE_GLYPHS },
   { id: "minecraft-ten", name: "Minecraft Ten", height: 7, descTr: "Modern · 7px · ince ve detaylı", descEn: "Modern · 7px · slim and detailed", glyphs: MINECRAFT_TEN_GLYPHS },
-  { id: "visitor", name: "Visitor", height: 7, descTr: "Piksel · 7px · bitmap klasik", descEn: "Pixel · 7px · bitmap classic", glyphs: VISITOR_GLYPHS },
-  { id: "datcub", name: "DatCub", height: 12, descTr: "Küp · 12px · 3D blok", descEn: "Cube · 12px · 3D block", glyphs: DATCUB_GLYPHS },
-  { id: "chlorenuf", name: "Chlorenuf", height: 12, descTr: "Yuvarlak · 12px · kalın", descEn: "Rounded · 12px · bold", glyphs: CHLORENF_GLYPHS },
+
 ];
 
 export function getPixelFont(id: string): PixelFont {
@@ -321,12 +317,24 @@ export function isValidCustomIcon(value: unknown): value is CustomIconCells {
   );
 }
 
+/**
+ * Simge kare zemini: "same" = metin zeminiyle aynı,
+ * "transparent" = saydam, "#rrggbb" = özel renk.
+ */
+export function normalizeIconBg(value: unknown): string {
+  if (value === "transparent") return "transparent";
+  if (typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value.trim())) return value.trim().toLowerCase();
+  return "same";
+}
+
 export interface RankSlotInput {
   width: number;
   /** null = boş kare alan (zemin uzar, piksel çizilmez) */
   rows: Glyph | null;
   /** Özel simgelerde hücre başına renk (yoksa simge rengi kullanılır) */
   colors?: readonly (readonly (string | null)[])[] | null;
+  /** Simge kare zemini (varsayılan "same") */
+  bg?: string;
 }
 
 /** 9x9 özel simge hücresinden slot girdisi üretir. */
@@ -343,6 +351,7 @@ export interface PlacedIcon {
   dx: number;
   dy: number;
   colors?: readonly (readonly (string | null)[])[] | null;
+  bg: string;
 }
 
 /**
@@ -395,12 +404,13 @@ export function buildRankLayout(
   const height = contentH + RANK_PAD_Y * 2;
   const icons: PlacedIcon[] = [];
   if (left?.rows) {
-    icons.push({ rows: left.rows, colors: left.colors ?? null, dx: RANK_PAD_X, dy: RANK_PAD_Y + Math.floor((contentH - leftH) / 2) });
+    icons.push({ rows: left.rows, colors: left.colors ?? null, bg: normalizeIconBg(left.bg), dx: RANK_PAD_X, dy: RANK_PAD_Y + Math.floor((contentH - leftH) / 2) });
   }
   if (right?.rows) {
     icons.push({
       rows: right.rows,
       colors: right.colors ?? null,
+      bg: normalizeIconBg(right.bg),
       dx: RANK_PAD_X + leftW + t.width + gap,
       dy: RANK_PAD_Y + Math.floor((contentH - rightH) / 2),
     });

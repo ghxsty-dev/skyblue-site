@@ -2901,10 +2901,6 @@ button.pixel-rank-dot:hover {
   transform: translateY(-1px);
 }
 
-.pixel-rank-fun-btn.is-ai {
-  border-color: rgba(139, 92, 246, 0.45);
-}
-
 .pixel-rank-fun-btn:disabled {
   opacity: 0.6;
   cursor: wait;
@@ -2920,6 +2916,34 @@ button.pixel-rank-dot:hover {
 .pixel-rank-gap-row input[type="range"] {
   flex: 1;
   accent-color: #59abfe;
+}
+
+.pixel-rank-iconbg {
+  margin-top: 10px;
+}
+
+.pixel-rank-iconbg .pixel-rank-slot-options {
+  margin-top: 6px;
+}
+
+.pixel-rank-slot-option.is-color {
+  position: relative;
+  overflow: hidden;
+}
+
+.pixel-rank-slot-option.is-color input[type="color"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.pixel-rank-iconbg-swatch {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  flex: none;
 }
 
 .pixel-icon-painter-backdrop {
@@ -2971,6 +2995,7 @@ button.pixel-rank-dot:hover {
   display: grid;
   justify-content: center;
   gap: 2px;
+  touch-action: none;
 }
 
 .pixel-icon-cell {

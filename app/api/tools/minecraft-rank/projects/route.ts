@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSessionUser } from "@/lib/account/session";
-import { MAX_ICON_GAP, isCornerStyle, isValidCustomIcon } from "@/components/minecraft/pixel-fonts";
+import { MAX_ICON_GAP, isCornerStyle, isValidCustomIcon, normalizeIconBg } from "@/components/minecraft/pixel-fonts";
 import { SLOT_CUSTOM, isKnownSlot } from "@/components/minecraft/rank-icons";
 import { isTrustedMutation } from "@/lib/account/request";
 
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   if (loadId) {
     const { data } = await supabase
       .from("rank_projects")
-      .select("id, name, text, font_id, text_color, background, extra_brush_colors, extra_text_colors, bg_mode, gradient_from, gradient_to, gradient_dir, gradient_preset, solid_color, icon_left, icon_right, icon_color, icon_gap, corner_style, custom_left, custom_right")
+      .select("id, name, text, font_id, text_color, background, extra_brush_colors, extra_text_colors, bg_mode, gradient_from, gradient_to, gradient_dir, gradient_preset, solid_color, icon_left, icon_right, icon_color, icon_gap, corner_style, custom_left, custom_right, icon_bg_left, icon_bg_right")
       .eq("id", loadId)
       .eq("user_id", user.id)
       .maybeSingle();
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
 
-  const { id, name, text, fontId, textColor, background, extraBrushColors, extraTextColors, bgMode, gradientFrom, gradientTo, gradientDir, gradientPreset, solidColor, leftSlot, rightSlot, iconColor, iconGap, cornerStyle, customLeft, customRight } = body;
+  const { id, name, text, fontId, textColor, background, extraBrushColors, extraTextColors, bgMode, gradientFrom, gradientTo, gradientDir, gradientPreset, solidColor, leftSlot, rightSlot, iconColor, iconGap, cornerStyle, customLeft, customRight, iconBgLeft, iconBgRight } = body;
 
   if (!Array.isArray(background) || background.length > MAX_BACKGROUND_SIZE) {
     return NextResponse.json({ error: "Invalid background" }, { status: 400 });
@@ -106,6 +106,8 @@ export async function POST(request: NextRequest) {
     icon_color: cleanHex(iconColor, "#ffffff"),
     icon_gap: cleanGap,
     corner_style: cleanCorner,
+    icon_bg_left: normalizeIconBg(iconBgLeft),
+    icon_bg_right: normalizeIconBg(iconBgRight),
     custom_left: cleanLeft === SLOT_CUSTOM ? customLeft : null,
     custom_right: cleanRight === SLOT_CUSTOM ? customRight : null,
     updated_at: new Date().toISOString(),
