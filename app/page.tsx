@@ -148,9 +148,6 @@ export default function HomePage() {
               {t.contact}
             </Link>
           </div>
-          {!isLoggedIn && (
-            <p className="mt-4 text-sm text-white/60">{t.heroSignupNote}</p>
-          )}
         </div>
       </section>
       </article>
