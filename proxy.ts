@@ -16,12 +16,12 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
   response.headers.set(
     "Content-Security-Policy",
     "default-src 'self'; " +
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://pagead2.googlesyndication.com https://www.googletagmanager.com https://challenges.cloudflare.com; " +
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.googlesyndication.com https://googleads.g.doubleclick.net https://www.googletagmanager.com https://challenges.cloudflare.com; " +
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
     "font-src 'self' https://fonts.gstatic.com; " +
-    "img-src 'self' data: blob: https://cdn.discordapp.com https://media.discordapp.net https://flagcdn.com https://*.googleusercontent.com https://*.supabase.co; " +
-    "connect-src 'self' https://discord.com https://api.github.com https://cdn.discordapp.com https://media.discordapp.net https://flagcdn.com https://challenges.cloudflare.com; " +
-    "frame-src https://www.youtube.com https://discord.com https://challenges.cloudflare.com; " +
+    "img-src 'self' data: blob: https://cdn.discordapp.com https://media.discordapp.net https://flagcdn.com https://*.googleusercontent.com https://*.supabase.co https://*.googlesyndication.com https://googleads.g.doubleclick.net; " +
+    "connect-src 'self' https://discord.com https://api.github.com https://cdn.discordapp.com https://media.discordapp.net https://flagcdn.com https://challenges.cloudflare.com https://*.googlesyndication.com https://*.doubleclick.net https://*.adtrafficquality.google; " +
+    "frame-src https://www.youtube.com https://discord.com https://challenges.cloudflare.com https://googleads.g.doubleclick.net https://*.googlesyndication.com; " +
     "frame-ancestors 'none'"
   );
   return response;
