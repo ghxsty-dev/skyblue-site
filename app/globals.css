@@ -3307,23 +3307,23 @@ button.pixel-rank-dot:hover {
   top: 76px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  border-right: 1px solid var(--border);
+  padding-right: 12px;
 }
 
 .account-settings-menu a {
   padding: 10px 14px;
-  border: 1px solid var(--border);
+  border: 1px solid transparent;
   border-radius: 10px;
-  background: var(--card-bg);
   color: var(--text2);
   font-size: 0.8rem;
   font-weight: 700;
   text-decoration: none;
-  transition: border-color 0.15s, color 0.15s;
+  transition: color 0.15s;
 }
 
 .account-settings-menu a:hover {
-  border-color: var(--c2);
   color: var(--text);
 }
 
@@ -4579,7 +4579,7 @@ button.pixel-rank-dot:hover {
   .account-profile-edit-grid { grid-template-columns: 1fr; }
   .premium-hero { grid-template-columns: 1fr; text-align: center; }
   .premium-hero-actions { justify-content: center; }
-  .account-settings-menu { position: static; flex-direction: row; overflow-x: auto; }
+  .account-settings-menu { position: static; flex-direction: row; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 8px; }
   .account-settings-menu a { white-space: nowrap; }
   .account-profile-name, .account-badges { justify-content: center; }
   .account-profile-summary dl, .account-info-list { grid-template-columns: 1fr; gap: 8px; }
