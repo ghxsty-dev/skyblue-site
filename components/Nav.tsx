@@ -211,12 +211,10 @@ export default function Nav() {
                         {t.premiumBecome}
                       </a>
                     )}
-                    <div className="nav-dropdown-divider" />
                     <a href="/account" onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
                       <span className="nav-dropdown-icon"><SettingsIcon size={16} /></span>
                       {t.accountSettings}
                     </a>
-                    <div className="nav-dropdown-divider" />
                     <button type="button" onClick={handleLogout} className="nav-dropdown-item danger">
                       <span className="nav-dropdown-icon"><LogoutIcon size={16} /></span>
                       {t.signOut}
