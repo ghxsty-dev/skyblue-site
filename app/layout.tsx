@@ -27,6 +27,7 @@ import LiveChat from "@/components/LiveChat";
 import CookieConsent from "@/components/CookieConsent";
 import BackToTop from "@/components/BackToTop";
 import AdSenseScript from "@/components/AdSenseScript";
+import GuestStrip from "@/components/GuestStrip";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -171,7 +172,7 @@ export default function RootLayout({
           <div className="relative">
             <Nav />
             <AdSidebar />
-            <main>{children}</main>
+            <main><GuestStrip />{children}</main>
             <Footer />
           </div>
           <LangModal />

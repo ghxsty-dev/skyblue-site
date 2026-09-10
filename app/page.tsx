@@ -46,6 +46,16 @@ export default function HomePage() {
   const { t, lang } = useApp();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewsLang, setReviewsLang] = useState<typeof lang | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (active && d?.user) setIsLoggedIn(true); })
+      .catch(() => {});
+    return () => { active = false; };
+  }, []);
   const [index, setIndex] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const info = contactData[lang as "EN" | "TR"];
@@ -125,13 +135,22 @@ export default function HomePage() {
             {t.heroDesc}
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Link href="/services" className="btn btn-primary">
-              {t.heroCTA}
-            </Link>
+            {isLoggedIn ? (
+              <Link href="/account" className="btn btn-primary">
+                {t.account}
+              </Link>
+            ) : (
+              <Link href="/register" className="btn btn-primary">
+                {t.signUp}
+              </Link>
+            )}
             <Link href="/contact" className="btn btn-outline">
               {t.contact}
             </Link>
           </div>
+          {!isLoggedIn && (
+            <p className="mt-4 text-sm text-white/60">{t.heroSignupNote}</p>
+          )}
         </div>
       </section>
       </article>

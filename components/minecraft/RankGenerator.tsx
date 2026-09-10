@@ -323,6 +323,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [zoom, setZoom] = useState(1);
 
   const [downloadState, setDownloadState] = useState<{ authenticated: boolean; premium: boolean; remaining: number } | null>(null);
+  const [showLock, setShowLock] = useState(false);
   const [downloadPending, setDownloadPending] = useState(false);
   const [downloadError, setDownloadError] = useState("");
   const [savedProjects, setSavedProjects] = useState<{ id: string; name: string; text: string; font_id: string; text_color: string; updated_at: string }[]>([]);
@@ -407,6 +408,12 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         yesDelete: "Evet, sil",
         cancel: "Vazgeç",
         loginToSave: "Kaydetmek için giriş yap",
+        lockTitle: "İndirmek için kayıt ol",
+        lockDesc: "Ücretsiz hesap aç, indirmeye hemen başla. Tasarımın kaybolmaz.",
+        lockBenefits: ["Günde 2 bedava indirme", "Discord bağla, 4'e çıkar", "Projelerin bulutta saklanır"],
+        lockSignup: "Kayıt ol",
+        lockLogin: "Giriş yap",
+        lockClose: "Kapat",
         dimensions: `${width} × ${height} px PNG`,
       }
     : {
@@ -468,6 +475,12 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         yesDelete: "Yes, delete",
         cancel: "Cancel",
         loginToSave: "Sign in to save",
+        lockTitle: "Sign up to download",
+        lockDesc: "Create a free account and start downloading. Your design is kept.",
+        lockBenefits: ["2 free downloads daily", "Link Discord to raise it to 4", "Projects saved in the cloud"],
+        lockSignup: "Sign up",
+        lockLogin: "Sign in",
+        lockClose: "Close",
         dimensions: `${width} × ${height} px PNG`,
       };
 
@@ -800,7 +813,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         body: JSON.stringify({ text, fontId, textColor, background, leftSlot, rightSlot, iconColor }),
       });
       if (response.status === 401) {
-        window.location.assign("/login");
+        setShowLock(true);
         return;
       }
       if (response.status === 429) {
@@ -868,7 +881,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
 
   const saveProject = useCallback(async () => {
     if (!downloadState?.authenticated) {
-      window.location.assign("/login");
+      setShowLock(true);
       return;
     }
     if (trimmedEmpty) {
@@ -901,7 +914,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         }),
       });
       if (response.status === 401) {
-        window.location.assign("/login");
+        setShowLock(true);
         return;
       }
       const result = await response.json().catch(() => ({}));
@@ -1028,6 +1041,23 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           {downloadState?.authenticated && !downloadState.premium && <span><a href="/account/premium?tool=minecraft-rank">Premium</a> · <a href="/account/discord">Discord +2</a></span>}
         </div>
         {downloadError && <p className="pixel-rank-download-error" role="alert">{downloadError}</p>}
+
+        {showLock && (
+          <div className="pixel-rank-lock" role="dialog" aria-labelledby="rank-lock-title">
+            <button type="button" className="pixel-rank-lock-close" onClick={() => setShowLock(false)} aria-label={copy.lockClose}>×</button>
+            <h3 id="rank-lock-title">{copy.lockTitle}</h3>
+            <p>{copy.lockDesc}</p>
+            <ul>
+              {copy.lockBenefits.map((benefit) => (
+                <li key={benefit}>{benefit}</li>
+              ))}
+            </ul>
+            <div className="pixel-rank-lock-actions">
+              <a href="/register" className="account-primary-button" style={{ textDecoration: "none" }}>{copy.lockSignup}</a>
+              <a href="/login" className="account-secondary-button" style={{ textDecoration: "none" }}>{copy.lockLogin}</a>
+            </div>
+          </div>
+        )}
 
         {downloadState?.authenticated && savedProjects.length > 0 && (
           <div className="pixel-rank-projects">

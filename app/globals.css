@@ -3430,6 +3430,102 @@ button.pixel-rank-dot:hover {
   flex-wrap: wrap;
 }
 
+.guest-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #1c2f4d, #12315e);
+  border-bottom: 1px solid rgba(89, 171, 254, 0.25);
+  color: #e6edf3;
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.guest-strip-cta {
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #97cdf2, #59abfe);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.guest-strip-cta:hover {
+  opacity: 0.85;
+}
+
+.guest-strip-close {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.guest-strip-close:hover {
+  color: #fff;
+}
+
+.pixel-rank-lock {
+  position: relative;
+  margin-top: 12px;
+  padding: 18px 16px 16px;
+  border: 1px solid rgba(89, 171, 254, 0.35);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(89, 171, 254, 0.12), rgba(89, 171, 254, 0.04));
+}
+
+.pixel-rank-lock h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.pixel-rank-lock p {
+  margin: 6px 0 0;
+  color: var(--text2);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.pixel-rank-lock ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: var(--text);
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.pixel-rank-lock-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.pixel-rank-lock-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text2);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.pixel-rank-lock-close:hover {
+  color: var(--text);
+}
+
 .premium-hero {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
