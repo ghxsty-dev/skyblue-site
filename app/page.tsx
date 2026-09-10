@@ -47,13 +47,15 @@ export default function HomePage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewsLang, setReviewsLang] = useState<typeof lang | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     let active = true;
     fetch("/api/auth/me", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (active && d?.user) setIsLoggedIn(true); })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => { if (active) setAuthChecked(true); });
     return () => { active = false; };
   }, []);
   const [index, setIndex] = useState(0);
@@ -135,7 +137,11 @@ export default function HomePage() {
             {t.heroDesc}
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            {isLoggedIn ? (
+            {!authChecked ? (
+              <span className="btn btn-primary opacity-0" aria-hidden="true">
+                {t.signUp}
+              </span>
+            ) : isLoggedIn ? (
               <Link href="/account" className="btn btn-primary">
                 {t.account}
               </Link>
