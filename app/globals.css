@@ -91,7 +91,7 @@ main {
   top: 8rem;
   z-index: 40;
   display: none;
-  width: min(180px, calc((100vw - 1100px) / 2 - 24px));
+  width: min(150px, calc((100vw - 1100px) / 2 - 24px));
 }
 
 @media (min-width: 1400px) {

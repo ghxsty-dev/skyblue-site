@@ -111,24 +111,24 @@ export default function AdSidebar() {
   return (
     <>
       <div className="ad-side ad-side-left">
-        <Link href={leftHref} target="_blank" rel="noopener noreferrer" className="relative block aspect-square w-full">
+        <Link href={leftHref} target="_blank" rel="noopener noreferrer" className="relative block aspect-[1/3] w-full">
           <NextImage
             src={`/reklam${leftAd}.webp`}
             alt="Reklam"
             fill
-            sizes="180px"
+            sizes="150px"
             className={`rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all duration-400 cursor-pointer object-cover ${fade ? "opacity-100" : "opacity-0"}`}
           />
         </Link>
       </div>
       {rightAd !== null && rightAd !== leftAd && (
         <div className="ad-side ad-side-right">
-          <Link href={rightHref} target="_blank" rel="noopener noreferrer" className="relative block aspect-square w-full">
+          <Link href={rightHref} target="_blank" rel="noopener noreferrer" className="relative block aspect-[1/3] w-full">
             <NextImage
               src={`/reklam${rightAd}.webp`}
               alt="Reklam"
               fill
-              sizes="180px"
+              sizes="150px"
               className={`rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all duration-400 cursor-pointer object-cover ${fade ? "opacity-100" : "opacity-0"}`}
             />
           </Link>
