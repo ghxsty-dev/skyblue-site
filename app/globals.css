@@ -3431,6 +3431,11 @@ button.pixel-rank-dot:hover {
 }
 
 .guest-strip {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  z-index: 900;
   display: flex;
   align-items: center;
   justify-content: center;
