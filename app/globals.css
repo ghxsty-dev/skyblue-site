@@ -3923,7 +3923,7 @@ button.pixel-rank-dot:hover {
 
 .account-banner-preview {
   margin: 12px 0 0;
-  height: 100px;
+  width: 100%;
   aspect-ratio: 5 / 1;
   border: 1px solid var(--border);
   border-radius: 8px;
