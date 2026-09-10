@@ -3430,54 +3430,6 @@ button.pixel-rank-dot:hover {
   flex-wrap: wrap;
 }
 
-.guest-strip {
-  position: fixed;
-  top: 64px;
-  left: 0;
-  right: 0;
-  z-index: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 10px 16px;
-  background: linear-gradient(135deg, #1c2f4d, #12315e);
-  border-bottom: 1px solid rgba(89, 171, 254, 0.25);
-  color: #e6edf3;
-  font-size: 0.82rem;
-  text-align: center;
-}
-
-.guest-strip-cta {
-  padding: 6px 16px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #97cdf2, #59abfe);
-  color: #fff;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.guest-strip-cta:hover {
-  opacity: 0.85;
-}
-
-.guest-strip-close {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 1.1rem;
-  line-height: 1;
-  cursor: pointer;
-  padding: 2px 6px;
-}
-
-.guest-strip-close:hover {
-  color: #fff;
-}
-
 .pixel-rank-lock {
   position: relative;
   margin-top: 12px;
