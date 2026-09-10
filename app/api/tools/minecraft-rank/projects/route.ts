@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSessionUser } from "@/lib/account/session";
+import { MAX_ICON_GAP, isCornerStyle, isValidCustomIcon } from "@/components/minecraft/pixel-fonts";
+import { SLOT_CUSTOM, isKnownSlot } from "@/components/minecraft/rank-icons";
 import { isTrustedMutation } from "@/lib/account/request";
 
 export const dynamic = "force-dynamic";
@@ -20,7 +22,7 @@ export async function GET(request: NextRequest) {
   if (loadId) {
     const { data } = await supabase
       .from("rank_projects")
-      .select("id, name, text, font_id, text_color, background, extra_brush_colors, extra_text_colors, bg_mode, gradient_from, gradient_to, gradient_dir, gradient_preset, solid_color, icon_left, icon_right, icon_color")
+      .select("id, name, text, font_id, text_color, background, extra_brush_colors, extra_text_colors, bg_mode, gradient_from, gradient_to, gradient_dir, gradient_preset, solid_color, icon_left, icon_right, icon_color, icon_gap, corner_style, custom_left, custom_right")
       .eq("id", loadId)
       .eq("user_id", user.id)
       .maybeSingle();
@@ -64,11 +66,20 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
 
-  const { id, name, text, fontId, textColor, background, extraBrushColors, extraTextColors, bgMode, gradientFrom, gradientTo, gradientDir, gradientPreset, solidColor, leftSlot, rightSlot, iconColor } = body;
+  const { id, name, text, fontId, textColor, background, extraBrushColors, extraTextColors, bgMode, gradientFrom, gradientTo, gradientDir, gradientPreset, solidColor, leftSlot, rightSlot, iconColor, iconGap, cornerStyle, customLeft, customRight } = body;
 
   if (!Array.isArray(background) || background.length > MAX_BACKGROUND_SIZE) {
     return NextResponse.json({ error: "Invalid background" }, { status: 400 });
   }
+
+  const cleanSlot = (slot: unknown) => (typeof slot === "string" && isKnownSlot(slot) ? slot : "none");
+  const cleanLeft = cleanSlot(leftSlot);
+  const cleanRight = cleanSlot(rightSlot);
+  if ((cleanLeft === SLOT_CUSTOM && !isValidCustomIcon(customLeft)) || (cleanRight === SLOT_CUSTOM && !isValidCustomIcon(customRight))) {
+    return NextResponse.json({ error: "Invalid custom icon" }, { status: 400 });
+  }
+  const cleanGap = Math.max(0, Math.min(MAX_ICON_GAP, Math.floor(Number(iconGap) || 0)));
+  const cleanCorner = isCornerStyle(cornerStyle) ? cornerStyle : "square";
 
   const projectName = (typeof name === "string" ? name : "").slice(0, 64) || "Proje";
   const rankText = (typeof text === "string" ? text : "VIP").slice(0, 24);
@@ -90,9 +101,13 @@ export async function POST(request: NextRequest) {
     gradient_dir: gradientDir === "horizontal" ? "horizontal" : "vertical",
     gradient_preset: (typeof gradientPreset === "string" ? gradientPreset : "custom").slice(0, 32),
     solid_color: cleanHex(solidColor, "#59abfe"),
-    icon_left: (typeof leftSlot === "string" ? leftSlot : "none").slice(0, 32),
-    icon_right: (typeof rightSlot === "string" ? rightSlot : "none").slice(0, 32),
+    icon_left: cleanLeft,
+    icon_right: cleanRight,
     icon_color: cleanHex(iconColor, "#ffffff"),
+    icon_gap: cleanGap,
+    corner_style: cleanCorner,
+    custom_left: cleanLeft === SLOT_CUSTOM ? customLeft : null,
+    custom_right: cleanRight === SLOT_CUSTOM ? customRight : null,
     updated_at: new Date().toISOString(),
   };
 

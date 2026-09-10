@@ -50,9 +50,10 @@ export const RANK_ICONS: readonly RankIcon[] = [
 
 export const SLOT_NONE = "none";
 export const SLOT_SPACE = "space";
+export const SLOT_CUSTOM = "custom";
 
 export function isKnownSlot(value: string): boolean {
-  return value === SLOT_NONE || value === SLOT_SPACE || RANK_ICONS.some((icon) => icon.id === value);
+  return value === SLOT_NONE || value === SLOT_SPACE || value === SLOT_CUSTOM || RANK_ICONS.some((icon) => icon.id === value);
 }
 
 export interface ResolvedSlot {

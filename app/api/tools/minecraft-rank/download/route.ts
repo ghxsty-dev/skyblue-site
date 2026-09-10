@@ -1,7 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PNG } from "pngjs";
-import { buildRankLayout, getPixelFont, normalizeRankText } from "@/components/minecraft/pixel-fonts";
-import { isKnownSlot, resolveSlot } from "@/components/minecraft/rank-icons";
+import {
+  MAX_ICON_GAP,
+  buildRankLayout,
+  cornerAlpha,
+  customSlotInput,
+  getPixelFont,
+  isCornerStyle,
+  isValidCustomIcon,
+  normalizeRankText,
+  type CornerStyle,
+  type RankSlotInput,
+} from "@/components/minecraft/pixel-fonts";
+import { SLOT_CUSTOM, isKnownSlot, resolveSlot } from "@/components/minecraft/rank-icons";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSessionUser } from "@/lib/account/session";
 import { isTrustedMutation } from "@/lib/account/request";
@@ -61,7 +72,17 @@ export async function POST(request: NextRequest) {
     if (!isKnownSlot(leftSlotId) || !isKnownSlot(rightSlotId)) {
       return NextResponse.json({ error: "INVALID_SLOT" }, { status: 400 });
     }
-    const layout = buildRankLayout(font, text, resolveSlot(leftSlotId, font.height), resolveSlot(rightSlotId, font.height));
+    if ((leftSlotId === SLOT_CUSTOM && !isValidCustomIcon(body.customLeft)) || (rightSlotId === SLOT_CUSTOM && !isValidCustomIcon(body.customRight))) {
+      return NextResponse.json({ error: "INVALID_CUSTOM_ICON" }, { status: 400 });
+    }
+    const toSlotInput = (slotId: string, custom: unknown): RankSlotInput | null => {
+      if (slotId === SLOT_CUSTOM) return customSlotInput(custom as Parameters<typeof customSlotInput>[0]);
+      return resolveSlot(slotId, font.height);
+    };
+    const layout = buildRankLayout(font, text, toSlotInput(leftSlotId, body.customLeft), toSlotInput(rightSlotId, body.customRight), {
+      iconGap: Math.max(0, Math.min(MAX_ICON_GAP, Math.floor(Number(body.iconGap) || 0))),
+    });
+    const cornerStyle: CornerStyle = isCornerStyle(body.cornerStyle) ? body.cornerStyle : "square";
     const width = layout.width;
     const height = layout.height;
     const textColor = String(body.textColor || "").toLowerCase();
@@ -110,7 +131,24 @@ export async function POST(request: NextRequest) {
       for (let y = 0; y < icon.rows.length; y += 1) {
         const row = icon.rows[y] ?? "";
         for (let x = 0; x < row.length; x += 1) {
-          if (row[x] === "1") setPixel(icon.dx + x, icon.dy + y, iconColor);
+          const customColor = icon.colors?.[y]?.[x] ?? null;
+          if (customColor) {
+            setPixel(icon.dx + x, icon.dy + y, customColor);
+          } else if (row[x] === "1") {
+            setPixel(icon.dx + x, icon.dy + y, iconColor);
+          }
+        }
+      }
+    }
+
+    if (cornerStyle !== "square") {
+      for (let y = 0; y < height; y += 1) {
+        for (let x = 0; x < width; x += 1) {
+          const alpha = cornerAlpha(x, y, width, height, cornerStyle);
+          if (alpha < 1) {
+            const offset = (y * width + x) * 4;
+            pixels[offset + 3] = Math.round(pixels[offset + 3] * alpha);
+          }
         }
       }
     }

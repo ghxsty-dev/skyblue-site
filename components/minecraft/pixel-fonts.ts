@@ -236,10 +236,34 @@ const RETRO_7_GLYPHS: Record<string, Glyph> = {
   " ": ["0000", "0000", "0000", "0000", "0000", "0000", "0000"],
 };
 
+/** Kalın varyant: her pikseli sağa 1px genişletir (aynı genişlikte kalır). */
+function deriveBoldGlyphs(base: Record<string, Glyph>): Record<string, Glyph> {
+  return Object.fromEntries(
+    Object.entries(base).map(([ch, rows]) => [
+      ch,
+      rows.map((row) =>
+        row.split("").map((cell, i) => (cell === "1" || (i > 0 && row[i - 1] === "1") ? "1" : "0")).join(""),
+      ),
+    ]),
+  );
+}
+
+/** Eğik varyant: satırları aşağı indikçe sağa kaydırır (italik kesme). */
+function deriveItalicGlyphs(base: Record<string, Glyph>): Record<string, Glyph> {
+  return Object.fromEntries(
+    Object.entries(base).map(([ch, rows]) => [
+      ch,
+      rows.map((row, r) => "0".repeat(Math.floor((r * 2) / Math.max(rows.length - 1, 1))) + row),
+    ]),
+  );
+}
+
 export const PIXEL_FONTS: readonly PixelFont[] = [
   { id: "kare-5", name: "Kare 5", height: 5, descTr: "Köşeli · 5px · kalın blok", descEn: "Square · 5px · bold block", glyphs: KARE_5_GLYPHS },
   { id: "retro-7", name: "Retro 7", height: 7, descTr: "Oyun tarzı · 7px · yuvarlak hatlar", descEn: "Arcade · 7px · rounded strokes", glyphs: RETRO_7_GLYPHS },
   { id: "block", name: "Block 5", height: 5, descTr: "Klasik · 5px · kalın ve net", descEn: "Classic · 5px · bold and crisp", glyphs: BASE_GLYPHS },
+  { id: "block-bold", name: "Kalın Blok", height: 5, descTr: "Ekstra kalın · 5px", descEn: "Extra bold · 5px", glyphs: deriveBoldGlyphs(BASE_GLYPHS) },
+  { id: "block-italic", name: "Eğik Blok", height: 5, descTr: "İtalik kesme · 5px", descEn: "Italic slant · 5px", glyphs: deriveItalicGlyphs(BASE_GLYPHS) },
   { id: "minecraft-ten", name: "Minecraft Ten", height: 7, descTr: "Modern · 7px · ince ve detaylı", descEn: "Modern · 7px · slim and detailed", glyphs: MINECRAFT_TEN_GLYPHS },
 ];
 
@@ -286,17 +310,73 @@ export function buildPixelText(font: PixelFont, value: string) {
 export const RANK_PAD_X = 3;
 export const RANK_PAD_Y = 2;
 export const RANK_SLOT_GAP = 1;
+export const MAX_ICON_GAP = 8;
+export const CUSTOM_ICON_SIZE = 9;
+
+export type CornerStyle = "square" | "rounded" | "soft";
+
+export const CORNER_STYLES: readonly { id: CornerStyle; nameTr: string; nameEn: string }[] = [
+  { id: "square", nameTr: "Kare", nameEn: "Square" },
+  { id: "rounded", nameTr: "Yuvarlak", nameEn: "Rounded" },
+  { id: "soft", nameTr: "Yumuşak", nameEn: "Soft" },
+];
+
+export function isCornerStyle(value: unknown): value is CornerStyle {
+  return value === "square" || value === "rounded" || value === "soft";
+}
+
+/** Hücre rengi (hex) ya da saydam. */
+export type CustomIconCells = (string | null)[][];
+
+export function isValidCustomIcon(value: unknown): value is CustomIconCells {
+  if (!Array.isArray(value) || value.length !== CUSTOM_ICON_SIZE) return false;
+  return value.every(
+    (row) =>
+      Array.isArray(row) &&
+      row.length === CUSTOM_ICON_SIZE &&
+      row.every((cell) => cell === null || (typeof cell === "string" && /^#[0-9a-f]{6}$/i.test(cell))),
+  );
+}
 
 export interface RankSlotInput {
   width: number;
   /** null = boş kare alan (zemin uzar, piksel çizilmez) */
   rows: Glyph | null;
+  /** Özel simgelerde hücre başına renk (yoksa simge rengi kullanılır) */
+  colors?: readonly (readonly (string | null)[])[] | null;
+}
+
+/** 9x9 özel simge hücresinden slot girdisi üretir. */
+export function customSlotInput(cells: CustomIconCells): RankSlotInput {
+  return {
+    width: CUSTOM_ICON_SIZE,
+    rows: cells.map((row) => row.map((cell) => (cell ? "1" : "0")).join("")),
+    colors: cells,
+  };
 }
 
 export interface PlacedIcon {
   rows: Glyph;
   dx: number;
   dy: number;
+  colors?: readonly (readonly (string | null)[])[] | null;
+}
+
+/**
+ * Köşe maskesi: karenin içindeki piksel için alfa katsayısı (0-1).
+ * rounded = keskin yuvarlak köşe, soft = etrafa yumuşak geçiş.
+ */
+export function cornerAlpha(x: number, y: number, w: number, h: number, style: CornerStyle): number {
+  if (style === "square") return 1;
+  const radius = Math.min(style === "rounded" ? 3 : 4, w / 2, h / 2);
+  const feather = style === "rounded" ? 1 : 3;
+  const px = x + 0.5;
+  const py = y + 0.5;
+  const qx = Math.abs(px - w / 2) - (w / 2 - radius);
+  const qy = Math.abs(py - h / 2) - (h / 2 - radius);
+  const dist = Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - radius;
+  const alpha = 1 - (dist + feather / 2) / feather;
+  return alpha <= 0 ? 0 : alpha >= 1 ? 1 : alpha;
 }
 
 export interface RankLayout {
@@ -311,29 +391,44 @@ export interface RankLayout {
 
 /**
  * Yazı + sağ/sol slotları tek canvas düzenine dizer.
- * Slot genişliği yazı yüksekliğine eşit karedir; simge ile yazı arası 1px'dir.
+ * Simge ile yazı arası 1px zemin + ayarlanabilir saydam boşluktur.
+ * Simge yazıdan uzunsa içerik ortalanarak büyür.
  */
 export function buildRankLayout(
   font: PixelFont,
   value: string,
   left: RankSlotInput | null,
   right: RankSlotInput | null,
+  opts?: { iconGap?: number },
 ): RankLayout {
+  const gap = Math.max(0, Math.min(MAX_ICON_GAP, Math.floor(opts?.iconGap ?? 0)));
   const t = buildPixelText(font, value);
-  const leftW = left ? left.width + RANK_SLOT_GAP : 0;
-  const rightW = right ? RANK_SLOT_GAP + right.width : 0;
+  const leftH = left?.rows ? left.rows.length : 0;
+  const rightH = right?.rows ? right.rows.length : 0;
+  const contentH = Math.max(t.height, leftH, rightH);
+  const leftW = left ? left.width + RANK_SLOT_GAP + gap : 0;
+  const rightW = right ? gap + RANK_SLOT_GAP + right.width : 0;
   const width = t.width + leftW + rightW + RANK_PAD_X * 2;
-  const height = t.height + RANK_PAD_Y * 2;
+  const height = contentH + RANK_PAD_Y * 2;
   const icons: PlacedIcon[] = [];
-  if (left?.rows) icons.push({ rows: left.rows, dx: RANK_PAD_X, dy: RANK_PAD_Y });
-  if (right?.rows) icons.push({ rows: right.rows, dx: RANK_PAD_X + leftW + t.width + RANK_SLOT_GAP, dy: RANK_PAD_Y });
+  if (left?.rows) {
+    icons.push({ rows: left.rows, colors: left.colors ?? null, dx: RANK_PAD_X, dy: RANK_PAD_Y + Math.floor((contentH - leftH) / 2) });
+  }
+  if (right?.rows) {
+    icons.push({
+      rows: right.rows,
+      colors: right.colors ?? null,
+      dx: RANK_PAD_X + leftW + t.width + gap,
+      dy: RANK_PAD_Y + Math.floor((contentH - rightH) / 2),
+    });
+  }
   return {
     text: t.text,
     width,
     height,
     textRows: t.rows,
     textDX: RANK_PAD_X + leftW,
-    textDY: RANK_PAD_Y,
+    textDY: RANK_PAD_Y + Math.floor((contentH - t.height) / 2),
     icons,
   };
 }
