@@ -84,6 +84,30 @@ main {
   margin: 0 auto;
 }
 
+/* Yan reklamlar: genişlik, içerik sütununun dışında kalan boşluğa göre
+   akışkan belirlenir; sığmayacak kadar dar ekranda gizlenir. */
+.ad-side {
+  position: absolute;
+  top: 8rem;
+  z-index: 40;
+  display: none;
+  width: min(180px, calc((100vw - 1100px) / 2 - 24px));
+}
+
+@media (min-width: 1400px) {
+  .ad-side {
+    display: block;
+  }
+}
+
+.ad-side-left {
+  left: 12px;
+}
+
+.ad-side-right {
+  right: 12px;
+}
+
 .section-header {
   text-align: center;
   margin-bottom: 48px;

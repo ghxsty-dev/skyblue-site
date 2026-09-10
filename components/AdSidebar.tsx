@@ -110,26 +110,26 @@ export default function AdSidebar() {
 
   return (
     <>
-      <div className="absolute left-0 top-32 z-40 hidden xl:block w-[180px]">
-        <Link href={leftHref} target="_blank" rel="noopener noreferrer" className="block">
+      <div className="ad-side ad-side-left">
+        <Link href={leftHref} target="_blank" rel="noopener noreferrer" className="relative block aspect-square w-full">
           <NextImage
             src={`/reklam${leftAd}.webp`}
             alt="Reklam"
-            width={160}
-            height={160}
-            className={`mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all duration-400 cursor-pointer ${fade ? "opacity-100" : "opacity-0"}`}
+            fill
+            sizes="180px"
+            className={`rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all duration-400 cursor-pointer object-cover ${fade ? "opacity-100" : "opacity-0"}`}
           />
         </Link>
       </div>
       {rightAd !== null && rightAd !== leftAd && (
-        <div className="absolute right-0 top-32 z-40 hidden xl:block w-[180px]">
-          <Link href={rightHref} target="_blank" rel="noopener noreferrer" className="block">
+        <div className="ad-side ad-side-right">
+          <Link href={rightHref} target="_blank" rel="noopener noreferrer" className="relative block aspect-square w-full">
             <NextImage
               src={`/reklam${rightAd}.webp`}
               alt="Reklam"
-              width={160}
-              height={160}
-              className={`mx-auto rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all duration-400 cursor-pointer ${fade ? "opacity-100" : "opacity-0"}`}
+              fill
+              sizes="180px"
+              className={`rounded-xl border border-[var(--border)] hover:border-[#59abfe] transition-all duration-400 cursor-pointer object-cover ${fade ? "opacity-100" : "opacity-0"}`}
             />
           </Link>
         </div>
