@@ -141,6 +141,7 @@ export const TR = {
 
   premiumBecome: "Premium üyesi ol",
   accountSettings: "Hesap ayarları",
+  viewProfile: "Profilini görüntüle",
   signIn: "Giriş yap",
   signUp: "Kayıt ol",
   signOut: "Çıkış yap",
@@ -317,6 +318,7 @@ export const EN: typeof TR = {
 
   premiumBecome: "Become a premium member",
   accountSettings: "Account settings",
+  viewProfile: "View profile",
   signIn: "Sign in",
   signUp: "Sign up",
   signOut: "Sign out",

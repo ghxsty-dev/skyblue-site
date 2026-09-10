@@ -18,6 +18,7 @@ export default function Nav() {
   const [indicator, setIndicator] = useState({ left: 0, width: 0, measured: false });
   const [isAdminUser, setIsAdminUser] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
   const [avatarPath, setAvatarPath] = useState<string | null>(null);
   const [premiumActive, setPremiumActive] = useState(false);
   const [premiumExpiresAt, setPremiumExpiresAt] = useState<string | null>(null);
@@ -88,6 +89,7 @@ export default function Nav() {
           setIsLoggedIn(true);
           if (d.user.role === "admin" || d.user.role === "kurucu") setIsAdminUser(true);
           if (d.user.avatar_path) setAvatarPath(d.user.avatar_path);
+          if (d.user.username) setUsername(d.user.username);
         }
       })
       .catch(() => {});
@@ -103,6 +105,7 @@ export default function Nav() {
   }, []);
 
   function formatRemaining(expiresAt: string): string {
+    // eslint-disable-next-line react-hooks/purity -- kalan süre hesabı için render anındaki zaman gerekli
     const diff = new Date(expiresAt).getTime() - Date.now();
     if (diff <= 0) return "";
     const totalHours = Math.floor(diff / (1000 * 60 * 60));
@@ -190,6 +193,12 @@ export default function Nav() {
               <div className="nav-dropdown">
                 {isLoggedIn ? (
                   <>
+                    {username && (
+                      <a href={`/users/${username}`} onClick={() => setAccountOpen(false)} className="nav-dropdown-item">
+                        <span className="nav-dropdown-icon"><UserIcon size={16} /></span>
+                        {t.viewProfile}
+                      </a>
+                    )}
                     {premiumActive ? (
                       <a href="/account/premium?tool=minecraft-rank" onClick={() => setAccountOpen(false)} className="nav-dropdown-item premium">
                         <span className="nav-dropdown-icon"><Image src="/premium.webp" alt="" width={18} height={18} unoptimized /></span>
