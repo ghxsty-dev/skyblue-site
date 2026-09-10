@@ -2110,64 +2110,6 @@ button.pixel-rank-dot:hover {
   box-shadow: 0 0 0 2px rgba(89, 171, 254, 0.35);
 }
 
-.pixel-rank-customs {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.pixel-rank-customs-label {
-  color: var(--text2);
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.pixel-rank-customs-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
-}
-
-.pixel-rank-dot-pick {
-  position: absolute;
-  inset: 0;
-  border: 0;
-  border-radius: inherit;
-  background: transparent;
-  cursor: pointer;
-  padding: 0;
-}
-
-.pixel-rank-dot-remove {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 16px;
-  height: 16px;
-  display: none;
-  place-items: center;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  background: var(--bg);
-  color: var(--text2);
-  font-size: 0.6rem;
-  line-height: 1;
-  cursor: pointer;
-  padding: 0;
-}
-
-.pixel-rank-dot.is-custom:hover .pixel-rank-dot-remove {
-  display: grid;
-}
-
-.pixel-rank-dot-remove:hover {
-  border-color: #ef4444;
-  color: #ef4444;
-}
-
 .pixel-rank-dot.is-add {
   display: grid;
   place-items: center;

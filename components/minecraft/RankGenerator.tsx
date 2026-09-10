@@ -27,12 +27,9 @@ import {
 import {
   buildGradientGrid,
   contrastRatio,
-  CUSTOM_COLORS_KEY,
   GRADIENT_PRESETS,
-  MAX_CUSTOM_COLORS,
   MAX_RANK_LENGTH,
   mixHex,
-  parseCustomColors,
   QUICK_COLORS,
   type GradientDirection,
 } from "./rank-presets";
@@ -99,24 +96,16 @@ function averageBgColor(grid: PixelGrid): string {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
-/** Kompakt renk seçici: hazır liste + kullanıcının kaydedip sakladığı renkler. */
+/** Kompakt renk seçici: hazır liste + seçili rengi değiştiren tek "+" düğmesi. */
 function CompactColorPicker({
   value,
   onChange,
-  customs,
-  onAddCustom,
-  onRemoveCustom,
   addLabel,
-  savedLabel,
   lang,
 }: {
   value: string;
   onChange: (color: string) => void;
-  customs: string[];
-  onAddCustom: (color: string) => void;
-  onRemoveCustom: (color: string) => void;
   addLabel: string;
-  savedLabel: string;
   lang: "tr" | "en";
 }) {
   const isTurkish = lang === "tr";
@@ -136,34 +125,15 @@ function CompactColorPicker({
             aria-pressed={lower === c.value}
           />
         ))}
-      </div>
-      <div className="pixel-rank-customs">
-        <span className="pixel-rank-customs-label">{savedLabel}</span>
-        <div className="pixel-rank-customs-row">
-          {customs.map((c) => (
-            <span key={c} className={`pixel-rank-dot is-custom ${lower === c ? "is-active" : ""}`} style={{ backgroundColor: c }}>
-              <button type="button" className="pixel-rank-dot-pick" onClick={() => onChange(c)} aria-label={c} title={c} />
-              <button
-                type="button"
-                className="pixel-rank-dot-remove"
-                onClick={(event) => { event.stopPropagation(); onRemoveCustom(c); }}
-                aria-label={`× ${c}`}
-                title={`× ${c}`}
-              >
-                ×
-              </button>
-            </span>
-          ))}
-          <label className="pixel-rank-dot is-add" title={addLabel}>
-            <input
-              type="color"
-              defaultValue="#59abfe"
-              onChange={(event) => { onAddCustom(event.target.value.toLowerCase()); }}
-              aria-label={addLabel}
-            />
-            <span aria-hidden="true">+</span>
-          </label>
-        </div>
+        <label className="pixel-rank-dot is-add" title={addLabel}>
+          <input
+            type="color"
+            value={/^#[0-9a-f]{6}$/.test(lower) ? lower : "#59abfe"}
+            onChange={(event) => { onChange(event.target.value.toLowerCase()); }}
+            aria-label={addLabel}
+          />
+          <span aria-hidden="true">+</span>
+        </label>
       </div>
     </div>
   );
@@ -471,34 +441,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
   const [brushSize, setBrushSize] = useState(1);
   const [showGrid, setShowGrid] = useState(true);
 
-  // Kullanıcının eklediği renkler: tarayıcıda saklanır, her yerde aynı liste.
-  const [customColors, setCustomColors] = useState<string[]>([]);
-  const customsLoadedRef = useRef(false);
-  useEffect(() => {
-    try {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCustomColors(parseCustomColors(window.localStorage.getItem(CUSTOM_COLORS_KEY)));
-    } catch { /* yok say */ }
-    customsLoadedRef.current = true;
-  }, []);
-  useEffect(() => {
-    if (!customsLoadedRef.current) return;
-    try {
-      window.localStorage.setItem(CUSTOM_COLORS_KEY, JSON.stringify(customColors));
-    } catch { /* yok say */ }
-  }, [customColors]);
-
-  const addCustomColor = useCallback((color: string) => {
-    const clean = color.toLowerCase();
-    if (!/^#[0-9a-f]{6}$/.test(clean)) return;
-    setCustomColors((prev) => [clean, ...prev.filter((c) => c !== clean)].slice(0, MAX_CUSTOM_COLORS));
-    return clean;
-  }, []);
-
-  const removeCustomColor = useCallback((color: string) => {
-    setCustomColors((prev) => prev.filter((c) => c !== color));
-  }, []);
-
   const [background, setBackground] = useState<PixelGrid>(() =>
     buildGradientGrid(INITIAL_W, INITIAL_H, DEFAULT_PRESET.from, DEFAULT_PRESET.to, "vertical"),
   );
@@ -551,7 +493,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         font: "Pixel font",
         textColor: "Yazı rengi",
         addColor: "Renk ekle",
-        savedColors: "Kaydedilenler",
         lowContrast: "Yazı arka planda zor okunabilir. Daha zıt bir renk dene.",
         step3: "3 · Arka plan",
         modeGradient: "Hazır gradient",
@@ -625,7 +566,6 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         font: "Pixel font",
         textColor: "Text color",
         addColor: "Add color",
-        savedColors: "Saved",
         lowContrast: "Text is hard to read on this background. Try a more contrasting color.",
         step3: "3 · Background",
         modeGradient: "Gradients",
@@ -1504,11 +1444,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           <CompactColorPicker
             value={textColor}
             onChange={setTextColor}
-            customs={customColors}
-            onAddCustom={(c) => { const v = addCustomColor(c); if (v) setTextColor(v); }}
-            onRemoveCustom={removeCustomColor}
             addLabel={copy.addColor}
-            savedLabel={copy.savedColors}
             lang={lang}
           />
           {lowContrast && <p className="pixel-rank-contrast-warn" role="status">⚠ {copy.lowContrast} ({contrast.toFixed(1)}:1)</p>}
@@ -1583,11 +1519,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
               <CompactColorPicker
                 value={solidColor}
                 onChange={(color) => { setSolidColor(color); setGrid(createGrid(width, height, color), true); }}
-                customs={customColors}
-                onAddCustom={(c) => { const v = addCustomColor(c); if (v) { setSolidColor(v); setGrid(createGrid(width, height, v), true); } }}
-                onRemoveCustom={removeCustomColor}
                 addLabel={copy.addColor}
-                savedLabel={copy.savedColors}
                 lang={lang}
               />
             </>
@@ -1610,11 +1542,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
               <CompactColorPicker
                 value={tool === "brush" ? brushColor : ""}
                 onChange={(color) => { setBrushColor(color); setTool("brush"); }}
-                customs={customColors}
-                onAddCustom={(c) => { const v = addCustomColor(c); if (v) { setBrushColor(v); setTool("brush"); } }}
-                onRemoveCustom={removeCustomColor}
                 addLabel={copy.addColor}
-                savedLabel={copy.savedColors}
                 lang={lang}
               />
               <div className="pixel-rank-brush-row">
@@ -1674,11 +1602,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
           <CompactColorPicker
             value={iconColor}
             onChange={setIconColor}
-            customs={customColors}
-            onAddCustom={(c) => { const v = addCustomColor(c); if (v) setIconColor(v); }}
-            onRemoveCustom={removeCustomColor}
             addLabel={copy.addColor}
-            savedLabel={copy.savedColors}
             lang={lang}
           />
           <div className="pixel-rank-gap-row">

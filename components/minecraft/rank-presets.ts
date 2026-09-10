@@ -121,20 +121,4 @@ export const QUICK_COLORS: readonly QuickColor[] = [
   { labelTr: "Koyu Turkuaz", labelEn: "Dark Teal", value: "#115e59" },
 ];
 
-export const CUSTOM_COLORS_KEY = "rank-custom-colors";
-export const MAX_CUSTOM_COLORS = 12;
 
-export function parseCustomColors(raw: string | null): string[] {
-  if (!raw) return [];
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed
-      .filter((c): c is string => typeof c === "string" && /^#[0-9a-f]{6}$/i.test(c))
-      .map((c) => c.toLowerCase())
-      .filter((c, i, arr) => arr.indexOf(c) === i)
-      .slice(0, MAX_CUSTOM_COLORS);
-  } catch {
-    return [];
-  }
-}
