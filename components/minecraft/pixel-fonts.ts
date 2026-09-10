@@ -1,5 +1,7 @@
 export type Glyph = readonly string[];
 
+import { CHLORENF_GLYPHS, DATCUB_GLYPHS, VISITOR_GLYPHS } from "./rank-bitmap-fonts";
+
 export interface PixelFont {
   id: string;
   name: string;
@@ -236,35 +238,14 @@ const RETRO_7_GLYPHS: Record<string, Glyph> = {
   " ": ["0000", "0000", "0000", "0000", "0000", "0000", "0000"],
 };
 
-/** Kalın varyant: her pikseli sağa 1px genişletir (aynı genişlikte kalır). */
-function deriveBoldGlyphs(base: Record<string, Glyph>): Record<string, Glyph> {
-  return Object.fromEntries(
-    Object.entries(base).map(([ch, rows]) => [
-      ch,
-      rows.map((row) =>
-        row.split("").map((cell, i) => (cell === "1" || (i > 0 && row[i - 1] === "1") ? "1" : "0")).join(""),
-      ),
-    ]),
-  );
-}
-
-/** Eğik varyant: satırları aşağı indikçe sağa kaydırır (italik kesme). */
-function deriveItalicGlyphs(base: Record<string, Glyph>): Record<string, Glyph> {
-  return Object.fromEntries(
-    Object.entries(base).map(([ch, rows]) => [
-      ch,
-      rows.map((row, r) => "0".repeat(Math.floor((r * 2) / Math.max(rows.length - 1, 1))) + row),
-    ]),
-  );
-}
-
 export const PIXEL_FONTS: readonly PixelFont[] = [
   { id: "kare-5", name: "Kare 5", height: 5, descTr: "Köşeli · 5px · kalın blok", descEn: "Square · 5px · bold block", glyphs: KARE_5_GLYPHS },
   { id: "retro-7", name: "Retro 7", height: 7, descTr: "Oyun tarzı · 7px · yuvarlak hatlar", descEn: "Arcade · 7px · rounded strokes", glyphs: RETRO_7_GLYPHS },
   { id: "block", name: "Block 5", height: 5, descTr: "Klasik · 5px · kalın ve net", descEn: "Classic · 5px · bold and crisp", glyphs: BASE_GLYPHS },
-  { id: "block-bold", name: "Kalın Blok", height: 5, descTr: "Ekstra kalın · 5px", descEn: "Extra bold · 5px", glyphs: deriveBoldGlyphs(BASE_GLYPHS) },
-  { id: "block-italic", name: "Eğik Blok", height: 5, descTr: "İtalik kesme · 5px", descEn: "Italic slant · 5px", glyphs: deriveItalicGlyphs(BASE_GLYPHS) },
   { id: "minecraft-ten", name: "Minecraft Ten", height: 7, descTr: "Modern · 7px · ince ve detaylı", descEn: "Modern · 7px · slim and detailed", glyphs: MINECRAFT_TEN_GLYPHS },
+  { id: "visitor", name: "Visitor", height: 7, descTr: "Piksel · 7px · bitmap klasik", descEn: "Pixel · 7px · bitmap classic", glyphs: VISITOR_GLYPHS },
+  { id: "datcub", name: "DatCub", height: 12, descTr: "Küp · 12px · 3D blok", descEn: "Cube · 12px · 3D block", glyphs: DATCUB_GLYPHS },
+  { id: "chlorenuf", name: "Chlorenuf", height: 12, descTr: "Yuvarlak · 12px · kalın", descEn: "Rounded · 12px · bold", glyphs: CHLORENF_GLYPHS },
 ];
 
 export function getPixelFont(id: string): PixelFont {
@@ -311,7 +292,8 @@ export const RANK_PAD_X = 3;
 export const RANK_PAD_Y = 2;
 export const RANK_SLOT_GAP = 1;
 export const MAX_ICON_GAP = 8;
-export const CUSTOM_ICON_SIZE = 9;
+/** Özel simge kare boyutu: o anki font yüksekliği (5/7); 9 eski kayıtlar için kabul edilir. */
+export const CUSTOM_ICON_SIZES = [5, 7, 9];
 
 export type CornerStyle = "square" | "rounded" | "soft";
 
@@ -329,11 +311,12 @@ export function isCornerStyle(value: unknown): value is CornerStyle {
 export type CustomIconCells = (string | null)[][];
 
 export function isValidCustomIcon(value: unknown): value is CustomIconCells {
-  if (!Array.isArray(value) || value.length !== CUSTOM_ICON_SIZE) return false;
+  if (!Array.isArray(value) || !CUSTOM_ICON_SIZES.includes(value.length)) return false;
+  const n = value.length;
   return value.every(
     (row) =>
       Array.isArray(row) &&
-      row.length === CUSTOM_ICON_SIZE &&
+      row.length === n &&
       row.every((cell) => cell === null || (typeof cell === "string" && /^#[0-9a-f]{6}$/i.test(cell))),
   );
 }
@@ -349,7 +332,7 @@ export interface RankSlotInput {
 /** 9x9 özel simge hücresinden slot girdisi üretir. */
 export function customSlotInput(cells: CustomIconCells): RankSlotInput {
   return {
-    width: CUSTOM_ICON_SIZE,
+    width: cells.length,
     rows: cells.map((row) => row.map((cell) => (cell ? "1" : "0")).join("")),
     colors: cells,
   };

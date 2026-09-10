@@ -3027,17 +3027,13 @@ button.pixel-rank-dot:hover {
 
 .pixel-icon-grid {
   display: grid;
-  grid-template-columns: repeat(9, 1fr);
+  justify-content: center;
   gap: 2px;
 }
 
-.pixel-icon-row {
-  display: contents;
-}
-
 .pixel-icon-cell {
-  aspect-ratio: 1 / 1;
-  min-width: 0;
+  width: 26px;
+  height: 26px;
   padding: 0;
   border: 1px solid var(--border);
   border-radius: 3px;

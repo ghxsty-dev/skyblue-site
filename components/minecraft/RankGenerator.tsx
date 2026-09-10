@@ -6,7 +6,6 @@ import {
   buildPixelText,
   buildRankLayout,
   cornerAlpha,
-  CUSTOM_ICON_SIZE,
   customSlotInput,
   getPixelFont,
   isValidCustomIcon,
@@ -203,8 +202,9 @@ function IconPreview({ rows, color, label }: { rows: readonly string[]; color: s
   );
 }
 
-/** 9x9 özel simge boyama penceresi. */
+/** Özel simge boyama penceresi: font yüksekliğinde kare (5x5 / 7x7). */
 function IconPainter({
+  size,
   initial,
   onSave,
   onClose,
@@ -215,6 +215,7 @@ function IconPainter({
   eraserLabel,
   clearLabel,
 }: {
+  size: number;
   initial: CustomIconCells | null;
   onSave: (cells: CustomIconCells) => void;
   onClose: () => void;
@@ -226,16 +227,28 @@ function IconPainter({
   clearLabel: string;
 }) {
   const isTurkish = lang === "tr";
+  const blank = () => Array.from({ length: size }, () => Array.from({ length: size }, () => null as string | null));
   const [cells, setCells] = useState<CustomIconCells>(() => {
-    if (initial) return initial.map((row) => [...row]);
-    return Array.from({ length: CUSTOM_ICON_SIZE }, () => Array.from({ length: CUSTOM_ICON_SIZE }, () => null));
+    if (initial && initial.length === size && initial.every((row) => row.length === size)) {
+      return initial.map((row) => [...row]);
+    }
+    return blank();
   });
   const [color, setColor] = useState("#ffffff");
   const [eraser, setEraser] = useState(false);
   const painting = useRef(false);
 
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   function paint(x: number, y: number) {
     setCells((prev) => {
+      if (y < 0 || y >= prev.length || x < 0 || x >= prev[y].length) return prev;
       if (prev[y]?.[x] === (eraser ? null : color)) return prev;
       const next = prev.map((row) => [...row]);
       next[y][x] = eraser ? null : color;
@@ -243,8 +256,12 @@ function IconPainter({
     });
   }
 
+  function stopPainting() {
+    painting.current = false;
+  }
+
   return (
-    <div className="pixel-icon-painter-backdrop" role="dialog" aria-modal="true">
+    <div className="pixel-icon-painter-backdrop" role="dialog" aria-modal="true" aria-label={title}>
       <div className="pixel-icon-painter">
         <div className="pixel-icon-painter-header">
           <strong>{title}</strong>
@@ -252,24 +269,24 @@ function IconPainter({
         </div>
         <div
           className="pixel-icon-grid"
-          onPointerUp={() => { painting.current = false; }}
-          onPointerLeave={() => { painting.current = false; }}
+          style={{ gridTemplateColumns: `repeat(${size}, 26px)` }}
+          onPointerUp={stopPainting}
+          onPointerCancel={stopPainting}
+          onPointerLeave={stopPainting}
         >
-          {cells.map((row, y) => (
-            <div key={y} className="pixel-icon-row">
-              {row.map((cell, x) => (
-                <button
-                  key={x}
-                  type="button"
-                  className="pixel-icon-cell"
-                  style={{ backgroundColor: cell ?? "transparent" }}
-                  aria-label={`${x + 1},${y + 1}`}
-                  onPointerDown={(e) => { e.preventDefault(); painting.current = true; paint(x, y); }}
-                  onPointerEnter={() => { if (painting.current) paint(x, y); }}
-                />
-              ))}
-            </div>
-          ))}
+          {cells.flatMap((row, y) =>
+            row.map((cell, x) => (
+              <button
+                key={`${x}-${y}`}
+                type="button"
+                className="pixel-icon-cell"
+                style={{ backgroundColor: cell ?? "transparent" }}
+                aria-label={`${x + 1},${y + 1}`}
+                onPointerDown={(e) => { e.preventDefault(); painting.current = true; paint(x, y); }}
+                onPointerEnter={() => { if (painting.current) paint(x, y); }}
+              />
+            )),
+          )}
         </div>
         <div className="pixel-icon-tools">
           <label className="pixel-icon-color">
@@ -299,7 +316,7 @@ function IconPainter({
           <button
             type="button"
             className="pixel-rank-slot-option is-text"
-            onClick={() => setCells(Array.from({ length: CUSTOM_ICON_SIZE }, () => Array.from({ length: CUSTOM_ICON_SIZE }, () => null)))}
+            onClick={() => setCells(Array.from({ length: size }, () => Array.from({ length: size }, () => null)))}
           >
             {clearLabel}
           </button>
@@ -316,14 +333,15 @@ function IconPainter({
 /** Özel simge küçük önizlemesi (hücre renkleriyle). */
 function CustomIconThumb({ cells }: { cells: CustomIconCells }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const n = cells.length;
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
-    canvas.width = CUSTOM_ICON_SIZE;
-    canvas.height = CUSTOM_ICON_SIZE;
+    canvas.width = n;
+    canvas.height = n;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    ctx.clearRect(0, 0, CUSTOM_ICON_SIZE, CUSTOM_ICON_SIZE);
+    ctx.clearRect(0, 0, n, n);
     cells.forEach((row, y) => {
       row.forEach((cell, x) => {
         if (!cell) return;
@@ -331,8 +349,9 @@ function CustomIconThumb({ cells }: { cells: CustomIconCells }) {
         ctx.fillRect(x, y, 1, 1);
       });
     });
-  }, [cells]);
-  return <canvas ref={ref} className="pixel-rank-icon-preview" style={{ width: "27px", height: "27px" }} aria-hidden="true" />;
+  }, [cells, n]);
+  const px = n <= 5 ? 30 : 27;
+  return <canvas ref={ref} className="pixel-rank-icon-preview" style={{ width: `${px}px`, height: `${px}px` }} aria-hidden="true" />;
 }
 
 /** Sol/sağ slot seçici: Yok / Boşluk / simgeler / özel. */
@@ -580,7 +599,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         cancel: "Vazgeç",
         loginToSave: "Kaydetmek için giriş yap",
         customIcon: "Özel",
-        paintTitle: "Simge çiz (9×9)",
+        paintTitle: "Simge çiz",
         gapLabel: "Simge boşluğu",
         cornerStep: "5 · Kenar",
         surprise: "Beni şaşırt",
@@ -654,7 +673,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         cancel: "Cancel",
         loginToSave: "Sign in to save",
         customIcon: "Custom",
-        paintTitle: "Draw icon (9×9)",
+        paintTitle: "Draw icon",
         gapLabel: "Icon gap",
         cornerStep: "5 · Corners",
         surprise: "Surprise me",
@@ -1339,6 +1358,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         {aiError && <p className="pixel-rank-download-error" role="alert">{aiError}</p>}
         {painterSide && (
           <IconPainter
+            size={font.height}
             initial={painterSide === "left" ? customLeft : customRight}
             onSave={(cells) => {
               if (painterSide === "left") {
@@ -1352,7 +1372,7 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
             }}
             onClose={() => setPainterSide(null)}
             lang={lang}
-            title={copy.paintTitle}
+            title={`${copy.paintTitle} (${font.height}×${font.height})`}
             saveLabel={copy.save}
             cancelLabel={copy.cancel}
             eraserLabel={copy.eraser}

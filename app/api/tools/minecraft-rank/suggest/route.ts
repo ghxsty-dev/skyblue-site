@@ -114,6 +114,7 @@ export async function POST(request: NextRequest) {
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return NextResponse.json({ error: "AI_NOT_CONFIGURED" }, { status: 503 });
+  const model = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
 
   const body = await request.json().catch(() => null);
   const text = String(body?.text || "").trim().slice(0, 24);
@@ -134,7 +135,7 @@ export async function POST(request: NextRequest) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 25000);
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
