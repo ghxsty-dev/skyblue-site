@@ -3225,6 +3225,12 @@ button.pixel-rank-dot:hover {
   font-size: 0.8rem;
 }
 
+.account-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .account-section-heading {
   display: flex;
   align-items: center;

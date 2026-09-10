@@ -59,7 +59,10 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     <div className="page-inner account-page">
       <header className="account-page-header">
         <h1>Hesabım</h1>
-        <AccountLogoutButton />
+        <div className="account-header-actions">
+          <Link href={`/users/${profile.username}`} className="account-text-link">Profilini görüntüle</Link>
+          <AccountLogoutButton />
+        </div>
       </header>
 
       <div className="account-settings-layout">
