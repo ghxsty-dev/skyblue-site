@@ -87,7 +87,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="tr"
       data-theme="dark"
       className={`${plusJakarta.variable} ${pressStart2P.variable} ${vt323.variable} ${silkscreen.variable} ${pixelifySans.variable} ${monocraft.variable} ${pirataOne.variable} ${typewriter.variable} ${blackChancery.variable} ${magicSchool.variable} ${ghiyaStrokes.variable} ${oxanium.variable} h-full antialiased`}
     >

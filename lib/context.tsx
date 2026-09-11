@@ -22,8 +22,8 @@ export function useApp(): AppContextType {
 }
 
 function getInitialLang(): Lang {
-  if (typeof window === "undefined") return "EN";
-  return (window.localStorage.getItem("skyblue-lang") as Lang | null) || "EN";
+  if (typeof window === "undefined") return "TR";
+  return (window.localStorage.getItem("skyblue-lang") as Lang | null) || "TR";
 }
 
 function getInitialTheme(): Theme {
@@ -56,7 +56,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const t = lang === "TR" ? TR : EN;
 
   return (
-    <AppContext.Provider value={{ lang: lang || "EN", theme, t, setLang, toggleTheme }}>
+    <AppContext.Provider value={{ lang: lang || "TR", theme, t, setLang, toggleTheme }}>
       {children}
     </AppContext.Provider>
   );

@@ -1,18 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useApp } from "@/lib/context";
 
 const STORAGE_KEY = "skyblue-cookie-consent";
 
-export default function CookieConsent() {
-  const { t, lang } = useApp();
-  const [show, setShow] = useState(false);
+function shouldShow(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return !window.localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return false;
+  }
+}
 
-  useEffect(() => {
-    const consent = localStorage.getItem(STORAGE_KEY);
-    if (!consent) setShow(true);
-  }, []);
+export default function CookieConsent() {
+  const { t } = useApp();
+  const [show, setShow] = useState(shouldShow);
 
   const accept = () => {
     localStorage.setItem(STORAGE_KEY, "accepted");
@@ -27,15 +31,15 @@ export default function CookieConsent() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[9999] p-4 sm:p-6">
-      <div className="max-w-4xl mx-auto bg-[var(--bg2)] border border-[var(--border)] rounded-2xl shadow-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="flex-1">
+    <div className="fixed bottom-4 left-4 z-[9999] max-w-[280px]">
+      <div className="bg-[var(--bg2)] border border-[var(--border)] rounded-2xl shadow-2xl p-4 flex flex-col gap-3">
+        <div>
           <p className="text-sm font-semibold mb-1">{t.cookieTitle}</p>
           <p className="text-xs text-[var(--text2)] leading-relaxed">
             {t.cookieDesc}
           </p>
         </div>
-        <div className="flex gap-2 shrink-0">
+        <div className="flex gap-2">
           <button
             onClick={decline}
             className="px-4 py-2 text-xs rounded-lg border border-[var(--border)] text-[var(--text2)] hover:bg-[var(--bg)] transition-colors cursor-pointer"
