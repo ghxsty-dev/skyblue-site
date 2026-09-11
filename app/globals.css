@@ -3685,7 +3685,7 @@ button.pixel-rank-dot:hover {
   margin: 0;
   color: #fff;
   font-size: clamp(1.2rem, 4vw, 1.6rem);
-  font-weight: 700;
+  font-weight: 500;
   text-align: center;
 }
 
