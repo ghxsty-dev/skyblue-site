@@ -104,7 +104,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
 
               <section className="account-access-section">
                 <div className="account-section-heading"><div><span>Premium</span><h2>Premium kodunu kullan</h2></div></div>
-                <p className="account-section-desc">Admin tarafından verilen 1, 3 veya 12 aylık kodu gir. Süre mevcut premium erişiminin üzerine eklenir.</p>
                 <PremiumRedeemForm />
               </section>
             </>
