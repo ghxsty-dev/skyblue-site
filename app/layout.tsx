@@ -17,7 +17,7 @@ import "./globals.css";
 import { AppProvider } from "@/lib/context";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import LangModal from "@/components/LangModal";
+import WelcomeBox from "@/components/WelcomeBox";
 import SplashScreen from "@/components/SplashScreen";
 import AdSidebar from "@/components/AdSidebar";
 import OfflineGameWrapper from "@/components/OfflineGameWrapper";
@@ -174,7 +174,7 @@ export default function RootLayout({
             <main>{children}</main>
             <Footer />
           </div>
-          <LangModal />
+          <WelcomeBox />
           <LiveChat />
           <CookieConsent />
           <BackToTop />

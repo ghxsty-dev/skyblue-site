@@ -3626,6 +3626,73 @@ button.pixel-rank-dot:hover {
   color: var(--text);
 }
 
+.welcome-box {
+  position: relative;
+  width: min(92vw, 620px);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+.welcome-box-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.welcome-box-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.welcome-box-close:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.welcome-box-overlay {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 20px 20px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+}
+
+.welcome-box-overlay p {
+  margin: 0;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+.welcome-box-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.welcome-box-actions .btn {
+  padding: 10px 26px;
+  font-size: 0.85rem;
+}
+
 .premium-hero {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);

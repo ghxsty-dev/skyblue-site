@@ -11,8 +11,6 @@ interface AppContextType {
   t: typeof TR;
   setLang: (l: Lang) => void;
   toggleTheme: () => void;
-  showLangModal: boolean;
-  dismissModal: () => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -23,36 +21,27 @@ export function useApp(): AppContextType {
   return ctx;
 }
 
+function getInitialLang(): Lang {
+  if (typeof window === "undefined") return "EN";
+  return (window.localStorage.getItem("skyblue-lang") as Lang | null) || "EN";
+}
+
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") return "dark";
+  return (window.localStorage.getItem("skyblue-theme") as Theme | null) || "dark";
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("EN");
-  const [theme, setTheme] = useState<Theme>("dark");
-  const [showLangModal, setShowLangModal] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [lang, setLangState] = useState<Lang>(getInitialLang);
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("skyblue-lang") as Lang | null;
-    const savedTheme = localStorage.getItem("skyblue-theme") as Theme | null;
-
-    if (savedLang) {
-      setLangState(savedLang);
-    } else {
-      setLangState("EN");
-      setShowLangModal(true);
-    }
-
-    if (savedTheme) setTheme(savedTheme);
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
     document.documentElement.setAttribute("data-theme", theme);
-  }, [theme, mounted]);
+  }, [theme]);
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l);
     localStorage.setItem("skyblue-lang", l);
-    setShowLangModal(false);
   }, []);
 
   const toggleTheme = useCallback(() => {
@@ -64,14 +53,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const dismissModal = useCallback(() => {
-    setShowLangModal(false);
-  }, []);
-
   const t = lang === "TR" ? TR : EN;
 
   return (
-    <AppContext.Provider value={{ lang: lang || "EN", theme, t, setLang, toggleTheme, showLangModal, dismissModal }}>
+    <AppContext.Provider value={{ lang: lang || "EN", theme, t, setLang, toggleTheme }}>
       {children}
     </AppContext.Provider>
   );

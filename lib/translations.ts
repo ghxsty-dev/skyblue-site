@@ -1,6 +1,7 @@
 export const TR = {
   langName: "Türkçe",
   selectLang: "Dil Seçin",
+  welcomeTitle: "Kayıt ol, daha fazla bilgi al.",
   selectLangDesc: "SkyBlue'da size en iyi deneyimi sunmak için lütfen tercih ettiğiniz dili seçin.",
   home: "Ana Sayfa",
   designs: "Tasarımlar",
@@ -179,6 +180,7 @@ export const TR = {
 export const EN: typeof TR = {
   langName: "English",
   selectLang: "Choose Language",
+  welcomeTitle: "Sign up, learn more.",
   selectLangDesc: "Please select your preferred language for the best experience at SkyBlue.",
   home: "Home",
   designs: "Designs",
