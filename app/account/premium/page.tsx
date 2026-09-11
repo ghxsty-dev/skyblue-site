@@ -18,7 +18,7 @@ export default async function PremiumPage() {
   return (
     <div className="page-inner account-narrow-page">
       <Link href="/account" className="account-back-link">← Hesabım</Link>
-      <header><span>Minecraft Rank Generator</span><h1>Premium kodunu kullan</h1><p>Admin tarafından verilen 1, 3 veya 12 aylık kodu gir. Süre mevcut premium erişiminin üzerine eklenir.</p></header>
+      <header><span>Minecraft Rank Generator</span><h1>Premium kodunu kullan</h1></header>
       <PremiumRedeemForm />
     </div>
   );
