@@ -3662,35 +3662,33 @@ button.pixel-rank-dot:hover {
 
 .welcome-box-overlay {
   position: absolute;
-  inset-inline: 0;
-  bottom: 0;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 40px 20px 20px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+  justify-content: center;
+  gap: 18px;
+  padding: 20px;
 }
 
 .welcome-box-overlay p {
   margin: 0;
   color: #fff;
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  font-weight: 800;
   text-align: center;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
 }
 
 .welcome-box-actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .welcome-box-actions .btn {
-  padding: 10px 26px;
-  font-size: 0.85rem;
+  padding: 14px 36px;
+  font-size: 1rem;
 }
 
 .premium-hero {
