@@ -2,16 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
+import DashboardTab from "./DashboardTab";
 import TransactionsTab from "./TransactionsTab";
 import PremiumCodesTab from "./PremiumCodesTab";
 import MembersTab from "./MembersTab";
 import DesignProductsTab from "./DesignProductsTab";
 import DiscountsTab from "./DiscountsTab";
 
-type Tab = "gelir-gider" | "premium-kod" | "uyeler" | "urunler" | "indirimler";
+type Tab = "anasayfa" | "gelir-gider" | "premium-kod" | "uyeler" | "urunler" | "indirimler";
 
 const TABS: { id: Tab; label: string }[] = [
+  { id: "anasayfa", label: "Ana Sayfa" },
   { id: "gelir-gider", label: "Gelir / Gider" },
   { id: "premium-kod", label: "Premium Kodlar" },
   { id: "uyeler", label: "Üyeler" },
@@ -21,7 +24,7 @@ const TABS: { id: Tab; label: string }[] = [
 
 export default function AdminPanel() {
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>("gelir-gider");
+  const [tab, setTab] = useState<Tab>("anasayfa");
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -53,9 +56,9 @@ export default function AdminPanel() {
         </nav>
 
         <div className="admin-sidebar-footer">
-          <a href="/" className="admin-sidebar-link">
+          <Link href="/" className="admin-sidebar-link">
             Siteye Dön
-          </a>
+          </Link>
           <button type="button" onClick={handleLogout} className="admin-sidebar-link logout">
             Çıkış Yap
           </button>
@@ -63,6 +66,7 @@ export default function AdminPanel() {
       </aside>
 
       <main className="admin-main">
+        {tab === "anasayfa" && <DashboardTab />}
         {tab === "gelir-gider" && <TransactionsTab />}
         {tab === "premium-kod" && <PremiumCodesTab />}
         {tab === "uyeler" && <MembersTab />}
