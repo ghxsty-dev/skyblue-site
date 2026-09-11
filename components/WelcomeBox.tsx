@@ -62,11 +62,8 @@ export default function WelcomeBox() {
         <div className="welcome-box-overlay">
           <p>{t.welcomeTitle}</p>
           <div className="welcome-box-actions">
-            <Link href="/register" onClick={dismiss} className="btn btn-primary">
+            <Link href="/register" onClick={dismiss} className="btn btn-glass">
               {lang === "TR" ? "Kayıt Ol" : "Sign Up"}
-            </Link>
-            <Link href="/login" onClick={dismiss} className="btn btn-outline btn-light">
-              {lang === "TR" ? "Giriş Yap" : "Sign In"}
             </Link>
           </div>
         </div>

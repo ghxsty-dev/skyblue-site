@@ -3701,6 +3701,22 @@ button.pixel-rank-dot:hover {
   font-size: 0.9rem;
 }
 
+.welcome-box-actions .btn-glass {
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #fff;
+}
+
+.welcome-box-actions .btn-glass:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #fff;
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
 .premium-hero {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
