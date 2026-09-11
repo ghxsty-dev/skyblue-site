@@ -314,6 +314,7 @@ export default function HomePage() {
       </article>
 
       <article className="page-inner py-16 border-t border-[var(--border)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         <Reveal>
           <div className="section-header">
             <h2>
@@ -324,9 +325,6 @@ export default function HomePage() {
           </div>
           <DiscordWidget />
         </Reveal>
-      </article>
-
-      <article className="page-inner py-16 border-t border-[var(--border)]">
         <Reveal>
           <div className="section-header">
             <h2>
@@ -392,6 +390,7 @@ export default function HomePage() {
             </div>
           </div>
         </Reveal>
+        </div>
       </article>
     </div>
   );
