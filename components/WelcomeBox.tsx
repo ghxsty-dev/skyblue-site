@@ -50,6 +50,7 @@ export default function WelcomeBox() {
         style={{ animation: "slideUp 0.35s ease" }}
       >
         <Image src="/welcome.webp" alt="" width={3360} height={2160} priority className="welcome-box-img" />
+        <div className="absolute inset-0 bg-black/10" aria-hidden="true" />
         <button
           type="button"
           onClick={dismiss}
