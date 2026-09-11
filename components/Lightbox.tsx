@@ -40,7 +40,7 @@ export default function Lightbox({ images, index, onClose, onPrev, onNext }: Lig
     >
       <button
         onClick={(e) => { e.stopPropagation(); onClose(); }}
-        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center cursor-pointer border-none hover:bg-white/20 z-10"
+        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl leading-none pb-[1px] flex items-center justify-center cursor-pointer border-none hover:bg-white/20 z-10"
       >
         ✕
       </button>
@@ -49,13 +49,13 @@ export default function Lightbox({ images, index, onClose, onPrev, onNext }: Lig
         <>
           <button
             onClick={(e) => { e.stopPropagation(); onPrev(); }}
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 text-white text-lg flex items-center justify-center cursor-pointer border-none hover:bg-white/20 z-10"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 text-white text-lg leading-none pb-[3px] pl-[1px] flex items-center justify-center cursor-pointer border-none hover:bg-white/20 z-10"
           >
             ‹
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); onNext(); }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 text-white text-lg flex items-center justify-center cursor-pointer border-none hover:bg-white/20 z-10"
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 text-white text-lg leading-none pb-[3px] pr-[1px] flex items-center justify-center cursor-pointer border-none hover:bg-white/20 z-10"
           >
             ›
           </button>

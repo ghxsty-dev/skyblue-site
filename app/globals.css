@@ -1004,9 +1004,11 @@ main {
   border-radius: 50%;
   cursor: pointer;
   font-size: 14px;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 0 2px;
   transition: background var(--transition);
 }
 
@@ -2502,6 +2504,7 @@ button.pixel-rank-dot:hover {
   border-radius: 6px;
   background: var(--bg2);
   color: var(--text2);
+  line-height: 1;
   font-size: 1rem;
   cursor: pointer;
   line-height: 1;
@@ -2741,6 +2744,7 @@ button.pixel-rank-dot:hover {
   color: var(--text2);
   font: inherit;
   font-size: 0.95rem;
+  line-height: 1;
   font-weight: 800;
   cursor: pointer;
 }
@@ -2800,6 +2804,7 @@ button.pixel-rank-dot:hover {
   background: var(--bg2);
   color: var(--text2);
   font-size: 1.15rem;
+  line-height: 1;
   cursor: pointer;
   transition: border-color var(--transition), color var(--transition);
 }
@@ -4280,11 +4285,16 @@ button.pixel-rank-dot:hover {
 .avatar-crop-header > button {
   width: 34px;
   height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--border);
   border-radius: 50%;
   background: transparent;
   color: var(--text);
   font-size: 1.2rem;
+  line-height: 1;
+  padding: 0 0 2px;
   cursor: pointer;
 }
 
