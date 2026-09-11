@@ -11,15 +11,15 @@ const links = ["home", "designs", "services", "contact"] as const;
 
 export default function Nav() {
   const pathname = usePathname();
-  const { t, theme } = useApp();
+  const { t, theme, me } = useApp();
   const [open, setOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [indicator, setIndicator] = useState({ left: 0, width: 0, measured: false });
-  const [isAdminUser, setIsAdminUser] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
-  const [avatarPath, setAvatarPath] = useState<string | null>(null);
+  const isLoggedIn = me !== null;
+  const isAdminUser = me?.role === "admin" || me?.role === "kurucu";
+  const username = me?.username ?? null;
+  const avatarPath = me?.avatar_path ?? null;
   const [premiumActive, setPremiumActive] = useState(false);
   const [premiumExpiresAt, setPremiumExpiresAt] = useState<string | null>(null);
   const ulRef = useRef<HTMLUListElement>(null);
@@ -82,17 +82,6 @@ export default function Nav() {
   }, [measure]);
 
   useEffect(() => {
-    fetch("/api/auth/me", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (d?.user) {
-          setIsLoggedIn(true);
-          if (d.user.role === "admin" || d.user.role === "kurucu") setIsAdminUser(true);
-          if (d.user.avatar_path) setAvatarPath(d.user.avatar_path);
-          if (d.user.username) setUsername(d.user.username);
-        }
-      })
-      .catch(() => {});
     fetch("/api/account/premium-status", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {

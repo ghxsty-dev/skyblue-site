@@ -2,31 +2,26 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useApp } from "@/lib/context";
 
 const DISMISS_KEY = "welcome-dismissed";
 
+function wasDismissed(): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    return Boolean(window.sessionStorage.getItem(DISMISS_KEY));
+  } catch {
+    return false;
+  }
+}
+
 /** İlk ziyarette misafirlere bir kez gösterilen karşılama kutusu (görsel boyutunda). */
 export default function WelcomeBox() {
-  const { t, lang } = useApp();
-  const [visible, setVisible] = useState(false);
+  const { t, lang, me, authChecked } = useApp();
+  const [dismissed, setDismissed] = useState(wasDismissed);
 
-  useEffect(() => {
-    try {
-      if (window.sessionStorage.getItem(DISMISS_KEY)) return;
-    } catch {
-      return;
-    }
-    let active = true;
-    fetch("/api/auth/me", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (active && !d?.user) setVisible(true); })
-      .catch(() => {});
-    return () => { active = false; };
-  }, []);
-
-  if (!visible) return null;
+  if (!authChecked || dismissed || me) return null;
 
   function dismiss() {
     try {
@@ -34,7 +29,7 @@ export default function WelcomeBox() {
     } catch {
       /* yok say */
     }
-    setVisible(false);
+    setDismissed(true);
   }
 
   return (

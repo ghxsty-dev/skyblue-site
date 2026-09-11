@@ -43,21 +43,10 @@ interface Review {
 }
 
 export default function HomePage() {
-  const { t, lang } = useApp();
+  const { t, lang, me, authChecked } = useApp();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewsLang, setReviewsLang] = useState<typeof lang | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    fetch("/api/auth/me", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (active && d?.user) setIsLoggedIn(true); })
-      .catch(() => {})
-      .finally(() => { if (active) setAuthChecked(true); });
-    return () => { active = false; };
-  }, []);
+  const isLoggedIn = me !== null;
   const [index, setIndex] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const info = contactData[lang as "EN" | "TR"];
