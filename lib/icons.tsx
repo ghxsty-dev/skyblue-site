@@ -1,10 +1,15 @@
 import type { SVGProps } from "react";
 
+/**
+ * SF Black Filled (iOS) tarzı ikon seti: dolgulu, yuvarlak hatlı siluetler.
+ * Tüm ikonlar currentColor kullanır; çağıran fill/stroke verirse onunki geçerli olur.
+ */
+
 type Props = SVGProps<SVGSVGElement> & { size?: number };
 
 function Icon({ size = 24, children, ...props }: Props & { children: React.ReactNode }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none" {...props}>
       {children}
     </svg>
   );
@@ -13,7 +18,9 @@ function Icon({ size = 24, children, ...props }: Props & { children: React.React
 export function MenuIcon(props: Props) {
   return (
     <Icon {...props}>
-      <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+      <rect x="3" y="5" width="18" height="2.6" rx="1.3" />
+      <rect x="3" y="10.7" width="18" height="2.6" rx="1.3" />
+      <rect x="3" y="16.4" width="18" height="2.6" rx="1.3" />
     </Icon>
   );
 }
@@ -21,7 +28,8 @@ export function MenuIcon(props: Props) {
 export function UserIcon(props: Props) {
   return (
     <Icon {...props}>
-      <circle cx="12" cy="8" r="4" /><path d="M4 22a8 8 0 0 1 16 0" />
+      <circle cx="12" cy="7.6" r="4.1" />
+      <path d="M12 13.4c-4.7 0-8 2.4-8 5.4 0 1 .8 1.9 1.9 1.9h12.2c1 0 1.9-.8 1.9-1.9 0-3-3.3-5.4-8-5.4z" />
     </Icon>
   );
 }
@@ -29,7 +37,10 @@ export function UserIcon(props: Props) {
 export function SunIcon(props: Props) {
   return (
     <Icon {...props}>
-      <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+      <circle cx="12" cy="12" r="4.6" />
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+        <rect key={a} x="11" y="2" width="2" height="4.6" rx="1" transform={`rotate(${a} 12 12)`} />
+      ))}
     </Icon>
   );
 }
@@ -37,7 +48,7 @@ export function SunIcon(props: Props) {
 export function MoonIcon(props: Props) {
   return (
     <Icon {...props}>
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+      <path d="M20.6 14.6A8.6 8.6 0 0 1 9.4 3.4a.8.8 0 0 0-1-1A10 10 0 1 0 21.6 15.6a.8.8 0 0 0-1-1z" />
     </Icon>
   );
 }
@@ -45,7 +56,8 @@ export function MoonIcon(props: Props) {
 export function BrushIcon(props: Props) {
   return (
     <Icon {...props}>
-      <path d="M9 3h6v4H9z" /><path d="M7 7h10v2a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4V7z" /><path d="M11 13v5a2 2 0 0 1-2 2H8" />
+      <path d="M19.9 2.9a1.2 1.2 0 0 0-1.7 0l-6.9 6.9 3.9 3.9 6.9-6.9a1.2 1.2 0 0 0 0-1.7l-2.2-2.2z" />
+      <path d="M10.2 11.1l-1.5-1.5c-2.3 2.3-3.4 4.7-3.7 7.2-.1 1 .7 1.8 1.7 1.7 2.5-.3 4.9-1.4 7.2-3.7l-1.5-1.5-2.2-2.2z" />
     </Icon>
   );
 }
@@ -53,7 +65,10 @@ export function BrushIcon(props: Props) {
 export function GlobeIcon(props: Props) {
   return (
     <Icon {...props}>
-      <circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+      <path
+        fillRule="evenodd"
+        d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2.2c-1.7 1.6-2.8 4.6-2.8 7.8s1.1 6.2 2.8 7.8c1.7-1.6 2.8-4.6 2.8-7.8s-1.1-6.2-2.8-7.8z"
+      />
     </Icon>
   );
 }
@@ -61,7 +76,10 @@ export function GlobeIcon(props: Props) {
 export function SmartphoneIcon(props: Props) {
   return (
     <Icon {...props}>
-      <rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><line x1="12" y1="18" x2="12.01" y2="18" />
+      <path
+        fillRule="evenodd"
+        d="M7 2h10a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3zm3.5 15.5h3a1 1 0 0 1 0 2h-3a1 1 0 0 1 0-2z"
+      />
     </Icon>
   );
 }
@@ -69,7 +87,7 @@ export function SmartphoneIcon(props: Props) {
 export function MonitorIcon(props: Props) {
   return (
     <Icon {...props}>
-      <rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" />
+      <path d="M4 3h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5v2.5h3.5a1 1 0 0 1 0 2h-9a1 1 0 0 1 0-2H11V17H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
     </Icon>
   );
 }
@@ -77,23 +95,23 @@ export function MonitorIcon(props: Props) {
 export function MegaphoneIcon(props: Props) {
   return (
     <Icon {...props}>
-      <path d="M21 8v6" /><path d="M3 14a3 3 0 0 0 3 3h2l1 4h3l-1-4h2l1 4h3l-1-4h2a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v6z" />
+      <path d="M3 10.8v2.4c0 1.5 1.2 2.8 2.8 2.8h1l1.9 4.3c.2.5.7.8 1.2.6.5-.2.8-.7.6-1.2l-1.6-3.7h8.3c2 0 3.8-1.6 3.8-3.6v-1.6c0-2-1.6-3.6-3.8-3.6H5.8c-1.6 0-2.8 1.3-2.8 2.8z" />
     </Icon>
   );
 }
 
 export function PackageIcon(props: Props) {
   return (
-    <Icon {...props}>
-      <line x1="16.5" y1="9.4" x2="7.5" y2="4.21" /><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" />
+    <Icon stroke="currentColor" strokeWidth={1.5} strokeLinejoin="round" {...props}>
+      <path d="M12 1.7l8.6 5c.6.3 1 1 1 1.7v7.2c0 .7-.4 1.4-1 1.7l-8.6 5c-.6.3-1.4.3-2 0l-8.6-5c-.6-.3-1-1-1-1.7V8.4c0-.7.4-1.4 1-1.7l8.6-5c.6-.4 1.4-.4 2 0z" />
     </Icon>
   );
 }
 
 export function StarIcon(props: Props) {
   return (
-    <Icon {...props} fill="currentColor">
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    <Icon fill="currentColor" stroke="currentColor" strokeWidth={1.5} strokeLinejoin="round" {...props}>
+      <path d="M12 2.5l2.9 5.9 6.6 1-4.7 4.6 1.1 6.5L12 17.4l-5.9 3.1 1.1-6.5L2.5 9.4l6.6-1L12 2.5z" />
     </Icon>
   );
 }
@@ -101,7 +119,7 @@ export function StarIcon(props: Props) {
 export function MessageIcon(props: Props) {
   return (
     <Icon {...props}>
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      <path d="M12 3.5c-5 0-9 3.6-9 8 0 2.5 1.3 4.7 3.3 6.1-.1.9-.5 2.2-1.3 3.4-.1.2 0 .5.2.6.1.1.2.1.3.1.2 0 .4-.1.6-.2 1.2-.7 2.3-1.5 3-2.1 1 .3 2 .4 2.9.4 5 0 9-3.6 9-8s-4-8.3-9-8.3z" />
     </Icon>
   );
 }
@@ -109,7 +127,10 @@ export function MessageIcon(props: Props) {
 export function CameraIcon(props: Props) {
   return (
     <Icon {...props}>
-      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" />
+      <path
+        fillRule="evenodd"
+        d="M8.6 4.5c.3-.4.8-.5 1.2-.5h4.4c.4 0 .9.1 1.2.5L17 6.5h3A2.5 2.5 0 0 1 22.5 9v8a2.5 2.5 0 0 1-2.5 2.5H4A2.5 2.5 0 0 1 1.5 17V9A2.5 2.5 0 0 1 4 6.5h3L8.6 4.5zm3.4 13a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5z"
+      />
     </Icon>
   );
 }
@@ -125,15 +146,18 @@ export function InstagramIcon(props: Props) {
 export function MailIcon(props: Props) {
   return (
     <Icon {...props}>
-      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
+      <path
+        fillRule="evenodd"
+        d="M4.5 4h15A2.5 2.5 0 0 1 22 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 17.5v-11A2.5 2.5 0 0 1 4.5 4zM3.5 7L12 13l8.5-6-1-1.5L12 10.5 4.5 5.5 3.5 7z"
+      />
     </Icon>
   );
 }
 
 export function CheckIcon(props: Props) {
   return (
-    <Icon {...props}>
-      <polyline points="20 6 9 17 4 12" />
+    <Icon fill="none" stroke="currentColor" strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <polyline points="4.5 12.5 10 18 19.5 6.5" />
     </Icon>
   );
 }
@@ -141,7 +165,9 @@ export function CheckIcon(props: Props) {
 export function SparklesIcon(props: Props) {
   return (
     <Icon {...props}>
-      <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" /><path d="M18 14l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z" /><path d="M6 14l-1 2-2 1 2 1 1 2 1-2 2-1-2-1-1-2z" />
+      <path d="M12 2c.7 5.3 2.5 7.1 7.8 7.8-5.3.7-7.1 2.5-7.8 7.8-.7-5.3-2.5-7.1-7.8-7.8 5.3-.7 7.1-2.5 7.8-7.8z" />
+      <path d="M18.5 13.5c.4 2.6 1.2 3.4 3.8 3.8-2.6.4-3.4 1.2-3.8 3.8-.4-2.6-1.2-3.4-3.8-3.8 2.6-.4 3.4-1.2 3.8-3.8z" />
+      <path d="M5.5 13.5c.4 2.6 1.2 3.4 3.8 3.8-2.6.4-3.4 1.2-3.8 3.8-.4-2.6-1.2-3.4-3.8-3.8 2.6-.4 3.4-1.2 3.8-3.8z" />
     </Icon>
   );
 }
@@ -149,7 +175,10 @@ export function SparklesIcon(props: Props) {
 export function PaletteIcon(props: Props) {
   return (
     <Icon {...props}>
-      <circle cx="13.5" cy="6.5" r="1.5" /><circle cx="17.5" cy="10.5" r="1.5" /><circle cx="8.5" cy="7.5" r="1.5" /><circle cx="6.5" cy="12.5" r="1.5" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-1 0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-5.5-4.5-10-10-10z" />
+      <path
+        fillRule="evenodd"
+        d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.2-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6h1.7c3 0 5.9-2.4 5.9-5.9 0-5-4.2-8.7-10-8.7zM10.8 15.5h2.4a1 1 0 0 1 0 2h-2.4a1 1 0 0 1 0-2zM9 6.2a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6zm-2.5 2.6a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6zm11.9.6a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6z"
+      />
     </Icon>
   );
 }
@@ -157,7 +186,9 @@ export function PaletteIcon(props: Props) {
 export function LayersIcon(props: Props) {
   return (
     <Icon {...props}>
-      <polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" />
+      <path d="M12 2l10 5-10 5L2 7l10-5z" />
+      <path d="M4.5 11.5L2 12.7v.6l10 5 10-5v-.6l-2.5-1.2L12 15.5l-7.5-4z" />
+      <path d="M4.5 17L2 18.2v.6l10 5 10-5v-.6L19.5 17 12 21l-7.5-4z" />
     </Icon>
   );
 }
@@ -165,7 +196,7 @@ export function LayersIcon(props: Props) {
 export function PenToolIcon(props: Props) {
   return (
     <Icon {...props}>
-      <path d="M12 19l7-7 3 3-7 7-3-3z" /><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" /><path d="M2 2l7.586 7.586" /><circle cx="11" cy="11" r="2" />
+      <path d="M14.2 3.3l6.5 6.5-9.7 9.7-3.9 1 1-3.9 6.1-13.3z" />
     </Icon>
   );
 }
@@ -173,7 +204,13 @@ export function PenToolIcon(props: Props) {
 export function SettingsIcon(props: Props) {
   return (
     <Icon {...props}>
-      <circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      <path
+        fillRule="evenodd"
+        d="M12 9.4a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2zM12 5.2a6.8 6.8 0 1 0 0 13.6 6.8 6.8 0 0 0 0-13.6z"
+      />
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+        <rect key={a} x="10.5" y="1.8" width="3" height="4" rx="1.2" transform={`rotate(${a} 12 12)`} />
+      ))}
     </Icon>
   );
 }
@@ -181,7 +218,10 @@ export function SettingsIcon(props: Props) {
 export function TagIcon(props: Props) {
   return (
     <Icon {...props}>
-      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" /><line x1="7" y1="7" x2="7.01" y2="7" />
+      <path
+        fillRule="evenodd"
+        d="M3.6 2.5h6.9c.5 0 1 .2 1.4.6L20.4 12a1.5 1.5 0 0 1 0 2.1l-5.3 5.3a1.5 1.5 0 0 1-2.1 0l-8.9-8.9a1.5 1.5 0 0 1-.6-1.4V2.5zm4.4 5a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z"
+      />
     </Icon>
   );
 }
@@ -189,9 +229,8 @@ export function TagIcon(props: Props) {
 export function LogoutIcon(props: Props) {
   return (
     <Icon {...props}>
-      <path d="M13 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7" />
-      <polyline points="14.5 8.5 19 12 14.5 15.5" />
-      <line x1="19" y1="12" x2="9" y2="12" />
+      <path d="M13.5 3H19a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5.5v-2.6H19V5.6h-5.5V3z" />
+      <path d="M2.5 11h9.8V8.2l4.2 3.8-4.2 3.8V13H2.5v-2z" />
     </Icon>
   );
 }
@@ -199,7 +238,7 @@ export function LogoutIcon(props: Props) {
 export function DiscordIcon({ size = 24, ...props }: Props) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.128 12.3 12.3 0 0 1-1.873.891.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418Z" />
+      <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.891.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418Z" />
     </svg>
   );
 }
@@ -207,8 +246,8 @@ export function DiscordIcon({ size = 24, ...props }: Props) {
 export function CrownIcon(props: Props) {
   return (
     <Icon {...props}>
-      <path d="M3 8l3.5 3.5L12 5l5.5 6.5L21 8l-1.6 9.5a1 1 0 0 1-1 .5H5.6a1 1 0 0 1-1-.5L3 8z" />
-      <line x1="5" y1="21" x2="19" y2="21" />
+      <path d="M2.8 7.2c.3-.4.9-.5 1.3-.2l4.1 3 3.8-5.6c.4-.5 1.2-.5 1.6 0l3.8 5.6 2.6-1.9c.5-.4 1.2-.2 1.5.3.1.2.2.5.2.7l-1.5 8.6c-.1.7-.7 1.3-1.5 1.3H5.9c-.8 0-1.4-.6-1.5-1.3L2.7 8.4c-.1-.5.1-.9.1-1.2z" />
+      <rect x="5" y="20" width="14" height="2.2" rx="1.1" />
     </Icon>
   );
 }
@@ -216,8 +255,10 @@ export function CrownIcon(props: Props) {
 export function TerminalIcon(props: Props) {
   return (
     <Icon {...props}>
-      <polyline points="4 17 10 11 4 5" />
-      <line x1="12" y1="19" x2="20" y2="19" />
+      <path
+        fillRule="evenodd"
+        d="M5 3h14a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3zm2.2 5.2L11 12l-3.8 3.8-1.7-1.7 2.1-2.1-2.1-2.1 1.7-1.7zM12 16.5h5.5v2H12v-2z"
+      />
     </Icon>
   );
 }
@@ -225,19 +266,20 @@ export function TerminalIcon(props: Props) {
 export function CodeIcon(props: Props) {
   return (
     <Icon {...props}>
-      <polyline points="16 18 22 12 16 6" />
-      <polyline points="8 6 2 12 8 18" />
+      <path d="M9.5 5.5L4 12l5.5 6.5 2-2.3-3.4-4.2 3.4-4.2-2-2.3z" />
+      <path d="M14.5 5.5l-2 2.3 3.4 4.2-3.4 4.2 2 2.3L20 12l-5.5-6.5z" />
+      <rect x="10.8" y="3" width="2.4" height="18" rx="1.2" transform="rotate(18 12 12)" />
     </Icon>
   );
 }
 
 export function GitBranchIcon(props: Props) {
   return (
-    <Icon {...props}>
-      <line x1="6" y1="3" x2="6" y2="15" />
-      <circle cx="18" cy="6" r="3" />
-      <circle cx="6" cy="18" r="3" />
-      <path d="M18 9a9 9 0 0 1-9 9" />
+    <Icon fill="currentColor" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" {...props}>
+      <circle cx="6.5" cy="5.5" r="2.5" stroke="none" />
+      <circle cx="6.5" cy="18.5" r="2.5" stroke="none" />
+      <circle cx="17.5" cy="8.5" r="2.5" stroke="none" />
+      <path d="M6.5 8v8M17.5 11c0 4-4 5-8 5" fill="none" />
     </Icon>
   );
 }
@@ -245,7 +287,7 @@ export function GitBranchIcon(props: Props) {
 export function ShieldIcon(props: Props) {
   return (
     <Icon {...props}>
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="M12 2l7.5 2.8v6.1c0 5-3.1 8.6-7.5 11.1-4.4-2.5-7.5-6.1-7.5-11.1V4.8L12 2z" />
     </Icon>
   );
 }
@@ -253,8 +295,11 @@ export function ShieldIcon(props: Props) {
 export function CompassIcon(props: Props) {
   return (
     <Icon {...props}>
-      <circle cx="12" cy="12" r="10" />
-      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+      <path
+        fillRule="evenodd"
+        d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2.6a7.4 7.4 0 1 0 0 14.8 7.4 7.4 0 0 0 0-14.8z"
+      />
+      <path d="M15.8 8.2l-2.5 5-5 2.5 2.5-5 5-2.5z" />
     </Icon>
   );
 }
@@ -262,7 +307,9 @@ export function CompassIcon(props: Props) {
 export function PercentIcon(props: Props) {
   return (
     <Icon {...props}>
-      <line x1="19" y1="5" x2="5" y2="19" /><circle cx="6.5" cy="6.5" r="2.5" /><circle cx="17.5" cy="17.5" r="2.5" />
+      <circle cx="7" cy="7" r="2.7" />
+      <circle cx="17" cy="17" r="2.7" />
+      <path d="M18.6 5.2l-11.4 13.6-1.9-1.6L16.7 3.6l1.9 1.6z" />
     </Icon>
   );
 }

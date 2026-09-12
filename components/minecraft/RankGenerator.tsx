@@ -1325,18 +1325,18 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
 
         <div className="pixel-rank-action-row">
           <button type="button" className="pixel-rank-download" onClick={download} disabled={downloadPending || trimmedEmpty} title={trimmedEmpty ? copy.emptyHint : copy.download}>
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+              <path d="M11 3h2v8.2l2.6-2.6 1.4 1.4-5 5-5-5 1.4-1.4 2.6 2.6V3z" />
+              <path d="M4 17v2.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V17h-2v2H6v-2H4z" />
             </svg>
             {downloadPending ? (isTurkish ? "Hazırlanıyor..." : "Preparing...") : copy.download}
           </button>
           <button type="button" className={`pixel-rank-save ${saveSuccess ? "is-success" : ""}`} onClick={saveProject} disabled={savePending || trimmedEmpty} title={downloadState?.authenticated ? copy.save : copy.loginToSave}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-              <polyline points="17 21 17 13 7 13 7 21" />
-              <polyline points="7 3 7 8 15 8" />
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+              <path
+                fillRule="evenodd"
+                d="M5 3h11l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm2 0v5h7V3H7zM6 21v-6h12v6H6z"
+              />
             </svg>
             {savePending ? "..." : saveSuccess ? copy.saved : copy.save}
           </button>
@@ -1400,8 +1400,8 @@ export default function RankGenerator({ lang = "tr" }: RankGeneratorProps) {
         {downloadState?.authenticated && savedProjects.length > 0 && (
           <div className="pixel-rank-projects">
             <button type="button" className="pixel-rank-projects-toggle" onClick={() => setShowProjectList((prev) => !prev)} aria-expanded={showProjectList}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+                <path d="M2 6.5A2.5 2.5 0 0 1 4.5 4h5l2 2.5h8A2.5 2.5 0 0 1 22 9v8.5a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 17.5v-11z" />
               </svg>
               {copy.myProjects} ({savedProjects.length})
               <span className={`pixel-rank-projects-chevron ${showProjectList ? "is-open" : ""}`}>▾</span>

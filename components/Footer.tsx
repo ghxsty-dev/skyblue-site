@@ -39,8 +39,11 @@ function YouTubeIcon({ size = 24 }: { size?: number }) {
 
 function MailIcon({ size = 24 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <path
+        fillRule="evenodd"
+        d="M4.5 4h15A2.5 2.5 0 0 1 22 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 17.5v-11A2.5 2.5 0 0 1 4.5 4zM3.5 7L12 13l8.5-6-1-1.5L12 10.5 4.5 5.5 3.5 7z"
+      />
     </svg>
   );
 }
@@ -180,7 +183,7 @@ export default function Footer() {
                   className="flex items-center gap-1.5 bg-[var(--bg2)] border border-[var(--footer-border)] text-[var(--footer-text)] text-xs px-2 py-1.5 rounded-lg cursor-pointer transition-all hover:border-[#59abfe]"
                 >
                   <Image src={current.flag} alt={current.code} width={18} height={12} />
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6 9.5l6 6 6-6-1.8-1.8-4.2 4.2-4.2-4.2L6 9.5z" /></svg>
                 </button>
                 {open && (
                   <div className="absolute bottom-full mb-1 right-0 bg-[var(--bg2)] border border-[var(--footer-border)] rounded-lg overflow-hidden shadow-lg z-50 min-w-[120px]">

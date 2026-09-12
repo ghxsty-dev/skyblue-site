@@ -23,12 +23,12 @@ export default function MinecraftPage() {
       <Reveal delay={60}>
         <div className="card p-12 flex flex-col items-center gap-6">
           <div className="text-6xl">
-            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#59abfe" strokeWidth="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="3" />
-              <rect x="7" y="7" width="4" height="4" rx="1" />
-              <rect x="13" y="7" width="4" height="4" rx="1" />
-              <rect x="7" y="13" width="4" height="4" rx="1" />
-              <rect x="13" y="13" width="4" height="4" rx="1" />
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="#59abfe" stroke="none">
+              <rect x="3" y="3" width="18" height="18" rx="4" />
+              <rect x="7" y="7" width="4" height="4" rx="1" fill="var(--bg)" />
+              <rect x="13" y="7" width="4" height="4" rx="1" fill="var(--bg)" />
+              <rect x="7" y="13" width="4" height="4" rx="1" fill="var(--bg)" />
+              <rect x="13" y="13" width="4" height="4" rx="1" fill="var(--bg)" />
             </svg>
           </div>
           <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[#97cdf2] to-[#59abfe] text-white text-sm font-bold">
