@@ -171,7 +171,7 @@ export default function HomePage() {
             <div className="flex gap-12">
               <div className="text-center">
                 <span className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#97cdf2] to-[#59abfe] bg-clip-text text-transparent">
-                  {useCount(180, 2500)}+
+                  {useCount(200, 2500)}+
                 </span>
                 <span className="block text-sm text-[var(--text2)] mt-2 font-medium">{t.statsProducts}</span>
               </div>
